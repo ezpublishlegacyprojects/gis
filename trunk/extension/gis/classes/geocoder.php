@@ -40,6 +40,8 @@ class GeoCoder
 	/**
 	 * This function processes the request if a faulure is noticed this function will return false.
 	 * 
+	 * This fucntion sets $long and $lat and and updates the address if needed
+	 * 
 	 * @return boolean either true or false
 	 */
 	function request( )
