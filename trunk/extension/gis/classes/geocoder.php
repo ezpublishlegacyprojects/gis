@@ -9,6 +9,7 @@ class GeoCoder
 	var $long;
 	var $lat;
 	var $accuracy;
+	var $location;
 /**
  *
  * @return GeoCoder
@@ -25,14 +26,16 @@ class GeoCoder
 	 * @param string $city
 	 * @param string $state
 	 * @param string $country
+	 * @param string $location Optional. Defines a potential location you are looking for e.g. "Central Railway Station", "Airport"
 	 */
-	function setAddress( $street, $zip, $city, $state, $country )
+	function setAddress( $street, $zip, $city, $state, $country, $location = false )
 	{
 	    $this->street = $street;
 		$this->zip = $zip;
 		$this->city = $city;
 		$this->state = $state;
 		$this->country = $country;
+		$this->location = $location;
 	}
 	/**
 	 * This function processes the request if a faulure is noticed this function will return false.
