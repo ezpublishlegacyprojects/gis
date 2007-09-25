@@ -11,7 +11,22 @@ class GeoCoder
 	var $accuracy;
 	var $location;
 /**
- *
+ * Useage:
+ * <code>
+ * $coder = GeoCoder::getActiveGeoCoder();
+ * $coder->setAddress( 'Am Lindener Berge 22', '30449', 'Hannover', 'NI', 'Germany' );
+ * if ( $coder->request() )
+ * {
+ *     //success
+ *     echo $coder->lat;
+ *     echo $coder->long;
+ * }
+ * else
+ * {
+ *     //error
+ * }
+ * </code>
+ * 
  * @return GeoCoder
  */
 	function GeoCoder() 
