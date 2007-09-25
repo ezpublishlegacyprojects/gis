@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //
 // Definition of GoogleGeoCoder Methods
 //
@@ -27,7 +27,6 @@
 //
 // Contact info@all2e.com if any conditions
 // of this licencing isn't clear to you.
-//
 
 include_once( "lib/ezxml/classes/ezxml.php" );
 
@@ -40,10 +39,10 @@ class GoogleGeoCoder {
     var $city;
     var $state;
     var $country;
-    var $longitude; // Dezimalgrad der geographischen L�nge
+    var $longitude; // Dezimalgrad der geographischen L?nge
     var $latitude; // Dezimalgrad der geographischen Breite
-    var $phi; // Gogenma� der geographischen L�nge
-    var $theta; // Gogenma� der geographischen Breite
+    var $phi; // Gogenma? der geographischen L?nge
+    var $theta; // Gogenma? der geographischen Breite
     
     function GoogleGeoCoder() 
     {
