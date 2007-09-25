@@ -1,27 +1,56 @@
 <?php
-class GeoCoder {
+class GeoCoder
+{
 	var $street;
 	var $zip;
 	var $city;
 	var $state;
 	var $country;
-	function GeoCoder( $street, $zip, $city, $state, $country ) 
+	var $long;
+	var $lat;
+	var $accuracy;
+
+	function GeoCoder() 
 	{
-		$this->street = $street;
+
+	}
+	/**
+	 * Fills the Geocoder with initial data
+	 *
+	 * @param string $street
+	 * @param string $zip
+	 * @param string $city
+	 * @param string $state
+	 * @param string $country
+	 * @return GeoCoder
+	 */
+	function setAddress( $street, $zip, $city, $state, $country )
+	{
+	    $this->street = $street;
 		$this->zip = $zip;
 		$this->city = $city;
 		$this->state = $state;
 		$this->country = $country;
 	}
+	/**
+	 * This function processes the request if a faulure is noticed this function will return false.
+	 * 
+	 * @return boolean either true or false
+	 */
 	function request( )
 	{
-		$url  = $this->buildURL();
-		#$data = file_get_contents( $url );
-		#$result = $this->convertData();
-		#if ( is_array( $result ) )
-		#	return $result;
-		#else
-		#	return false;
+	    return true;
+	}
+	/**
+	 * get the google or yahoo coder class
+	 *
+	 * @return GeoCoder
+	 */
+	function getActiveGeoCoder()
+	{
+	    /**
+	     * @todo write code here
+	     */
 	}
 }
 ?>

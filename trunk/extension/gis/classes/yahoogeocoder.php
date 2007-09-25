@@ -2,10 +2,12 @@
 
 include_once( "extension/gis/classes/geocoder.php" );
 
-class YahooGeocoder extends GeoCoder {
+class YahooGeocoder extends GeoCoder
+{
 
-	function YahooGeocoder() {
-		
+	function YahooGeocoder()
+	{
+		parent::GeoCoder();
 	}
 	function buildURL ()
 	{
@@ -17,6 +19,16 @@ class YahooGeocoder extends GeoCoder {
 	function convertData ()
 	{
 		
+	}
+	function request()
+	{
+				#$url  = $this->buildURL();
+		#$data = file_get_contents( $url );
+		#$result = $this->convertData();
+		#if ( is_array( $result ) )
+		#	return $result;
+		#else
+		#	return false;
 	}
 }
 ?>
