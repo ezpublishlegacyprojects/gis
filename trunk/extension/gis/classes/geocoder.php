@@ -9,7 +9,10 @@ class GeoCoder
 	var $long;
 	var $lat;
 	var $accuracy;
-
+/**
+ *
+ * @return GeoCoder
+ */
 	function GeoCoder() 
 	{
 
@@ -22,7 +25,6 @@ class GeoCoder
 	 * @param string $city
 	 * @param string $state
 	 * @param string $country
-	 * @return GeoCoder
 	 */
 	function setAddress( $street, $zip, $city, $state, $country )
 	{
