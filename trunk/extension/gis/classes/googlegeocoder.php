@@ -28,6 +28,7 @@
 // Contact info@all2e.com if any conditions
 // of this licencing isn't clear to you.
 
+
 include_once( "lib/ezxml/classes/ezxml.php" );
 
 class GoogleGeoCoder {
