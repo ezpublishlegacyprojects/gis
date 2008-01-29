@@ -1,29 +1,34 @@
+<?php /* #?ini charset="utf-8"?
+
 [GISSettings]
-ApplicationID=YahooDemo
-GeocoderURL=http://www.maporama.com
+#Choose Yahoo or Google
+#Yahoo is easier to debug on the local intranet.
+Interface=Yahoo
+#GeocoderURL=http://www.maporama.com
 #GeocoderURL=http://brainoff.com/geocoder/
 
 PublicURL=http://www.example.com:81
 
 [Yahoo]
-ApplicationID=YahooDemo
-Url=http://api.local.yahoo.com/MapsService/V1/geocode
+ApplicationID=150fEujV34Ew4dTws3VmzZrQcWFbhUFtTO3KNJDOczcY9slBTMiOXtcUEIWgkRNZhiTjQg--
+Url=http://local.yahooapis.com/MapsService/V1/geocode
 # ZOOM choose level 1 - 16
 #2: street level
 #4: city level
 #8: state level
-DefaultZoom=1
+DefaultZoom=8
 
 [Google]
+Url=http://maps.google.com/maps/geo
 Proxy=
 # enable proxy to load remote feeds
 # urls must be under the same domain
 # otherwise you will get JS permission errors
 # E.g. in firefox
 #Proxy=http://example.com/projects/map/proxy.pl?
-ApplicationID=
+ApplicationID=ABQIAAAAPF7DvntGNCZxs6lLUT8lhRS7IaKw0QFjSoA-ElwZla6ORVM4YBSiRKIy0ivhS1xQIc0oW7hQnNR1ng
 # ZOOM choose level 1 - 16
-DefaultZoom=1
+DefaultZoom=16
 
 # Special icons for special classes
 # [Icon]
@@ -33,3 +38,4 @@ DefaultZoom=1
 # folder[path]=/share/icons/crystal-admin/32x32/filesystems/folder.png
 # folder[height]=16
 # folder[width]=16
+*/ ?>

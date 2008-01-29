@@ -1,15 +1,18 @@
 <?php
 class GeoCoder
 {
-	var $street;
-	var $zip;
-	var $city;
-	var $state;
-	var $country;
-	var $long;
-	var $lat;
-	var $accuracy;
-	var $location;
+	public $street;
+	public $zip;
+	public $city;
+	public $state;
+	public $country;
+	public $longitude;
+	public $latitude;
+	public $accuracy;
+	public $location;
+	const ACCURACY_STREET = 'address';
+	const ACCURACY_CITY = 'city';
+	const ACCURACY_ZIP = 'zip';
 /**
  * Useage:
  * <code>
@@ -43,14 +46,20 @@ class GeoCoder
 	 * @param string $country
 	 * @param string $location Optional. Defines a potential location you are looking for e.g. "Central Railway Station", "Airport"
 	 */
-	function setAddress( $street, $zip, $city, $state, $country, $location = false )
+	public function setAddress( $street, $zip, $city, $state, $country, $location = false )
 	{
-	    $this->street = $street;
-		$this->zip = $zip;
-		$this->city = $city;
-		$this->state = $state;
-		$this->country = $country;
-		$this->location = $location;
+        if ( strlen ( $street ) > 1 )
+		    $this->street = trim( $street );
+		if ( strlen( $zip ) > 1 )
+		    $this->zip = trim( $zip );
+    	if ( strlen( $city ) > 1 )
+		    $this->city = trim( $city );
+		if ( strlen( $state ) > 1 )
+			$this->state = trim( $state );
+		if ( strlen( $country ) > 1 )
+			$this->country = trim( $country );
+		if ( $location !== false )
+			$this->location = trim( $location );
 	}
 	/**
 	 * This function processes the request if a faulure is noticed this function will return false.
@@ -68,11 +77,11 @@ class GeoCoder
 	 *
 	 * @return GeoCoder
 	 */
-	function getActiveGeoCoder()
+	static function getActiveGeoCoder()
 	{
-	    /**
-	     * @todo write code here
-	     */
+	    $type = eZINI::instance( 'gis.ini' )->variable( 'GISSettings', 'Interface' )."GeoCoder";
+	    return new $type;
+	    
 	}
 }
 ?>

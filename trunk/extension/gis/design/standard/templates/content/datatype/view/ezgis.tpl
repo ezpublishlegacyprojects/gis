@@ -1,25 +1,25 @@
 {*?template charset=utf8?*}
-{section show=$attribute.has_content}
+{if $attribute.has_content}
 <label>{'Latitude'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.latitude}{/section}
+{$attribute.content.latitude}
 
 <label>{'Longitude'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.longitude}{/section}
+{$attribute.content.longitude}
 
 <label>{'Street'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.street}{/section}
+{$attribute.content.street}
 
 <label>{'ZIP'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.zip}{/section}
+{$attribute.content.zip}
 
 <label>{'City'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.city}{/section}
+{$attribute.content.city}
 
 <label>{'State'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.state}{/section}
+{$attribute.content.state}
 
 <label>{'Country'|i18n( 'design/standard/content/datatype' )}:</label>
-{section show=$attribute.content.is_valid}{$attribute.content.country}{/section}
+{$attribute.content.country}
 
 
 <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=2.0&appid={ezini('GISSettings','ApplicationID','gis.ini')}"></script>
@@ -50,6 +50,6 @@
 
 
 
-{section-else}
+{else}
 No geo information avialable.
-{/section}
+{/if}

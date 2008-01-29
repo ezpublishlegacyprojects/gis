@@ -1,25 +1,19 @@
 <?php
-include_once( 'lib/ezutils/classes/ezexecution.php' );
-include_once( 'kernel/classes/ezrssexport.php' );
-include_once( "kernel/classes/ezcontentobject.php" );
+
 ext_include( "gis", "classes/ezgeorss.php" );
 ext_include( "gis", "datatypes/ezgis/ezgistype.php" );
 
 $Module =& $Params["Module"];
 
 if ( !isset ( $Params['RSSFeed'] ) )
-    return $Module->setExitStatus( EZ_MODULE_STATUS_FAILED );
-
-include_once( 'kernel/classes/ezrssexport.php' );
+    return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE );
 
 $feedName = $Params['RSSFeed'];
 $RSSExport = eZGEORSS::fetchByName( $feedName );
 
 // Get and check if RSS Feed exists
 if ( $RSSExport == null )
-    return $Module->setExitStatus( EZ_MODULE_STATUS_FAILED );
-
-include_once( 'kernel/classes/ezrssexportitem.php' );
+    return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE, 'kernel' );
 
 $config =& eZINI::instance( 'site.ini' );
 $cacheTime = intval( $config->variable( 'RSSSettings', 'CacheTime' ) );

@@ -13,12 +13,11 @@ CREATE TABLE `ezgis_position` (
 `country` varchar(255) default NULL
 );
 */
-include_once( "kernel/classes/ezpersistentobject.php" );
 
 class eZGISPosition extends eZPersistentObject
 {
     /*!
-     Initializes a new URL alias.
+     Initializes a new eZGISPosition.
     */
     function eZGISPosition( $row )
     {
@@ -28,7 +27,7 @@ class eZGISPosition extends eZPersistentObject
     /*!
      \reimp
     */
-    function &definition()
+    static function definition()
     {
         return array( "fields" => array( "contentobject_attribute_id" => array( 'name' => 'contentobject_attribute_id',
                                                         'datatype' => 'integer',
@@ -73,21 +72,21 @@ class eZGISPosition extends eZPersistentObject
                       "class_name" => "eZGISPosition",
                       "name" => "ezgis_position" );
     }
-    function isValid()
+    public function isValid()
     {
     	//todo
     	return true;
     }
     // works only with guass krüger
-    function &fetchByDistance(  $fromx, $fromy, $distance=100000, $limit=null )
+    static function &fetchByDistance(  $fromx, $fromy, $distance=100000, $limit=null )
     {
     	$asObject = true;
     	$minx = $fromx - $distance/2;
     	$maxx = $fromx + $distance/2;
     	$miny = $fromy - $distance/2;
     	$maxy = $fromy + $distance/2;
-    	$db =& eZDB::instance();
-    	$list =& eZPersistentObject::fetchObjectList( 
+    	$db = eZDB::instance();
+    	$list = eZPersistentObject::fetchObjectList( 
     	eZGISPosition::definition(), null,
     	array( 'x' => array( false, array( $minx, $maxx ) ),
     	'y' => array( false, array( $miny, $maxy ) ) ), 
@@ -102,9 +101,9 @@ class eZGISPosition extends eZPersistentObject
  );
 		foreach( $list as $row )
 		{
-			$coa =& eZContentObjectAttribute::fetch( $row->attribute('contentobject_attribute_id'), $row->attribute('contentobject_attribute_version') );
+			$coa = eZContentObjectAttribute::fetch( $row->attribute('contentobject_attribute_id'), $row->attribute('contentobject_attribute_version') );
 			if ( is_object( $coa ) )
-				$co =& eZContentObject::fetch( $coa->attribute( 'contentobject_id' ) );
+				$co = eZContentObject::fetch( $coa->attribute( 'contentobject_id' ) );
 			if ( is_object( $co ) )
 				$result[] =& $co->attribute( 'main_node' );
 		}
@@ -113,7 +112,7 @@ class eZGISPosition extends eZPersistentObject
                           "StopWordArray" => $stopWordArray );
     }
      // works only with guass krüger
-	function &search( $x, $y, $distance, $params = array(), $searchTypes = array() )
+	static function &search( $x, $y, $distance, $params = array(), $searchTypes = array() )
 	{
 		$x=(float)$x;
 		$y=(float)$y;
@@ -124,19 +123,19 @@ class eZGISPosition extends eZPersistentObject
 			$limit["offset"] = $params['SearchOffset'];
 
 		if ( isset( $limit ) )
-			$result =& eZGISPosition::fetchByDistance( $x, $y, $distance, $limit );
+			$result = eZGISPosition::fetchByDistance( $x, $y, $distance, $limit );
 		else 
-			$result =& eZGISPosition::fetchByDistance( $x, $y, $distance );
+			$result = eZGISPosition::fetchByDistance( $x, $y, $distance );
 		return $result;
 	}
-    function fetch( $attribute_id, $version )
+    static function fetch( $attribute_id, $version )
     {
-    	$list =& eZPersistentObject::fetchObjectList( 
-    	eZGISPosition::definition(), null,
-    	array( 'contentobject_attribute_id' => $attribute_id, 'contentobject_attribute_version' => $version  ), 
-    	null, null, true
- );  
-		if ( $list[0] )
+    	$list = eZPersistentObject::fetchObjectList( 
+    	                                eZGISPosition::definition(), null,
+    	                                array( 'contentobject_attribute_id' => $attribute_id, 'contentobject_attribute_version' => $version  ), 
+    	                                null, null, true
+                );  
+		if ( isset( $list[0] ) )
 			return $list[0];
     }
 }

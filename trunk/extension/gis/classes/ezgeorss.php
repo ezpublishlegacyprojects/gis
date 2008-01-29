@@ -3,15 +3,17 @@ include_once( 'kernel/classes/ezrssexport.php' );
 define( 'EZ_GEORSS_NS_GEO', "http://www.w3.org/2003/01/geo/wgs84_pos#"  );
 define( 'EZ_GEORSS_NS_YMAPS', "http://api.maps.yahoo.com/Maps/V1/AnnotatedMaps.xsd"  );
 define( 'EZ_GEORSS_NS_GEORSS', 'http://www.georss.org/georss' );
-class eZGEORSS extends eZRSSExport {
+class eZGEORSS extends eZRSSExport
+{
 	var $version = '2.0';
 	var $url;
 	var $description;
 	var $language;
-	function eZGEORSS( $row ) {
+	function eZGEORSS( $row )
+	{
 		$this->eZPersistentObject( $row );
 	}
-	function fetchByName( $access_url, $asObject = true )
+	static function fetchByName( $access_url, $asObject = true )
     {
         return eZPersistentObject::fetchObject( eZGEORSS::definition(),
                                                 null,
@@ -20,7 +22,7 @@ class eZGEORSS extends eZRSSExport {
                                                        'status' => 1 ),
                                                 $asObject );
     }
-	function definition()
+	static function definition()
     {
     	$array = parent::definition();
     	$array['class_name']='eZGEORSS';
@@ -29,9 +31,6 @@ class eZGEORSS extends eZRSSExport {
     }
     function fetchGEORSS2_0( $id = null )
     {
-
-
-        include_once( 'lib/ezxml/classes/ezdomdocument.php' );
 
         $locale = eZLocale::instance();
 
@@ -106,8 +105,6 @@ class eZGEORSS extends eZRSSExport {
 				else
 				{
 					$group->appendChild( $doc->createElementCDATANode( 'BaseIcon', $gisini->variable( "GISSettings", "PublicURL" ) . $class_var[path], array('height' => $class_var[height], 'width' => $class_var[width]) ) );
-					#$group->appendAttribute( eZDOMDocument::createAttributeNode( 'width', "21"  ) );
-					#$group->appendAttribute( eZDOMDocument::createAttributeNode( 'height', "32" ) );
 				}
 			}
 			$groups->appendChild( $group );
@@ -149,14 +146,12 @@ class eZGEORSS extends eZRSSExport {
 
         $nodeArray = eZRSSExportItem::fetchNodeList( $rssSources, $limitation );
 		
-        
-		
-		include_once( "lib/ezdb/classes/ezdb.php" );
+
 		$db =& eZDB::instance();
 		$db->begin();
 		$gisarray = $db->arrayQuery("SELECT f.contentobject_id  FROM ezgis_position e, ezcontentobject_attribute f WHERE f.id = e.contentobject_attribute_id and f.version=e.contentobject_attribute_version");
 		$db->commit();
-		include_once( 'kernel/classes/ezpersistentobject.php' );
+
 		$nodeGisArray = array();
 		foreach ($gisarray as $gisitem)
 		{
@@ -491,13 +486,6 @@ class eZGEORSS extends eZRSSExport {
 	// returns doc
 	function buildFromObjectArray( $nodeArray, $root )
 	{
-/*
-        if ( is_array( $objects ) and count( $objects ) > 0  )
-        {
-            return null;
-        }
-*/
-        include_once( 'lib/ezxml/classes/ezdomdocument.php' );
 
         $locale = eZLocale::instance();
 
@@ -535,48 +523,10 @@ class eZGEORSS extends eZRSSExport {
         $channel->appendChild( $channelLanguage );
 
 
-		/*
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'ezremote', 'http://ez.no/ezobject', 'xmlns' ) );
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'id', $this->ID, 'ezremote' ) );
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'name', $this->Name ) );
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'section_id', $this->SectionID, 'ezremote' ) );
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'owner_id', $this->OwnerID, 'ezremote' ) );
-        $objectNode->appendAttribute( eZDOMDocument::createAttributeNode( 'class_id', $this->ClassID, 'ezremote' ) );
-*/
 
         $channel->appendChild( $groups );
-        /*
-        $imageURL = $this->fetchImageURL();
-        if ( $imageURL !== false )
-        {
-            $image = $doc->createElementNode( 'image' );
 
-            $imageUrlNode = $doc->createElementTextNode( 'url', $imageURL );
-            $image->appendChild( $imageUrlNode );
 
-            $imageTitle = $doc->createElementTextNode( 'title', $this->attribute( 'title' ) );
-            $image->appendChild( $imageTitle );
-
-            $imageLink = $doc->createElementTextNode( 'link', $this->attribute( 'url' ) );
-            $image->appendChild( $imageLink );
-
-            $channel->appendChild( $image );
-        }
-*/
-/*
-        $cond = array(
-                    'rssexport_id'  => $this->ID,
-                    'status'        => $this->Status
-                    );
-        $rssSources = eZRSSExportItem::fetchFilteredList( $cond );
-
-        $nodeArray = eZRSSExportItem::fetchNodeList( $rssSources, $this->getObjectListFilter() );
-
-        if( is_array( $nodeArray ) && count( $nodeArray ) )
-        {
-            $attributeMappings = eZRSSExportItem::getAttributeMappings( $rssSources );
-        }
-*/
 $attributeMappings = eZRSSExportItem::getAttributeMappings( $rssSources );
         foreach ( $nodeArray as $node )
         {
