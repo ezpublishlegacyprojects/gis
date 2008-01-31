@@ -63,87 +63,110 @@
 
 {/default}
 
-	</div>
-    <div class="element">
-	<div id="mapContainer"></div>
-	</div>
+    </div>
+    <div class="element" style="float: right;">
+        <div id="mapContainer" style="width: 300px; height: 300px;"></div>
+    </div>
 </div>
+
+{* map attribute values or define default values for lat and long *}
+{if and(not($attribute.content.latitude),not($attribute.content.longitude))}
+    {def $latitude = 40.711695}
+    {def $longitude = -74.01228}
+{else}
+    {def $latitude = $attribute.content.latitude}
+    {def $longitude = $attribute.content.longitude}
+{/if}
+
+
+
 {if ezini("GISSettings","Interface","gis.ini")|eq('Yahoo')} 
-<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=2.0&appid={ezini('Yahoo','ApplicationID','gis.ini')}"></script>
-{literal}
-<style type="text/css">
-#mapContainer {
-    height: 300px;
-    width: 300px;
-}
-</style>
-{/literal}
-{literal}
-<script type="text/javascript">
-// Capture the user mouse-click and expand the SmartWindow
-function onSmartWinEvent() {
-     var words = "<b>{/literal}{'Current location'|i18n( 'extension/gis' )}{literal}</b>";      marker.openSmartWindow(words);
-}
-  // Create a lat/lon object
-  var myPoint = new YGeoPoint({/literal}{$attribute.content.latitude}{literal},{/literal}{$attribute.content.longitude}{literal});
-  // Create a map object
-  var map = new  YMap(document.getElementById('mapContainer'));
-  // Add a pan control
-  map.addPanControl();
-  // Add a slider zoom control
-  map.addZoomLong();
-  // Display the map centered on a latitude and longitude
-  map.drawZoomAndCenter(myPoint, 3);
+    <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=2.0&appid={ezini('Yahoo','ApplicationID','gis.ini')}"></script>
+    {literal}
+    <style type="text/css">
+    #mapContainer {
+        height: 300px;
+        width: 300px;
+    }
+    </style>
+    {/literal}
+    {literal}
+    
+    <script type="text/javascript">
+        // Capture the user mouse-click and expand the SmartWindow
+        function onSmartWinEvent() {
+             var words = "<b>{/literal}{'Current location'|i18n( 'extension/gis' )}{literal}</b>";      marker.openSmartWindow(words);
+        }
+          // Create a lat/lon object
+          var myPoint = new YGeoPoint({/literal}{$latitude}{literal},{/literal}{$longitude}{literal});
+          // Create a map object
+          var map = new  YMap(document.getElementById('mapContainer'));
+          // Add a pan control
+          map.addPanControl();
+          // Add a slider zoom control
+          map.addZoomLong();
+          // Display the map centered on a latitude and longitude
+          map.drawZoomAndCenter(myPoint, 3);
 
-  // Create a marker positioned at a lat/lon
-	var marker = new YMarker(myPoint);
-  // Add a label to the marker
-	marker.addLabel("C");
-	// Call onSmartWinEvent when the user clicks on the marker
-YEvent.Capture(marker, EventsList.MouseClick, onSmartWinEvent);
-// Display the marker
-map.addOverlay(marker);
+          // Create a marker positioned at a lat/lon
+            var marker = new YMarker(myPoint);
+          // Add a label to the marker
+            marker.addLabel("C");
+            // Call onSmartWinEvent when the user clicks on the marker
+        YEvent.Capture(marker, EventsList.MouseClick, onSmartWinEvent);
+        // Display the marker
+        map.addOverlay(marker);
 
-</script>
-{/literal}
+    </script>
+    {/literal}
 {/if}
 
 {if ezini("GISSettings","Interface","gis.ini")|eq('Google')} 
 {literal}
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={ezini("Google","ApplicationID","gis.ini")}" type="text/javascript"></script>
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={/literal}{ezini("Google","ApplicationID","gis.ini")}{literal}" type="text/javascript"></script>
 <script type="text/javascript">
 
     function initialize() {
       if (GBrowserIsCompatible()) {
         var map = new GMap2(document.getElementById("mapContainer"));
-        map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+        
+        // Display the map centered on a latitude and longitude
+        map.setCenter(new GLatLng({/literal}{$latitude}{literal}, {/literal}{$longitude}{literal}), 13);
+
+        // set maps controls
+        map.enableContinuousZoom();
+        map.enableDoubleClickZoom();
         map.addControl(new GSmallMapControl());
+        map.addControl(new GScaleControl());
         map.addControl(new GMapTypeControl());
+
+        // Infowindow
+        var infobox = {
+            infowindow: 'custom',
+            infowindowtext: '{/literal}<b>{'Current location'|i18n( 'extension/gis' )}</b>{literal}',
+            isdefault: true
+        };
 
         // Create our "tiny" marker icon
         var blueIcon = new GIcon(G_DEFAULT_ICON);
         blueIcon.image = "http://gmaps-samples.googlecode.com/svn/trunk/markers/blue/blank.png";
-		
-		// Set up our GMarkerOptions object
-		markerOptions = { icon:blueIcon };
 
-        // Add 10 markers to the map at random locations
-        var bounds = map.getBounds();
-        var southWest = bounds.getSouthWest();
-        var northEast = bounds.getNorthEast();
-        var lngSpan = northEast.lng() - southWest.lng();
-        var latSpan = northEast.lat() - southWest.lat();
-        for (var i = 0; i < 10; i++) {
-          var latlng = new GLatLng(southWest.lat() + latSpan * Math.random(),
-                                  southWest.lng() + lngSpan * Math.random());
-          map.addOverlay(new GMarker(latlng, markerOptions));
-        }
+        // Set up our GMarkerOptions object
+        markerOptions = { icon:blueIcon };
+                            
+        // define marker on the current position
+        var marker = new GMarker(new GLatLng({/literal}{$latitude}{literal}, {/literal}{$longitude}{literal}), markerOptions);
+        
+        // display the marker
+        map.addOverlay(marker);
+        
+        // Add event listener on the marker icon
+        GEvent.addListener(marker, 'click', function() {marker.openInfoWindowHtml(infobox.infowindowtext);});
+
       }
     }
     initialize();
 </script>
-
-
 {/literal}
 {/if}
 
