@@ -17,3 +17,5 @@ CustomAttributes[]=width
 CustomAttributes[]=height
 CustomAttributes[]=centerposition
 CustomAttributes[]=zoom
+CustomAttributes[]=icon
+

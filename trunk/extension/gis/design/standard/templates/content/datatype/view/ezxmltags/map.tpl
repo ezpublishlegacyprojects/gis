@@ -2,6 +2,9 @@
 {if $node_id|not}
 	{def $node_id=2}
 {/if}
+{if $icon|not}
+        {def $icon='/share/icons/crystal-admin/32x32/mimetypes/readme.png'}
+{/if}
 {if $width|not}
 	{def $width='100%'}
 {/if}
@@ -63,7 +66,7 @@
 
 
 {foreach $nodes as $node}
-var markerMarkup = '<a class="map-headline" href="{$node.url_alias|ezurl(no)}">{$node.name|wash(javascript)}</a> {$node.data_map.intro.content.output.output_text|shorten( 800, '...')|wash(javascript)}';
+var markerMarkup = '<a class="map-headline" href="{$node.url_alias|ezurl(no)}">{$node.name|wash(javascript)}</a> {$node.data_map.intro.content.output.output_text|str_replace( "\n", '' )|shorten( 800, '...')|wash(javascript)}';
 GeoPoint = new YGeoPoint( {$node.data_map.gis.content.latitude}, {$node.data_map.gis.content.longitude});
 placeMarker(GeoPoint,markerMarkup);
 {/foreach}
@@ -79,7 +82,7 @@ placeMarker(GeoPoint,markerMarkup);
 		}
 		function createCustomMarkerImage(){
 		 	var myImage = new YImage();
-		  	myImage.src = '/share/icons/crystal-admin/32x32/mimetypes/readme.png';
+		  	myImage.src = '{/literal}{$icon}{literal}';
 		 	myImage.size = new YSize(20,20);
 		  	myImage.offsetSmartWindow = new YCoordPoint(0,0);
 			return myImage;	

@@ -16,7 +16,7 @@ body
 }
 #mapContainer {
     height: 500;
-    width: 600;
+    width: 100%;
 }
 </style>
 {/literal}
