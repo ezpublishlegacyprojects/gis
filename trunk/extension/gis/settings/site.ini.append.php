@@ -1,3 +1,6 @@
+[TemplateSettings]
+ExtensionAutoloadPath[]=gis
+
 [SiteAccessSettings]
 AnonymousAccessList[]=gis/georssserver
 
