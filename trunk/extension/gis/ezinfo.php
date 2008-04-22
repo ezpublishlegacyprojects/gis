@@ -6,6 +6,7 @@
  * @version //autogentag//
  * @copyright Copyright (C) 2008 xrow GmbH. All rights reserved.
  * @license http://www.gnu.org/licenses/gpl.txt GPL License
+ *
  */
 class gisInfo
 {
