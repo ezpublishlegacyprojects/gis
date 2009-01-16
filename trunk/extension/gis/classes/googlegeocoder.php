@@ -94,18 +94,24 @@ There are no symbolic constants defined for this enumeration.
 
                 eZDebug::writeDebug( $requestUrl, 'Google GeoCoder Request');
                 //request the google kml result
-                $kml = file ( $requestUrl );
+                $kml = file_get_contents( $requestUrl );
 
-                if ( !empty($kml[0]) )
+                if ( !empty($kml) )
                 {
-                    eZDebug::writeDebug( $kml[0], 'Google GeoCoder Response');
+                    eZDebug::writeDebug( $kml, 'Google GeoCoder Response');
                     $xmldomxml = new eZXML();
-                    $xmldom = $xmldomxml->domTree($kml[0]);
+                    $xmldom = $xmldomxml->domTree($kml);
 
                     //API Manual: http://www.google.com/apis/maps/documentation/reference.html#GGeoStatusCode
                     $dom_statuscode = $xmldom->elementsByName( "code" );
-                    $dom_statuscode = $dom_statuscode[0]->textContent();         
-
+					if ( isset( $dom_statuscode[0] ) and is_object( $dom_statuscode[0] ) )
+					{
+						$dom_statuscode = $dom_statuscode[0]->textContent();         
+					}
+					else
+					{
+						return false;
+					}
                     if ( $dom_statuscode=="200" ) 
                     {
 
