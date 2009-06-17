@@ -28,9 +28,6 @@
 // Contact info@all2e.com if any conditions
 // of this licencing isn't clear to you.
 
-
-include_once( "lib/ezxml/classes/ezxml.php" );
-
 class GoogleGeoCoder extends GeoCoder 
 {
     public $accuracy; // Google accuracy
@@ -44,7 +41,7 @@ class GoogleGeoCoder extends GeoCoder
     private $phi; // Gogenma? der geographischen Länge
     private $theta; // Gogenma? der geographischen Breite
     
-    function GoogleGeoCoder() 
+    function GoogleGeoCoder()
     {
         parent::GeoCoder();
     }
@@ -92,21 +89,21 @@ There are no symbolic constants defined for this enumeration.
                
                 $requestUrl= $url."?q=".urlencode($searchstring)."&key=$key&output=xml";                
 
-                eZDebug::writeDebug( $requestUrl, 'Google GeoCoder Request');
+                //eZDebug::writeDebug( $requestUrl, 'Google GeoCoder Request');
                 //request the google kml result
                 $kml = file_get_contents( $requestUrl );
 
                 if ( !empty($kml) )
                 {
-                    eZDebug::writeDebug( $kml, 'Google GeoCoder Response');
-                    $xmldomxml = new eZXML();
-                    $xmldom = $xmldomxml->domTree($kml);
+                    //eZDebug::writeDebug( $kml, 'Google GeoCoder Response');
+                    $xmldom = new DOMDocument( '1.0', 'utf-8' );
+                    $xmldom->loadXML(utf8_encode($kml));
 
                     //API Manual: http://www.google.com/apis/maps/documentation/reference.html#GGeoStatusCode
-                    $dom_statuscode = $xmldom->elementsByName( "code" );
-					if ( isset( $dom_statuscode[0] ) and is_object( $dom_statuscode[0] ) )
+                    $dom_statuscode = $xmldom->getElementsByTagName( "code" );
+					if ( is_object( $dom_statuscode->item(0) ) )
 					{
-						$dom_statuscode = $dom_statuscode[0]->textContent();         
+						$dom_statuscode = $dom_statuscode->item(0)->nodeValue;
 					}
 					else
 					{
@@ -114,10 +111,9 @@ There are no symbolic constants defined for this enumeration.
 					}
                     if ( $dom_statuscode=="200" ) 
                     {
-
                         //API Manual: http://www.google.com/apis/maps/documentation/reference.html#GGeoAddressAccuracy
-                        $dom_adressdetails = $xmldom->elementsByName( "AddressDetails" ); 
-                        $dom_accuracy = $dom_adressdetails[0]->get_attribute( "Accuracy" );
+                        $dom_adressdetails = $xmldom->getElementsByTagName( "AddressDetails" ); 
+                        $dom_accuracy = $dom_adressdetails->item(0)->attributes->getNamedItem( "Accuracy" )->nodeValue;
                         if ( in_array( $dom_accuracy, array( 8,7,6,5 ) ) )
                         {
                             $this->accuracy = GeoCoder::ACCURACY_STREET;
@@ -130,38 +126,58 @@ There are no symbolic constants defined for this enumeration.
                         {
                             return false;
                         }
-                        if ($xmldom->elementsByName( "ThoroughfareName" ))
+                        if ($xmldom->getElementsByTagName( "ThoroughfareName" ))
                         {
-                            $dom_street= $xmldom->elementsByName( "ThoroughfareName" );
-                            $dom_street = $dom_street[0]->textContent();                                                
+                            $dom_street= $xmldom->getElementsByTagName( "ThoroughfareName" );
+                            
+                            if(is_object($dom_street->item(0)))
+                            	$dom_street = $dom_street->item(0)->nodeValue;
+                            else
+                            	$dom_street = "";
                         }
 
-                        if ($xmldom->elementsByName( "PostalCodeNumber" ))
+                        if ($xmldom->getElementsByTagName( "PostalCodeNumber" ))
                         {
-                            $dom_zip= $xmldom->elementsByName( "PostalCodeNumber" );
-                            $dom_zip = $dom_zip[0]->textContent();                                                
+                            $dom_zip= $xmldom->getElementsByTagName( "PostalCodeNumber" );
+                            
+                            if(is_object($dom_zip->item(0)))
+                            	$dom_zip = $dom_zip->item(0)->nodeValue;
+                            else
+                            	$dom_zip = "";
                         }
                         
-                        if ($xmldom->elementsByName( "LocalityName" ))
+                        if ($xmldom->getElementsByTagName( "LocalityName" ))
                         {
-                            $dom_city = $xmldom->elementsByName( "LocalityName" );
-                            $dom_city = $dom_city[0]->textContent();                                                
+                            $dom_city = $xmldom->getElementsByTagName( "LocalityName" );
+                            
+                            if(is_object($dom_city->item(0)))
+                            	$dom_city = $dom_city->item(0)->nodeValue;
+                            else
+                            	$dom_city = "";
                         }
 
-                        if ($xmldom->elementsByName( "AdministrativeAreaName" ))
+                        if ($xmldom->getElementsByTagName( "AdministrativeAreaName" ))
                         {
-                            $dom_state = $xmldom->elementsByName( "AdministrativeAreaName" );
-                            $dom_state = $dom_state[0]->textContent();                                                
+                        	$dom_state = $xmldom->getElementsByTagName( "AdministrativeAreaName" );
+                        	
+                        	if(is_object($dom_state->item(0)))
+                            	$dom_state = $dom_state->item(0)->nodeValue;
+                            else
+                            	$dom_state = "";
                         }
-                        if ($xmldom->elementsByName( "CountryNameCode" ))
+                        if ($xmldom->getElementsByTagName( "CountryNameCode" ))
                         {
-                            $dom_country = $xmldom->elementsByName( "CountryNameCode" );
-                            $dom_country = $dom_country[0]->textContent();
+                            $dom_country = $xmldom->getElementsByTagName( "CountryNameCode" );
+                            
+                            if(is_object($dom_country->item(0)))
+                            	$dom_country = $dom_country->item(0)->nodeValue;
+                            else
+                            	$dom_country = "";
                         }
                         
 
-                        $dom_point = $xmldom->elementsByName( "coordinates" );
-                        $dom_point = $dom_point[0]->textContent();
+                        $dom_point = $xmldom->getElementsByTagName( "coordinates" );
+                        $dom_point = $dom_point->item(0)->nodeValue;
 
                         $dom_point = explode(",", $dom_point);
                         $dom_long = $dom_point[0];

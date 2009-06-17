@@ -150,32 +150,94 @@ class ezgistype extends eZDataType
     }
     function arrayToXML($name,$val)
     {
-    	$node = eZDOMDocument::createElementNodeFromArray($name,$val);
-    	$doc = new eZDOMDocument();
-		$doc->setRoot( $node );
-    	return $doc->toString();	
+    	$node = $this->createElementNodeFromArray($name,$val);
+    	$doc = new DOMDocument();
+		$doc->importNode( $node );
+    	return $doc->saveXML();	
     }
     function xmlToArray( $string )
     {
-    	$xml = new eZXML();
-    	$doc = $xml->domTree( $string );
+    	$doc = DOMDocument::loadXML( $string );
     	if (is_object($doc))
-    		return eZDOMDocument::createArrayFromDOMNode( $doc->root() );
+    		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
     function attributeXMLToArray($name)
     {
-    	$xml = new eZXML();
-    	$doc = $xml->domTree( $this->attribute($name) );
+    	$doc = DOMDocument::loadXML( $this->attribute($name) );
     	if (is_object($doc))
-    		return eZDOMDocument::createArrayFromDOMNode( $doc->root() );
+    		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
     function dataArray()
     {
-    	$xml = new eZXML();
-    	$doc = $xml->domTree( $this->attribute('data') );
+    	$doc = DOMDocument::loadXML( $this->attribute('data') );
     	if (is_object($doc))
-    		return eZDOMDocument::createArrayFromDOMNode( $doc->root() );
+    		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
+    
+    function createArrayFromDOMNode( $domNode )
+    {
+    	$retArray = array();
+		
+		foreach ( $domNode->childNodes as $childNode )
+		{
+			if ( !isset( $retArray[$childNode->nodeName] ) )
+			{
+				$retArray[$childNode->nodeName] = array();
+			}
+		
+			// If the node has children we create an array for this element
+			// and append to it, if not we assign it directly
+			if ( $childNode->hasChildNodes() )
+			{
+				$retArray[$childNode->nodeName][] = $this->createArrayFromDOMNode( $childNode );
+			}
+			else
+			{
+				$retArray[$childNode->nodeName] = $this->createArrayFromDOMNode( $childNode );
+			}
+		}
+		foreach( $domNode->attributes as $attributeNode )
+		{
+			$retArray[$attributeNode->nodeName] = $attributeNode->nodeValue;
+		}
+		
+		return $retArray;
+    }
+    
+	function createElementNodeFromArray( $name, $array )
+	{
+		$doc = new DOMDocument( '1.0', 'utf-8' );
+		
+		$node = $doc->createElement( $name );
+
+		foreach ( $array as $arrayKey => $value )
+		{
+			if ( is_array( $value ) and
+				count( $valueKeys = array_keys( $value ) ) > 0 )
+			{
+				if ( is_int( $valueKeys[0] ) )
+				{
+					foreach( $value as $child )
+					{
+						$node->appendChild( $this->createElementNodeFromArray( $arrayKey, $child ) );
+					}
+				}
+				else
+				{
+					$node->appendChild( $this->createElementNodeFromArray( $arrayKey, $value ) );
+				}
+			}
+			else
+			{
+				$attr = $doc->createAttribute( $arrayKey );
+				$attr->value = $value;
+				$node->appendChild( $attr );
+			}
+		}
+
+		return $node;
+	}
+    
     /*!
      Store the content. Since the content has been stored in function 
      fetchObjectAttributeHTTPInput(), this function is with empty code.
