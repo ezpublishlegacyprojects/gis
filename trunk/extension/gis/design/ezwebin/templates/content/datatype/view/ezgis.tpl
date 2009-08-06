@@ -18,7 +18,7 @@
     {def $zoom=ezini("Yahoo","DefaultZoom","gis.ini")}
 {/if}
 {if $centerposition|not}
-    {def $centerposition='Hannnover Germany'}
+    {def $centerposition='Hanover Germany'}
 {/if}
 {if $classes|not}
     {def $classes='gis,poi'}
@@ -43,17 +43,17 @@
 {literal}
 <script type="text/javascript">
     // Create a Map that will be placed in the "map" div.
-    var map = new YMap(document.getElementById('map')); 
+    var map = new YMap(document.getElementById('map'));
 
     function startMap(){
 {/literal}
         var GeoPoint = new YGeoPoint( {$attribute.content.latitude}, {$attribute.content.longitude});
         // Add the ability to change between Sat, Hybrid, and Regular Maps
-        map.addTypeControl();   
+        map.addTypeControl();
         // Add the zoom control. Long specifies a Slider versus a "+" and "-" zoom control
-        map.addZoomLong();          
+        map.addZoomLong();
         // Add the Pan control to have North, South, East and West directional control
-        map.addPanControl();  
+        map.addPanControl();
         // Specifying the Map starting location and zoom level
         map.drawZoomAndCenter( GeoPoint, {$zoom});
 
@@ -66,7 +66,7 @@ placeMarker(GeoPoint,markerMarkup);
         function placeMarker(geoPoint,markerMarkup){
 
             var newMarker= new YMarker(geoPoint, createCustomMarkerImage());
-            YEvent.Capture(newMarker, EventsList.MouseOver, 
+            YEvent.Capture(newMarker, EventsList.MouseOver,
                 function(){
                     newMarker.openSmartWindow(markerMarkup);
                 });
@@ -77,12 +77,12 @@ placeMarker(GeoPoint,markerMarkup);
             myImage.src = '{/literal}{$icon}{literal}';
             myImage.size = new YSize(20,20);
             myImage.offsetSmartWindow = new YCoordPoint(0,0);
-            return myImage; 
+            return myImage;
         }
 
 
     }
 
-window.onload = startMap;   
+window.onload = startMap;
 </script>
 {/literal}
