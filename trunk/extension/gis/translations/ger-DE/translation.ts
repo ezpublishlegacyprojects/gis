@@ -48,7 +48,7 @@
     </message>
     <message>
         <source>Update Location from Address</source>
-        <translation>Die Position von Adresse aktualisieren</translation>
+        <translation>Die Position der Adresse aktualisieren</translation>
     </message>
     <message>
         <source>Address</source>
@@ -76,15 +76,15 @@
     </message>
     <message>
         <source>Update</source>
-        <translation>Update</translation>
+        <translation>Position abfragen</translation>
     </message>
     <message>
         <source>Resolve information</source>
-        <translation>Information auflösen</translation>
+        <translation>Versucht die Position der Adresse ermitteln</translation>
     </message>
     <message>
         <source>Use this link to find location based on an address</source>
-        <translation type="unfinished">Verwenden Sie diesen Link, um die geografischen Position der Adresse zu finden</translation>
+        <translation>Verwenden Sie diesen Link, um die geografischen Position der Adresse zu finden</translation>
     </message>
     <message>
         <source>Lookup</source>
