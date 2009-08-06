@@ -84,7 +84,7 @@
     </message>
     <message>
         <source>Use this link to find location based on an address</source>
-        <translation>Verwenden Sie diesen Link, um den geografischen Ort der Adresse zu finden</translation>
+        <translation type="unfinished">Verwenden Sie diesen Link, um die geografischen Position der Adresse zu finden</translation>
     </message>
     <message>
         <source>Lookup</source>
