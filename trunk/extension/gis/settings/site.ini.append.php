@@ -1,3 +1,6 @@
+[RegionalSettings]
+TranslationExtensions[]=gis
+
 [TemplateSettings]
 ExtensionAutoloadPath[]=gis
 
