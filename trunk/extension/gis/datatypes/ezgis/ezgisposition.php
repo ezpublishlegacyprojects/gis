@@ -27,7 +27,7 @@ class eZGISPosition extends eZPersistentObject
     /*!
      \reimp
     */
-    static function definition()
+    public static function definition()
     {
         return array( "fields" => array( "contentobject_attribute_id" => array( 'name' => 'contentobject_attribute_id',
                                                         'datatype' => 'integer',
@@ -77,8 +77,9 @@ class eZGISPosition extends eZPersistentObject
     	//todo
     	return true;
     }
+    
     // works only with guass krüger
-    static function &fetchByDistance(  $fromx, $fromy, $distance=100000, $limit=null )
+    public static function &fetchByDistance(  $fromx, $fromy, $distance=100000, $limit=null )
     {
     	$asObject = true;
     	$minx = $fromx - $distance/2;
@@ -90,29 +91,28 @@ class eZGISPosition extends eZPersistentObject
     	eZGISPosition::definition(), null,
     	array( 'x' => array( false, array( $minx, $maxx ) ),
     	'y' => array( false, array( $miny, $maxy ) ) ), 
-    	null, $limit, $asObject
- );  
+    	null, $limit, $asObject );  
 
-     	$list_count =& eZPersistentObject::fetchObjectList( 
-    	eZGISPosition::definition(), null,
+     	$list_count = eZPersistentObject::fetchObjectList( 
+    	self::definition(), null,
     	array( 'x' => array( false, array( $minx, $maxx ) ),
     	'y' => array( false, array( $miny, $maxy ) ) ), 
-    	null, null, true
- );
+    	null, null, true );
+    	
 		foreach( $list as $row )
 		{
 			$coa = eZContentObjectAttribute::fetch( $row->attribute('contentobject_attribute_id'), $row->attribute('contentobject_attribute_version') );
 			if ( is_object( $coa ) )
 				$co = eZContentObject::fetch( $coa->attribute( 'contentobject_id' ) );
 			if ( is_object( $co ) )
-				$result[] =& $co->attribute( 'main_node' );
+				$result[] = $co->attribute( 'main_node' );
 		}
 		return array( "SearchResult" => $result,
                           "SearchCount" => count( $list_count ),
                           "StopWordArray" => $stopWordArray );
     }
      // works only with guass krüger
-	static function &search( $x, $y, $distance, $params = array(), $searchTypes = array() )
+	public static function search( $x, $y, $distance, $params = array(), $searchTypes = array() )
 	{
 		$x=(float)$x;
 		$y=(float)$y;
@@ -128,10 +128,11 @@ class eZGISPosition extends eZPersistentObject
 			$result = eZGISPosition::fetchByDistance( $x, $y, $distance );
 		return $result;
 	}
-    static function fetch( $attribute_id, $version )
+	
+    public static function fetch( $attribute_id, $version )
     {
     	$list = eZPersistentObject::fetchObjectList( 
-    	                                eZGISPosition::definition(), null,
+    	                                self::definition(), null,
     	                                array( 'contentobject_attribute_id' => $attribute_id, 'contentobject_attribute_version' => $version  ), 
     	                                null, null, true
                 );  

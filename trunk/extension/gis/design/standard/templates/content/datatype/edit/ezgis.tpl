@@ -12,7 +12,7 @@
 <label>{'Longitude'|i18n( 'extension/gis' )}:</label>
 <input class="box" size="32" type="text" name="{$attribute_base}_ezgis_longitude_{$attribute.id}" size="12" value="{section show=$attribute.content.is_valid}{$attribute.content.longitude}{/section}" />
 
-<label><input class="box" name="{$attribute_base}_ezgis_update_{$attribute.id}" value="Update map" title="Resolve Information" type="checkbox"> {'Update Location from Address'|i18n( 'extension/gis' )}:</label>
+<label><input name="{$attribute_base}_ezgis_update_{$attribute.id}" value="Update map" title="Resolve Information" type="checkbox"> {'Update Location from Address'|i18n( 'extension/gis' )}:</label>
 
 
 </fieldset>
@@ -80,7 +80,7 @@
 
 
 
-{if ezini("GISSettings","Interface","gis.ini")|eq('Yahoo')} 
+{if ezini("GISSettings","Interface","gis.ini")|eq('Yahoo')}
     <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=2.0&appid={ezini('Yahoo','ApplicationID','gis.ini')}"></script>
     {literal}
     <style type="text/css">
@@ -91,7 +91,7 @@
     </style>
     {/literal}
     {literal}
-    
+
     <script type="text/javascript">
         // Capture the user mouse-click and expand the SmartWindow
         function onSmartWinEvent() {
@@ -121,7 +121,7 @@
     {/literal}
 {/if}
 
-{if ezini("GISSettings","Interface","gis.ini")|eq('Google')} 
+{if ezini("GISSettings","Interface","gis.ini")|eq('Google')}
 {literal}
 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={/literal}{ezini("Google","ApplicationID","gis.ini")}{literal}" type="text/javascript"></script>
 <script type="text/javascript">
@@ -129,7 +129,7 @@
     function initialize() {
       if (GBrowserIsCompatible()) {
         var map = new GMap2(document.getElementById("mapContainer"));
-        
+
         // Display the map centered on a latitude and longitude
         map.setCenter(new GLatLng({/literal}{$latitude}{literal}, {/literal}{$longitude}{literal}), 13);
 
@@ -153,13 +153,13 @@
 
         // Set up our GMarkerOptions object
         markerOptions = { icon:blueIcon };
-                            
+
         // define marker on the current position
         var marker = new GMarker(new GLatLng({/literal}{$latitude}{literal}, {/literal}{$longitude}{literal}), markerOptions);
-        
+
         // display the marker
         map.addOverlay(marker);
-        
+
         // Add event listener on the marker icon
         GEvent.addListener(marker, 'click', function() {marker.openInfoWindowHtml(infobox.infowindowtext);});
 

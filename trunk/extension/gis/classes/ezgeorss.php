@@ -1,10 +1,11 @@
 <?php
-include_once( 'kernel/classes/ezrssexport.php' );
-define( 'EZ_GEORSS_NS_GEO', "http://www.w3.org/2003/01/geo/wgs84_pos#"  );
-define( 'EZ_GEORSS_NS_YMAPS', "http://api.maps.yahoo.com/Maps/V1/AnnotatedMaps.xsd"  );
-define( 'EZ_GEORSS_NS_GEORSS', 'http://www.georss.org/georss' );
+
 class eZGEORSS extends eZRSSExport
 {
+	const GEORSS_NS_GEO = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+	const GEORSS_NS_YMAPS = "http://api.maps.yahoo.com/Maps/V1/AnnotatedMaps.xsd";
+	const GEORSS_NS_GEORSS = 'http://www.georss.org/georss';
+	
 	var $version = '2.0';
 	var $url;
 	var $description;
@@ -50,9 +51,9 @@ class eZGEORSS extends eZRSSExport
         $doc = new eZDOMDocument();
         $doc->setName( 'eZ publish RSS Export' );
         $root = $doc->createElementNode( 'rss', array( 'version' => '2.0' ) );
-        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'geo', EZ_GEORSS_NS_GEO, 'xmlns' ) );
-        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'ymaps', EZ_GEORSS_NS_YMAPS, 'xmlns' ) );
-        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'georss', EZ_GEORSS_NS_GEORSS, 'xmlns' ) );
+        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'geo', self::GEORSS_NS_GEO, 'xmlns' ) );
+        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'ymaps', self::GEORSS_NS_YMAPS, 'xmlns' ) );
+        $root->appendAttribute( eZDOMDocument::createAttributeNode( 'georss', self::GEORSS_NS_GEORSS, 'xmlns' ) );
 
         $doc->setRoot( $root );
 
@@ -88,12 +89,8 @@ class eZGEORSS extends eZRSSExport
 			$group->appendChild( $doc->createElementTextNode( 'Title', $class->attribute( 'name' ) ) );
 			$group->appendChild( $doc->createElementTextNode( 'Id', $class->attribute( 'identifier' ) ) );
 			
-			
-				$classid = $class->attribute('identifier');
-				$class_var = $gisini->variable( "Icon" , $classid);
-				
-						
-				
+			$classid = $class->attribute('identifier');
+			$class_var = $gisini->variable( "Icon" , $classid);
 				
 			if( $icon )
 			{
@@ -147,7 +144,7 @@ class eZGEORSS extends eZRSSExport
         $nodeArray = eZRSSExportItem::fetchNodeList( $rssSources, $limitation );
 		
 
-		$db =& eZDB::instance();
+		$db = eZDB::instance();
 		$db->begin();
 		$gisarray = $db->arrayQuery("SELECT f.contentobject_id  FROM ezgis_position e, ezcontentobject_attribute f WHERE f.id = e.contentobject_attribute_id and f.version=e.contentobject_attribute_version");
 		$db->commit();
@@ -348,7 +345,7 @@ class eZGEORSS extends eZRSSExport
 	function getIcon( $operatorName, $operatorValue )
 	{
 
-                $ini =& eZINI::instance( 'icon.ini' );
+                $ini = eZINI::instance( 'icon.ini' );
                 $repository = $ini->variable( 'IconSettings', 'Repository' );
                 $theme = $ini->variable( 'IconSettings', 'Theme' );
                 $groups = array( 'mimetype_icon' => 'MimeIcons',
@@ -365,7 +362,7 @@ class eZGEORSS extends eZRSSExport
                 }
 
                 // Load icon settings from the theme
-                $themeINI =& eZINI::instance( 'icon.ini', $repository . '/' . $theme );
+                $themeINI = eZINI::instance( 'icon.ini', $repository . '/' . $theme );
 
                 if ( isset( $operatorParameters[0] ) )
                 {
@@ -527,7 +524,7 @@ class eZGEORSS extends eZRSSExport
         $channel->appendChild( $groups );
 
 
-$attributeMappings = eZRSSExportItem::getAttributeMappings( $rssSources );
+        $attributeMappings = eZRSSExportItem::getAttributeMappings( $rssSources );
         foreach ( $nodeArray as $node )
         {
             $object = $node->attribute( 'object' );

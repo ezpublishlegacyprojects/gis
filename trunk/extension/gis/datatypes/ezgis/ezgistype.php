@@ -1,16 +1,12 @@
 <?php
 
-include_once( "extension/gis/datatypes/ezgis/ezgisposition.php" );
-include_once( "extension/gis/classes/yahoogeocoder.php" );
-include_once( "extension/gis/classes/googlegeocoder.php" );
-
-define( 'EZ_DATATYPESTRING_GIS', "ezgis" );
-
 class ezgistype extends eZDataType
 {
-    function ezgistype()
+    const DATATYPE_STRING = 'ezgis';
+    
+	function ezgistype()
     {
-        $this->eZDataType( EZ_DATATYPESTRING_GIS,  ezi18n( 'kernel/classes/datatypes', "Geographic Information Systems", 'Datatype name' ),
+        $this->eZDataType( self::DATATYPE_STRING, ezi18n( 'kernel/classes/datatypes', "Geographic Information Systems", 'Datatype name' ),
                            array( 'serialize_supported' => true, 'translation_allowed' => false ) );
     }
     /*!
@@ -285,15 +281,7 @@ class ezgistype extends eZDataType
     */
     function objectAttributeContent( $contentObjectAttribute )
     {
-    	$gp = eZGISPosition::fetch( $contentObjectAttribute->attribute( "id"), $contentObjectAttribute->attribute( "version") );
-    	if ( is_object( $gp ) )
-    	{
-    		#$contentObjectAttribute->Content = $gp;
-    	}
-    	else
-    	{
-    		$gp = null;
-    	}
+    	$gp = eZGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
     	return $gp;
     }
     /*!
@@ -301,7 +289,7 @@ class ezgistype extends eZDataType
     */
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
-    	if ( ezgistype::objectAttributeContent( $contentObjectAttribute ) )
+    	if ( self::objectAttributeContent( $contentObjectAttribute ) )
         	return true;
     	else
         	return false;
@@ -311,7 +299,18 @@ class ezgistype extends eZDataType
     */
     function metaData( $contentObjectAttribute )
     {
-        return "";
+        $content = $contentObjectAttribute->content();
+        $result = "";
+        if ( $content instanceof eZGISPosition )
+        {
+            $attributeArray = array( 'latitude', 'longitude', 'street', 'zip', 'city', 'state', 'country' );
+            $result = array();
+            foreach ( $attributeArray as $key )
+            {
+            	$result[] = array( 'id' => $key, 'text' => $content->$key );
+            }
+        }
+    	return $result;
     }
 
     /*!
@@ -319,7 +318,17 @@ class ezgistype extends eZDataType
     */
     function title( $contentObjectAttribute, $name = null )
     {
-        return "";
+        $content = $contentObjectAttribute->content();
+        $result = "";
+        if ( $content instanceof eZGISPosition )
+        {
+            $attributeArray = array( 'country', 'state', 'zip', 'city', 'street', 'latitude', 'longitude' );
+            foreach ( $attributeArray as $key )
+            {
+                $result .= " " . $content->$key;
+            }            
+        }
+        return trim( $result );
     }
 
     /*!
@@ -332,5 +341,5 @@ class ezgistype extends eZDataType
 
 }
 
-eZDataType::register( EZ_DATATYPESTRING_GIS, "ezgistype" );
+eZDataType::register( ezgistype::DATATYPE_STRING, "ezgistype" );
 ?>
