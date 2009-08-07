@@ -54,7 +54,7 @@
 
 <input class="button" name="StoreButton" value="{'Update'|i18n( 'extension/gis' )}" title="{'Resolve information'|i18n( 'extension/gis' )}" type="submit">
 
-{if ezini("GISSettings","GeocoderURL","gis.ini")}
+{if ezini_hasvariable("GISSettings","GeocoderURL","gis.ini")}
 <p>
 <label>{'Use this link to find location based on an address'|i18n( 'extension/gis' )}:</label>
 <a href="{ezini("GISSettings","GeocoderURL","gis.ini")}" target="_blank">{'Lookup'|i18n( 'extension/gis' )}</a>
