@@ -1,3 +1,5 @@
+<?php /* #?ini charset="utf-8"?
+
 [RegionalSettings]
 TranslationExtensions[]=gis
 
@@ -14,3 +16,5 @@ PolicyOmitList[]=gis/georssserver
 AvailableVersionList[]=GEORSS 2.0
 NumberOfObjectsList[]=100
 NumberOfObjectsList[]=500
+
+*/ ?>

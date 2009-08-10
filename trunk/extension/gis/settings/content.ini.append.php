@@ -1,3 +1,5 @@
+<?php /* #?ini charset="utf-8"?
+
 [DataTypeSettings]
 ExtensionDirectories[]=gis
 AvailableDataTypes[]=ezgis
@@ -19,3 +21,4 @@ CustomAttributes[]=centerposition
 CustomAttributes[]=zoom
 CustomAttributes[]=icon
 
+*/ ?>
