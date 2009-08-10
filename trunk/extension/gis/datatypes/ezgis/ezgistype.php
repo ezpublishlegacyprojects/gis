@@ -9,6 +9,7 @@ class ezgistype extends eZDataType
         $this->eZDataType( self::DATATYPE_STRING, ezi18n( 'kernel/classes/datatypes', "Geographic Information Systems", 'Datatype name' ),
                            array( 'serialize_supported' => true, 'translation_allowed' => false ) );
     }
+
     /*!
     Validates all variables given on content class level
      \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
@@ -27,6 +28,7 @@ class ezgistype extends eZDataType
     {
         return true;
     }
+
     /*!
      Validates input on content object level
      \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
@@ -37,7 +39,7 @@ class ezgistype extends eZDataType
     	if ( $http->hasPostVariable( $base . '_ezgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) ) and $http->hasPostVariable( $base . '_ezgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) ) )
         {
         	
-        	$update = $http->postVariable( $base . '_ezgis_update_' . $contentObjectAttribute->attribute( 'id' ) );
+        	$update = $http->hasPostVariable( $base . '_ezgis_update_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_ezgis_update_' . $contentObjectAttribute->attribute( 'id' ) ): false;
         	$longitude = $http->postVariable( $base . '_ezgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) );
         	$latitude = $http->postVariable( $base . '_ezgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) );
         	$street = $http->postVariable( $base . '_ezgis_street_' . $contentObjectAttribute->attribute( 'id' ) );
@@ -47,7 +49,7 @@ class ezgistype extends eZDataType
         	$country = $http->postVariable( $base . '_ezgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
         	
         	
-        	if ( !empty( $update )
+        	if ( $update
         	        or empty( $longitude )
 					or empty( $latitude ) )
 			{
@@ -112,6 +114,7 @@ class ezgistype extends eZDataType
                                                                          'Missing data.' ) );
         return eZInputValidator::STATE_INVALID;
     }
+
     /*!
      Fetches the http post var string input and stores it in the data instance.
     */
@@ -119,6 +122,7 @@ class ezgistype extends eZDataType
     {
         return true;
     }
+
     /*!
      Sets the default value.
     */
@@ -130,20 +134,20 @@ class ezgistype extends eZDataType
             if ( is_object( $data ) )
             {
             	$data->setAttribute( 'contentobject_attribute_version', $contentObjectAttribute->attribute( 'version' ) );
-            	$contentObjectAttribute->setAttribute( "content", $data );
-            	$contentObjectAttribute->Content = $data;
+            	$contentObjectAttribute->setContent( $data );
             	$contentObjectAttribute->store();
             }
             else 
             {
-            	$contentObjectAttribute->setAttribute( "content", null );
+            	$contentObjectAttribute->setContent( null );
             }
         }
         else
         {
-			$contentObjectAttribute->setAttribute( "content", null );
+                $contentObjectAttribute->setContent( null );
         }
     }
+
     function arrayToXML($name,$val)
     {
     	$node = $this->createElementNodeFromArray($name,$val);
@@ -151,25 +155,28 @@ class ezgistype extends eZDataType
 		$doc->importNode( $node );
     	return $doc->saveXML();	
     }
+
     function xmlToArray( $string )
     {
     	$doc = DOMDocument::loadXML( $string );
     	if (is_object($doc))
     		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
+
     function attributeXMLToArray($name)
     {
     	$doc = DOMDocument::loadXML( $this->attribute($name) );
     	if (is_object($doc))
     		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
+
     function dataArray()
     {
     	$doc = DOMDocument::loadXML( $this->attribute('data') );
     	if (is_object($doc))
     		return $this->createArrayFromDOMNode( $doc->documentElement );
     }
-    
+
     function createArrayFromDOMNode( $domNode )
     {
     	$retArray = array();
@@ -199,7 +206,7 @@ class ezgistype extends eZDataType
 		
 		return $retArray;
     }
-    
+
 	function createElementNodeFromArray( $name, $array )
 	{
 		$doc = new DOMDocument( '1.0', 'utf-8' );
@@ -233,7 +240,7 @@ class ezgistype extends eZDataType
 
 		return $node;
 	}
-    
+
     /*!
      Store the content. Since the content has been stored in function 
      fetchObjectAttributeHTTPInput(), this function is with empty code.
@@ -276,6 +283,7 @@ class ezgistype extends eZDataType
     	}
     	return $return;
 	}
+
     /*!
      Returns the content.
     */
@@ -284,6 +292,7 @@ class ezgistype extends eZDataType
     	$gp = eZGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
     	return $gp;
     }
+
     /*!
      \return \c true if the datatype finds any content in the attribute \a $contentObjectAttribute.
     */
@@ -294,6 +303,7 @@ class ezgistype extends eZDataType
     	else
         	return false;
     }
+
     /*!
      Returns the meta data used for storing search indeces.
     */
@@ -338,7 +348,6 @@ class ezgistype extends eZDataType
     {
         return true;
     }
-
 }
 
 eZDataType::register( ezgistype::DATATYPE_STRING, "ezgistype" );
