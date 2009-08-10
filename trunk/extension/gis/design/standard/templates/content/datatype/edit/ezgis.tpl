@@ -119,9 +119,7 @@
 
     </script>
     {/literal}
-{/if}
-
-{if ezini("GISSettings","Interface","gis.ini")|eq('Google')}
+{elseif ezini("GISSettings","Interface","gis.ini")|eq('Google')}
 {literal}
 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={/literal}{ezini("Google","ApplicationID","gis.ini")}{literal}" type="text/javascript"></script>
 <script type="text/javascript">
