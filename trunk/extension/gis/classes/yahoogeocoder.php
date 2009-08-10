@@ -1,6 +1,6 @@
 <?php
 
-include_once( "extension/gis/classes/geocoder.php" );
+//include_once( "extension/gis/classes/geocoder.php" );
 
 class YahooGeocoder extends GeoCoder
 {
@@ -101,10 +101,10 @@ class YahooGeocoder extends GeoCoder
 		        		$dom_zip = $xmldom->elementsByName( "Zip" );
 		        		$this->zip = $dom_zip[0]->textContent();
 		        		
-		        		$dom_state =& $xmldom->elementsByName( "State" );
+		        		$dom_state = $xmldom->elementsByName( "State" );
 		        		$this->state = $dom_state[0]->textContent();
 		        		
-		        		$dom_country =& $xmldom->elementsByName( "Country" );
+		        		$dom_country = $xmldom->elementsByName( "Country" );
 		        		$this->country = $dom_country[0]->textContent();
 
 					    return true;
