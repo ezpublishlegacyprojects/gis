@@ -55,7 +55,7 @@ class eZGISFunctionCollection
     {
     }
 
-    function &fetchGISSearch( $x, $y, $distance, $subTreeArray, $offset, $limit, $searchTimestamp, $publishDate, $sectionID, $classID, $classAttributeID, $sortArray )
+    function fetchGISSearch( $x, $y, $distance, $subTreeArray, $offset, $limit, $searchTimestamp, $publishDate, $sectionID, $classID, $classAttributeID, $sortArray )
     {
         include_once( "extension/gis/datatypes/ezgis/ezgisposition.php" );
 
@@ -76,11 +76,11 @@ class eZGISFunctionCollection
             $parameters['SearchSubTreeArray'] = $subTreeArray;
         if ( $searchTimestamp )
             $parameters['SearchTimestamp'] = $searchTimestamp;
-        $searchResult =& eZGISPosition::search( $x, $y, $distance,
+        $searchResult = eZGISPosition::search( $x, $y, $distance,
                                            $parameters,
                                            $searchArray );
 
-        return array( 'result' => &$searchResult );
+        return array( 'result' => $searchResult );
     }
 }
 

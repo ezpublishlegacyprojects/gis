@@ -3,7 +3,7 @@
 ext_include( "gis", "classes/ezgeorss.php" );
 ext_include( "gis", "datatypes/ezgis/ezgistype.php" );
 
-$Module =& $Params["Module"];
+$Module = $Params["Module"];
 
 if ( !isset ( $Params['RSSFeed'] ) )
     return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE );
@@ -15,12 +15,12 @@ $RSSExport = eZGEORSS::fetchByName( $feedName );
 if ( $RSSExport == null )
     return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE, 'kernel' );
 
-$config =& eZINI::instance( 'site.ini' );
+$config = eZINI::instance( 'site.ini' );
 $cacheTime = intval( $config->variable( 'RSSSettings', 'CacheTime' ) );
 
 if($cacheTime <= 0 or true )
 {
-    $xmlDoc =& $RSSExport->fetchGEORSS2_0();
+    $xmlDoc = $RSSExport->fetchGEORSS2_0();
     $rssContent = $xmlDoc->toString();
 }
 else
@@ -43,7 +43,7 @@ else
 
     if ( !file_exists( $cacheFile ) or ( time() - filemtime( $cacheFile ) > $cacheTime ) )
     {
-        $xmlDoc =& $RSSExport->attribute( 'rss-xml' );
+        $xmlDoc = $RSSExport->attribute( 'rss-xml' );
 
         $fid = @fopen( $cacheFile, 'w' );
 
