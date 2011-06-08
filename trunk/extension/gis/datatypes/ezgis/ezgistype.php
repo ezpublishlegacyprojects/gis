@@ -6,7 +6,7 @@ class ezgistype extends eZDataType
     
 	function ezgistype()
     {
-        $this->eZDataType( self::DATATYPE_STRING, ezi18n( 'kernel/classes/datatypes', "Geographic Information Systems", 'Datatype name' ),
+        $this->eZDataType( self::DATATYPE_STRING, ezpI18n::tr( 'kernel/classes/datatypes', "Geographic Information Systems", 'Datatype name' ),
                            array( 'serialize_supported' => true, 'translation_allowed' => false ) );
     }
 
@@ -79,13 +79,13 @@ class ezgistype extends eZDataType
 		    if ( $latitude == "" or !settype( $latitude, 'float' ) or !is_float( $latitude ) )
 		    {
 		        $ok = false;
-		        $contentObjectAttribute->setValidationError( ezi18n( 'kernel/classes/datatypes',
+		        $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes',
 		                                                                     'Latitude is no floating point figure.' ) );
 		    }
 		    if ( $longitude == "" or !settype( $longitude, 'float' ) or !is_float( $longitude ) )
 		    {
 		        $ok = false;
-		        $contentObjectAttribute->setValidationError( ezi18n( 'kernel/classes/datatypes',
+		        $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes',
 		                                                                     'Longitude is no floating point figure.' ) );
 		    }
 
@@ -110,7 +110,7 @@ class ezgistype extends eZDataType
             	return eZInputValidator::STATE_INVALID;
 
         }
-        $contentObjectAttribute->setValidationError( ezi18n( 'kernel/classes/datatypes',
+        $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes',
                                                                          'Missing data.' ) );
         return eZInputValidator::STATE_INVALID;
     }
