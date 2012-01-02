@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS `ezgis_position`;
 CREATE TABLE  `ezgis_position` (
   `contentobject_attribute_id` int(11) NOT NULL default '0',
   `contentobject_attribute_version` int(11) NOT NULL default '0',
@@ -9,4 +8,4 @@ CREATE TABLE  `ezgis_position` (
   `city` varchar(255) default NULL,
   `state` varchar(255) default NULL,
   `country` varchar(255) default NULL
-);
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
