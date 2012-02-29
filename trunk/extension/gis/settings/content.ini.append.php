@@ -1,8 +1,8 @@
 <?php /* #?ini charset="utf-8"?
 
 [DataTypeSettings]
-ExtensionDirectories[]=gis
-AvailableDataTypes[]=ezgis
+ExtensionDirectories[]=xrowgis
+AvailableDataTypes[]=xrowgis
 
 [CustomTagSettings]
 # You can use custom tags through the <custom> tag in XML fields.
@@ -20,5 +20,11 @@ CustomAttributes[]=height
 CustomAttributes[]=centerposition
 CustomAttributes[]=zoom
 CustomAttributes[]=icon
+
+#[RelationGroupSettings]
+#DefaultGroup=articles
+#Groups[]=articles
+#ArticlesClassList[]
+#ArticlesClassList[]=article
 
 */ ?>

@@ -1,7 +1,6 @@
 <?php /* #?ini charset="utf-8"?
 
 [ModuleSettings]
-ExtensionRepositories[]=gis
-
+ExtensionRepositories[]=xrowgis
 
 */ ?>

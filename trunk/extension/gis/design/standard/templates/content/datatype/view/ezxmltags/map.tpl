@@ -67,7 +67,7 @@
 
 {foreach $nodes as $node}
 var markerMarkup = '<a class="map-headline" href="{$node.url_alias|ezurl(no)}">{$node.name|wash(javascript)}</a> {$node.data_map.intro.content.output.output_text|str_replace( "\n", '' )|shorten( 800, '...')|wash(javascript)}';
-GeoPoint = new YGeoPoint( {$node.data_map.gis.content.latitude}, {$node.data_map.gis.content.longitude});
+GeoPoint = new YGeoPoint( {$node.data_map.xrowgis.content.latitude}, {$node.data_map.xrowgis.content.longitude});
 placeMarker(GeoPoint,markerMarkup);
 {/foreach}
 {literal}

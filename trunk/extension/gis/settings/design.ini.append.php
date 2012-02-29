@@ -1,2 +1,10 @@
+<?php /* #?ini charset="utf-8"?
+
 [ExtensionSettings]
-DesignExtensions[]=gis
+DesignExtensions[]=xrowgis
+
+[JavaScriptSettings]
+BackendJavaScriptList[]=xrowgis.js
+FrontendJavaScriptList[]=xrowgis.js
+
+*/?>

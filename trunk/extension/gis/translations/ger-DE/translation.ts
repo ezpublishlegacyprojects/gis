@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>extension/gis</name>
+    <name>extension/xrowgis</name>
     <message>
         <source>Geographic location</source>
         <translation>Geografische Position</translation>
@@ -98,23 +98,23 @@
 <context>
     <name>kernel/classes/datatypes</name>
     <message>
-        <location filename="ezgistype.php" line="9"/>
+        <location filename="xrowgistype.php" line="9"/>
         <source>Geographic Information Systems</source>
         <comment>Datatype name</comment>
         <translation>Geoinformationssystem</translation>
     </message>
     <message>
-        <location filename="ezgistype.php" line="80"/>
+        <location filename="xrowgistype.php" line="80"/>
         <source>Latitude is no floating point figure.</source>
         <translation>Breitengrad ist keine Kommazahl.</translation>
     </message>
     <message>
-        <location filename="ezgistype.php" line="86"/>
+        <location filename="xrowgistype.php" line="86"/>
         <source>Longitude is no floating point figure.</source>
         <translation>Längengrad ist keine Kommazahl.</translation>
     </message>
     <message>
-        <location filename="ezgistype.php" line="111"/>
+        <location filename="xrowgistype.php" line="111"/>
         <source>Missing data.</source>
         <translation>Daten fehlen.</translation>
     </message>

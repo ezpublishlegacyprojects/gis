@@ -6,5 +6,6 @@ PageLayout=yahoomap_pagelayout.tpl
 [googlemap]
 PageLayout=googlemap_pagelayout.tpl
 
-
+[openlayer]
+PageLayout=openlayer_pagelayout.tpl
 */ ?>

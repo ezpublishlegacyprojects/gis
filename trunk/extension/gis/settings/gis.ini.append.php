@@ -1,33 +1,32 @@
 <?php /* #?ini charset="utf-8"?
 
 [GISSettings]
-#Choose Yahoo or Google
-#Yahoo is easier to debug on the local intranet.
-Interface=Yahoo
+#Choose Openlayers or Google
+#Interface=Google
+Interface=OpenLayers
+Latitude=52.3773300
+Longitude=9.7326800
 #GeocoderURL=http://www.maporama.com
 #GeocoderURL=http://brainoff.com/geocoder/
-
-PublicURL=http://www.example.com:81
-
-[Yahoo]
-ApplicationID=150fEujV34Ew4dTws3VmzZrQcWFbhUFtTO3KNJDOczcY9slBTMiOXtcUEIWgkRNZhiTjQg--
-Url=http://local.yahooapis.com/MapsService/V1/geocode
-# ZOOM choose level 1 - 16
-#2: street level
-#4: city level
-#8: state level
-DefaultZoom=8
+#PublicURL=http://www.example.com:81
 
 [Google]
 Url=http://maps.google.com/maps/geo
-Proxy=
+#Url=http://maps.googleapis.com/maps/api/geocode/xml?
+ApplicationID=ABQIAAAAyKsFsM0lXmw5c4jAjR2aABQYSc3pd4lvItlnZz1YRNwblCbd1xRMqnR09wI09g3C0VDkYqTwG62QTQ
+#Proxy=
 # enable proxy to load remote feeds
 # urls must be under the same domain
 # otherwise you will get JS permission errors
 # E.g. in firefox
 #Proxy=http://example.com/projects/map/proxy.pl?
-ApplicationID=ABQIAAAAPF7DvntGNCZxs6lLUT8lhRS7IaKw0QFjSoA-ElwZla6ORVM4YBSiRKIy0ivhS1xQIc0oW7hQnNR1ng
 # ZOOM choose level 1 - 16
+DefaultZoom=16
+
+[OpenLayers]
+Url=http://maps.google.com/maps/geo
+#Url=http://maps.googleapis.com/maps/api/geocode/xml
+ApplicationID=ABQIAAAAyKsFsM0lXmw5c4jAjR2aABQYSc3pd4lvItlnZz1YRNwblCbd1xRMqnR09wI09g3C0VDkYqTwG62QTQ
 DefaultZoom=16
 
 # Special icons for special classes

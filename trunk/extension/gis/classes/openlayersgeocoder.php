@@ -1,15 +1,14 @@
-﻿<?php
+<?php
 
 //
-// Definition of GoogleGeoCoder Methods
+// Definition of OpenLayersGeoCoder Methods
 //
-// GoogleGeoCoder Methods
+// OpenLayersGeoCoder Methods
 //
-// Created on: <08-Sep-2007 00:08:00 Norman Leutner>
-// Last Updated: <08-Sep-2007 00:14:58 Norman Leutner>
+// Created on: <24-Jan-2010 Stephan Bogansky>
 // Version: 0.0.1
 //
-// Copyright (C) 2001-2007 all2e GmbH. All rights reserved.
+// Copyright (C) 2012 xrow GmbH. All rights reserved.
 //
 // This source file is part of an extension for the eZ publish (tm)
 // Open Source Content Management System.
@@ -26,11 +25,11 @@
 // The "GNU General Public License" (GPL) is available at
 // http://www.gnu.org/copyleft/gpl.html
 //
-// Contact info@all2e.com if any conditions
+// Contact service@xrow.de if any conditions
 // of this licencing isn't clear to you.
 
 
-class GoogleGeoCoder extends GeoCoder
+class OpenLayersGeoCoder extends GeoCoder
 {
     public $accuracy; // Google accuracy
     public $street;
@@ -44,7 +43,7 @@ class GoogleGeoCoder extends GeoCoder
     private $theta; // Gogenma? der geographischen Breite
 
     
-    function GoogleGeoCoder()
+    function OpenLayersGeoCoder()
     {
         parent::GeoCoder();
     }
@@ -67,7 +66,8 @@ There are no symbolic constants defined for this enumeration.
 7     Intersection level accuracy. (Since 2.59)
 8     Address level accuracy. (Since 2.59)
 
-    */
+	*/
+    
     function request()
     {
         $searchstring = array();
@@ -87,12 +87,11 @@ There are no symbolic constants defined for this enumeration.
         $searchstring = implode( ' ', $searchstring );
         // ini values
         $gisini = eZINI::instance( "gis.ini" );
-        $key = $gisini->variable( "Google", "ApplicationID" );
-        $url = $gisini->variable( "Google", "Url" );
+        $url = $gisini->variable( "OpenLayers", "Url" );
         
         $requestUrl = $url . "?q=" . urlencode( $searchstring ) . "&key=$key&output=xml&sensor=false";
         
-        eZDebug::writeDebug( $requestUrl, 'Google GeoCoder Request' );
+        eZDebug::writeDebug( $requestUrl, 'Openlayers GeoCoder Request' );
         //request the google kml result
         $kml = file_get_contents( $requestUrl );
         

@@ -44,11 +44,11 @@ map.centerAndZoom(new GPoint(0, 0), {ezini("Yahoo","DefaultZoom","gis.ini")});
 //, $module_result.view_parameters.rss
 //georss.load('{concat( ezini("GISSettings","PublicURL","gis.ini"), '/var/storage/GeoRSSSimple.xml' )}');
 
-georss.load('{concat( ezini("GISSettings","PublicURL","gis.ini"), '/gis/georssserver/', $module_result.view_parameters.rss )}');
+georss.load('{concat( ezini("GISSettings","PublicURL","gis.ini"), '/xrowgis/georssserver/', $module_result.view_parameters.rss )}');
 
 {else}
 
-georss.load('{concat( ezini("GISSettings","PublicURL","gis.ini"), '/gis/georssserver/', $module_result.view_parameters.rss )}', '{ezini("Google","Proxy","gis.ini")}');
+georss.load('{concat( ezini("GISSettings","PublicURL","gis.ini"), '/xrowgis/georssserver/', $module_result.view_parameters.rss )}', '{ezini("Google","Proxy","gis.ini")}');
 
 {/if}
 

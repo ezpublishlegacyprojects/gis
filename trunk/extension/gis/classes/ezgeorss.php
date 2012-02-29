@@ -34,9 +34,8 @@ class eZGEORSS extends eZRSSExport
 
     function fetchGEORSS2_0( $id = null )
     {
-        
         $locale = eZLocale::instance();
-        
+
         // Get URL Translation settings.
         $config = & eZINI::instance();
         if ( $config->variable( 'URLTranslator', 'Translation' ) == 'enabled' )
@@ -47,7 +46,7 @@ class eZGEORSS extends eZRSSExport
         {
             $useURLAlias = false;
         }
-        
+
         $baseItemURL = $this->attribute( 'url' ) . '/'; //.$this->attribute( 'site_access' ).'/';
         
 
@@ -154,7 +153,7 @@ class eZGEORSS extends eZRSSExport
         
         $db = & eZDB::instance();
         $db->begin();
-        $gisarray = $db->arrayQuery( "SELECT f.contentobject_id  FROM ezgis_position e, ezcontentobject_attribute f WHERE f.id = e.contentobject_attribute_id and f.version=e.contentobject_attribute_version" );
+        $gisarray = $db->arrayQuery( "SELECT f.contentobject_id  FROM ezxgis_position e, ezcontentobject_attribute f WHERE f.id = e.contentobject_attribute_id and f.version=e.contentobject_attribute_version" );
         $db->commit();
         
         $nodeGisArray = array();
