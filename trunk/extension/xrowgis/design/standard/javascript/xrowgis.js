@@ -1,3 +1,4 @@
+
 (function() {
     jQuery.fn.serializeJSON = function() {
         var json = {};
@@ -89,6 +90,8 @@
             map.setCenter(lonLat, options.zoom);
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.MousePosition());
+            jQuery('#xrowGIS-lon').val(options.lon);
+            jQuery('#xrowGIS-lat').val(options.lat);
         },
         updateMap : function(attr_id) {
             var data = this.serializeJSON();

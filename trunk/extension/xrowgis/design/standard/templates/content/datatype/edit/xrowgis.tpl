@@ -144,10 +144,9 @@
     {def $latitude = $attribute.content.latitude}
     {def $longitude = $attribute.content.longitude}
 {/if}
-
-<script type="javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
-<script type="javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
-<script type="javascript">
+<script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script>
 {literal}
     var options = {
         name:'{/literal}{ezini("GISSettings","Interface","gis.ini")}{literal}',
@@ -156,7 +155,6 @@
         zoom:'{/literal}{ezini(ezini("GISSettings","Interface","gis.ini"),"DefaultZoom","gis.ini")}{literal}',
         drag : '{/literal}{$dragable}{literal}'
         };
-    
     jQuery(document).ready(jQuery().servemap( 'createMap', options ));
 {/literal}
 </script>
