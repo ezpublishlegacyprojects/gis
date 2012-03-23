@@ -82,6 +82,7 @@ class xrowGIStype extends eZDataType
             }
             
             $ok = true;
+            /*
             if ( $latitude == "" or ! settype( $latitude, 'float' ) or ! is_float( $latitude ) )
             {
                 $ok = false;
@@ -92,7 +93,7 @@ class xrowGIStype extends eZDataType
                 $ok = false;
                 $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Longitude is no floating point figure.' ) );
             }
-            
+            */
             if ( $ok )
             {
                 $gp = new xrowGISPosition( array( 

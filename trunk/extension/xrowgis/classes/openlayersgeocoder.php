@@ -88,9 +88,30 @@ There are no symbolic constants defined for this enumeration.
         // ini values
         $gisini = eZINI::instance( "gis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
-        
+
+        if ( $this->reverse )
+        {
+            $reverseURL = $gisini->variable( "OpenLayers", "ReverseURL" );
+            $requestUrl = $reverseURL . "?latlng=" . urlencode( $this->latitude ) . "," . urlencode( $this->longitude ) . "&sensor=false";
+            
+            $kml = new SimpleXMLElement( file_get_contents( $requestUrl ) );
+
+            if ( ! empty( $kml ) && $kml->status == 'OK' )
+            {
+                foreach ( $kml->result->address_component as $item )
+                {
+                    if ( $item->type[0] == 'country' )
+                    {
+                        $this->country = sprintf("%s", $item->short_name);
+                        return true;
+                    }
+                
+                }
+            }
+            else
+                return false;
+        }
         $requestUrl = $url . "?q=" . urlencode( $searchstring ) . "&key=$key&output=xml&sensor=false";
-        
         eZDebug::writeDebug( $requestUrl, 'Openlayers GeoCoder Request' );
         //request the google kml result
         $kml = file_get_contents( $requestUrl );

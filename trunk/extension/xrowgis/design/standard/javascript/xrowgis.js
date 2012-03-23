@@ -1,4 +1,3 @@
-
 (function() {
     jQuery.fn.serializeJSON = function() {
         var json = {};
@@ -38,61 +37,63 @@
                     numZoomLevels : 20
                 });
                 var gsat = new OpenLayers.Layer.Google("Google Satellite", {
-                type : google.maps.MapTypeId.SATELLITE,
-                numZoomLevels : 22
-            });
-            break;
+                    type : google.maps.MapTypeId.SATELLITE,
+                    numZoomLevels : 22
+                });
                 break;
-            }
+            break;
+        }
 
-            var styledPoint = new OpenLayers.StyleMap(
-                    {
-                        "default" : new OpenLayers.Style(
-                                {
-                                    pointRadius : "13",
-                                    externalGraphic : "http://openlayers.org/api/img/marker.png",
-                                    cursor : 'pointer'
-                                })
-                    });
-            // create OSM layer
-            var mapnik = new OpenLayers.Layer.OSM();
-            // create Vector layer
-            var markers = new OpenLayers.Layer.Vector("Markers", {
-                displayInLayerSwitcher : false,
-                styleMap : styledPoint
-            });
+        var styledPoint = new OpenLayers.StyleMap({
+            "default" : new OpenLayers.Style({
+                pointRadius : "13",
+                externalGraphic : "http://openlayers.org/api/img/marker.png",
+                cursor : 'pointer'
+            })
+        });
+        // create OSM layer
+        var mapnik = new OpenLayers.Layer.OSM();
+        // create Vector layer
+        var markers = new OpenLayers.Layer.Vector("Markers", {
+            displayInLayerSwitcher : false,
+            styleMap : styledPoint
+        });
 
-            map.addLayers([ layer, gsat, mapnik, markers ]);
+        map.addLayers([ layer, gsat, mapnik, markers ]);
 
-            var lonLat = new OpenLayers.LonLat(options.lon, options.lat)
-                    .transform(
-                            new OpenLayers.Projection(map.displayProjection),
-                            map.getProjectionObject());
+        var lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
+                new OpenLayers.Projection(map.displayProjection), map
+                        .getProjectionObject());
 
-            controls = {
-                drag : new OpenLayers.Control.DragFeature(markers, {
-                    'onComplete' : this.onCompleteMove
-                })
-            }
-            map.addControl(controls['drag']);
+        controls = {
+            drag : new OpenLayers.Control.DragFeature(markers, {
+                'onComplete' : this.onCompleteMove
+            })
+        }
+        map.addControl(controls['drag']);
 
-            if (options.drag == true) {
-                controls['drag'].activate();
-            }
+        if (options.drag == true) {
+            controls['drag'].activate();
+        }
 
-            var params = {
-                map : map,
-                lonLat : lonLat,
-                layer : markers
-            }
-            this.drawFeatures(params);
-
-            map.setCenter(lonLat, options.zoom);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.addControl(new OpenLayers.Control.MousePosition());
-            jQuery('#xrowGIS-lon').val(options.lon);
-            jQuery('#xrowGIS-lat').val(options.lat);
-        },
+        var params = {
+            map : map,
+            lonLat : lonLat,
+            layer : markers
+        }
+        this.drawFeatures(params);
+        jQuery
+                .ez(
+                        'xrowGIS_page::getAlpha2', {'lon':options.lon, 'lat':options.lat},function(result) {
+                        	jQuery('#xrowGIS-country').val(result.content.country);
+                        });
+        
+        map.setCenter(lonLat, options.zoom);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.addControl(new OpenLayers.Control.MousePosition());
+        jQuery('#xrowGIS-lon').val(options.lon);
+        jQuery('#xrowGIS-lat').val(options.lat);
+    },
         updateMap : function(attr_id) {
             var data = this.serializeJSON();
             data['attr_id'] = attr_id;
@@ -113,6 +114,7 @@
                                     drag : true
                                 };
                                 jQuery().servemap('createMap', options);
+                                
                                 jQuery('#xrowGIS-lon').val(result.content.lon);
                                 jQuery('#xrowGIS-lat').val(result.content.lat);
                             });

@@ -29,6 +29,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         if ( $geocoder->request() )
         {
+            $result['geoData'] = $geocoder;
             $result['lon'] = $geocoder->longitude;
             $result['lat'] = $geocoder->latitude;
         }
@@ -37,7 +38,26 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             $result['lon'] = $longitude;
             $result['lat'] = $latitute;
         }
-        $result['name'] = $ini->variable('GISSettings', 'Interface');
+        $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
+        return $result;
+    }
+
+    public static function getAlpha2()
+    {
+        $ini = eZINI::instance( 'gis.ini' );
+        $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
+        
+        $data = $_POST;
+        
+        $attributeID = $data['attr_id'];
+        
+        $geocoder = GeoCoder::getActiveGeoCoder();
+        $geocoder->setLonLat( $data['lon'], $data['lat'] );
+        $geocoder->request();
+
+        $result['country'] = $geocoder->country;
+
+        $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         return $result;
     }
 
@@ -91,17 +111,17 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             {
                 if ( $relCoa->attribute( 'data_type_string' ) === xrowGIStype::DATATYPE_STRING )
                 {
-                    $relCoa->content()->setAttribute('contentobject_attribute_id', $attribute->attribute('id'));
-                    $relCoa->content()->setAttribute('contentobject_attribute_version', $attribute->attribute('version'));
-
+                    $relCoa->content()->setAttribute( 'contentobject_attribute_id', $attribute->attribute( 'id' ) );
+                    $relCoa->content()->setAttribute( 'contentobject_attribute_version', $attribute->attribute( 'version' ) );
+                    
                     $attribute = $relCoa;
-
+                    
                     $result['lon'] = $relCoa->content()->attribute( 'longitude' );
                     $result['lat'] = $relCoa->content()->attribute( 'latitude' );
                 
                 }
             }
-            
+        
         }
         $tpl->setVariable( 'attribute', $attribute );
         $result['template'] = $tpl->fetch( 'design:xrowgis/xrowgis.tpl' );

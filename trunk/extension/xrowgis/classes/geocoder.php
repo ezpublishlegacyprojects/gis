@@ -61,6 +61,20 @@ class GeoCoder
         if ( $location !== false )
             $this->location = trim( $location );
     }
+	    /**
+     * Fills the Geocoder with initial data
+     *
+     * @param float $lon
+     * @param float $lat
+     */
+    public function setAddress( $longitude, $latitude )
+    {
+        $this->reverse = true;
+        if ( strlen ( $longitude ) > 1 )
+            $this->longitude = trim( $longitude );
+        if ( strlen( $latitude ) > 1 )
+            $this->latitude = trim( $latitude );
+    }
     /**
      * This function processes the request if a faulure is noticed this function will return false.
      * 

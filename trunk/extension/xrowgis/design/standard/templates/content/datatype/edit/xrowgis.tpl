@@ -97,7 +97,8 @@
     {if is_set($attribute.content.country)}
         {set $country = $attribute.content.country}
     {/if}
-    <select onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
+    <select id="xrowGIS-country" onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
+        <option value="">----</option>
     {def $alpha_2 = ''}
     {foreach $countries as $key => $current_country}
          {set $alpha_2 = $current_country.Alpha2}
