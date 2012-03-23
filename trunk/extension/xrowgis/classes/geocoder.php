@@ -10,6 +10,7 @@ class GeoCoder
     public $latitude;
     public $accuracy;
     public $location;
+    public $reverse;
     const ACCURACY_STREET = 'address';
     const ACCURACY_CITY = 'city';
     const ACCURACY_ZIP = 'zip';
@@ -61,13 +62,14 @@ class GeoCoder
         if ( $location !== false )
             $this->location = trim( $location );
     }
-	    /**
+    
+    /**
      * Fills the Geocoder with initial data
      *
      * @param float $lon
      * @param float $lat
      */
-    public function setAddress( $longitude, $latitude )
+    public function setLonLat( $longitude, $latitude )
     {
         $this->reverse = true;
         if ( strlen ( $longitude ) > 1 )

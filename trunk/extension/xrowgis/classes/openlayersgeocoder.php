@@ -83,7 +83,7 @@ There are no symbolic constants defined for this enumeration.
             $searchstring[] = $this->zip;
         elseif ( $this->city )
             $searchstring[] = $this->city;
-        
+
         $searchstring = implode( ' ', $searchstring );
         // ini values
         $gisini = eZINI::instance( "gis.ini" );
@@ -91,9 +91,9 @@ There are no symbolic constants defined for this enumeration.
 
         if ( $this->reverse )
         {
-            $reverseURL = $gisini->variable( "OpenLayers", "ReverseURL" );
-            $requestUrl = $reverseURL . "?latlng=" . urlencode( $this->latitude ) . "," . urlencode( $this->longitude ) . "&sensor=false";
-            
+            $reverseUrl = $gisini->variable( "OpenLayers", "ReverseUrl" );
+            $requestUrl = $reverseUrl . "?latlng=" . urlencode( $this->latitude ) . "," . urlencode( $this->longitude ) . "&sensor=false";
+
             $kml = new SimpleXMLElement( file_get_contents( $requestUrl ) );
 
             if ( ! empty( $kml ) && $kml->status == 'OK' )

@@ -29,7 +29,12 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         if ( $geocoder->request() )
         {
-            $result['geoData'] = $geocoder;
+            $streetParts = explode(',', $geocoder->street);
+            $result['street'] = $streetParts[0];
+            $result['zip'] = $geocoder->zip;
+            $result['city'] = $geocoder->city;
+            $result['district'] = $streetParts[1];
+            $result['state'] = $geocoder->state;
             $result['lon'] = $geocoder->longitude;
             $result['lat'] = $geocoder->latitude;
         }

@@ -118,20 +118,40 @@
        $class_content
        $country}
 </fieldset>
-
 <br />
 <button class="button uploadImage" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}][object]" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}">{'Add Relation'|i18n( 'extension/xrowgis' )}</button>
 <input type="hidden" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}_url" value={concat( 'xrowgis/upload/', $attribute.contentobject_id, '/', $attribute.version, '/objects' )|ezurl()} />
-
-{if ezini_hasvariable("GISSettings","GeocoderURL","gis.ini")}
-<p>
-    <label>{'Use this link to find location based on an address'|i18n( 'extension/xrowgis' )}:</label>
-    <a href="{ezini("GISSettings","GeocoderURL","gis.ini")}" target="_blank">{'Lookup'|i18n( 'extension/xrowgis' )}</a>
-</p>
-{/if}
 </div>
     <div class="element mapContainer" style="float: right;">
         <div id="mapContainer" style="width: 400px; height: 400px;"></div>
+    </div>
+    <div class="element recomContainer" style="float: left;">
+        <div id="recomContainer" style="min-width: 200px; height: 150px; display:block;">
+            <table>
+                <tr>
+                    <td><label>{'Street'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-street"></td>
+                </tr>
+                <tr>
+                    <td><label>{'ZIP'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-zip"></td>
+                </tr>
+                <tr>
+                    <td><label>{'District'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-district"></td>
+                </tr>
+                <tr>
+                    <td><label>{'City'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-city"></td>
+                </tr>
+                <tr>
+                    <td><label>{'State'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-state"></td>
+                </tr>
+            </table>
+            <br />
+            <button class="button" type="button" name="takeOver" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}">{'Take over Adress'|i18n( 'extension/xrowgis' )}</button>
+        </div>
     </div>
 </div><!-- END AjaxUpdate -->
 </div>

@@ -90,7 +90,7 @@ class xrowGIStype extends eZDataType
             }
             if ( $longitude == "" or ! settype( $longitude, 'float' ) or ! is_float( $longitude ) )
             {
-                $ok = false;
+                $ok = false; 
                 $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Longitude is no floating point figure.' ) );
             }
             */

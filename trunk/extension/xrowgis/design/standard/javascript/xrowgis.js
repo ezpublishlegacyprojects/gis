@@ -86,8 +86,8 @@
                 .ez(
                         'xrowGIS_page::getAlpha2', {'lon':options.lon, 'lat':options.lat},function(result) {
                         	jQuery('#xrowGIS-country').val(result.content.country);
-                        });
-        
+                        });//set the right country anyway based on lonlat
+
         map.setCenter(lonLat, options.zoom);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.addControl(new OpenLayers.Control.MousePosition());
@@ -115,6 +115,11 @@
                                 };
                                 jQuery().servemap('createMap', options);
                                 
+                                jQuery('#xrowGIS-street').replaceWith('<td id="xrowGIS-street">'+result.content.street+'</td>');
+                                jQuery('#xrowGIS-zip').replaceWith('<td id="xrowGIS-zip">'+result.content.zip+'</td>');
+                                jQuery('#xrowGIS-district').replaceWith('<td id="xrowGIS-district">'+result.content.district+'</td>');
+                                jQuery('#xrowGIS-city').replaceWith('<td id="xrowGIS-city">'+result.content.city+'</td>');
+                                jQuery('#xrowGIS-state').replaceWith('<td id="xrowGIS-state">'+result.content.state+'</td>');
                                 jQuery('#xrowGIS-lon').val(result.content.lon);
                                 jQuery('#xrowGIS-lat').val(result.content.lat);
                             });
