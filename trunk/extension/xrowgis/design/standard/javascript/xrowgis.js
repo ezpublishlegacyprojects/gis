@@ -88,17 +88,20 @@
             options.lon = jQuery('#xrowGIS-lon').val();
             options.lat = jQuery('#xrowGIS-lat').val();
             
-            $('#mapContainer').remove().fadeOut('slow');
-            jQuery('.mapContainer')
-                    .append(
-                            '<div id="mapContainer" style="width: 400px; height: 400px;"></div>');
-            var options = {
-                lat : options.lat,
-                lon : options.lon,
-                zoom : 16,
-                drag : true
-            };
-            jQuery().servemap('createMap', options);
+            if(options.lon != 0 || options.lat != 0)
+            {
+	            $('#mapContainer').remove().fadeOut('slow');
+	            jQuery('.mapContainer')
+	                    .append(
+	                            '<div id="mapContainer" style="width: 400px; height: 400px;"></div>');
+	            var options = {
+	                lat : options.lat,
+	                lon : options.lon,
+	                zoom : 16,
+	                drag : true
+	            };
+	            jQuery().servemap('createMap', options);
+            }
         }
         jQuery
         .ez(
