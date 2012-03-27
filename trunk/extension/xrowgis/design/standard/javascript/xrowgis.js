@@ -83,7 +83,7 @@
         }
         this.drawFeatures(params);
         
-        if(options.lat == '' || options.lon == '' )
+        if(options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0 )
         {
             options.lon = jQuery('#xrowGIS-lon').val();
             options.lat = jQuery('#xrowGIS-lat').val();
