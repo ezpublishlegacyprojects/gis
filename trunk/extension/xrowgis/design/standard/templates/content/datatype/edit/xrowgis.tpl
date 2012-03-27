@@ -81,15 +81,15 @@
 <legend>{'Address'|i18n( 'extension/xrowgis' )}</legend>
 <br />
     <label>{'Street'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32"  type="text" name="ContentObjectAttribute_xrowgis_street_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.street}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-street-input" class="box" size="32"  type="text" name="ContentObjectAttribute_xrowgis_street_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.street}{/if}" />
     <label>{'ZIP'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_zip_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.zip}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-zip-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_zip_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.zip}{/if}" />
     <label>{'District'|i18n( 'extension/xrowgis' )}:</label>
-        <input  class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_district_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.district}{/if}" />
+        <input  class="box" size="32" id="xrowGIS-district-input" type="text" name="ContentObjectAttribute_xrowgis_district_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.district}{/if}" />
     <label>{'City'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_city_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.city}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-city-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_city_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.city}{/if}" />
     <label>{'State'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_state_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.state}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-state-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_state_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.state}{/if}" />
     <label>{'Country'|i18n( 'extension/xrowgis' )}:</label>
     {def $countries=fetch( 'content', 'country_list' )
          $class_content= $attribute.class_content
@@ -97,7 +97,7 @@
     {if is_set($attribute.content.country)}
         {set $country = $attribute.content.country}
     {/if}
-    <select id="xrowGIS-country" onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
+    <select id="xrowGIS-country-input" onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
         <option value="">----</option>
     {def $alpha_2 = ''}
     {foreach $countries as $key => $current_country}
@@ -126,7 +126,9 @@
         <div id="mapContainer" style="width: 400px; height: 400px;"></div>
     </div>
     <div class="element recomContainer" style="float: left;">
-        <div id="recomContainer" style="min-width: 200px; height: 150px; display:block;">
+        <div id="recomContainer" style="min-width: 200px; height: 150px; display:none;">
+        <fieldset>
+        <legend>{'Address Recommendation'|i18n( 'extension/xrowgis' )}</legend>
             <table>
                 <tr>
                     <td><label>{'Street'|i18n( 'extension/xrowgis' )}:</label></td>
@@ -149,25 +151,20 @@
                     <td id="xrowGIS-state"></td>
                 </tr>
             </table>
+            </fieldset>
             <br />
-            <button class="button" type="button" name="takeOver" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}">{'Take over Adress'|i18n( 'extension/xrowgis' )}</button>
+            <button onclick="jQuery().servemap( 'takeOverAdress', {literal}{{/literal}'attributeID':{$attribute.id}{literal}}{/literal});" class="button" type="button" name="takeOver">{'Take-over Adress'|i18n( 'extension/xrowgis' )}</button>
         </div>
     </div>
 </div><!-- END AjaxUpdate -->
 </div>
 {/if}{*END if there is an relation to an Object which contains valid GIS Data*}
+{def $latitude = $attribute.content.latitude}
+{def $longitude = $attribute.content.longitude}
 
-{* map attribute values or define default values for lat and long *}
-{if and(is_set($attribute.content.latitude)|not(),is_set($attribute.content.longitude)|not())}
-    {def $latitude = ezini("GISSettings","Latitude","gis.ini")}
-    {def $longitude = ezini("GISSettings","Longitude","gis.ini")}
-{else}
-    {def $latitude = $attribute.content.latitude}
-    {def $longitude = $attribute.content.longitude}
-{/if}
-<script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
-<script src="http://openlayers.org/api/OpenLayers.js"></script>
-<script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
 {literal}
     var options = {
         name:'{/literal}{ezini("GISSettings","Interface","gis.ini")}{literal}',

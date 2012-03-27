@@ -37,6 +37,7 @@ class GeoCoder
     {
 
     }
+
     /**
      * Fills the Geocoder with initial data
      *

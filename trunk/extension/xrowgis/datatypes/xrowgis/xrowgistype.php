@@ -80,20 +80,16 @@ class xrowGIStype extends eZDataType
                     return eZInputValidator::STATE_ACCEPTED;
                 }
             }
-            
             $ok = true;
-            /*
-            if ( $latitude == "" or ! settype( $latitude, 'float' ) or ! is_float( $latitude ) )
+            
+            if ( (empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty($latitude) && empty($longitude)) || (!empty( $street ) && !empty( $zip ) && !empty( $city ) && !empty( $state ) && !empty($latitude) && !empty($longitude))  )
             {
+                $ok = true;
+            }
+            else{
                 $ok = false;
-                $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Latitude is no floating point figure.' ) );
+                $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'GEO DATA MISSING' ) );
             }
-            if ( $longitude == "" or ! settype( $longitude, 'float' ) or ! is_float( $longitude ) )
-            {
-                $ok = false; 
-                $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Longitude is no floating point figure.' ) );
-            }
-            */
             if ( $ok )
             {
                 $gp = new xrowGISPosition( array( 
@@ -156,7 +152,8 @@ class xrowGIStype extends eZDataType
         if ( is_object( $gp ) )
         {
             $gp->store();
-//            return true;
+        
+     //            return true;
         }
         
         $contentClassAttributeID = $contentObjectAttribute->ContentClassAttributeID;

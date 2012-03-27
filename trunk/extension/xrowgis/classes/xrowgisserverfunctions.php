@@ -29,12 +29,12 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         if ( $geocoder->request() )
         {
-            $streetParts = explode(',', $geocoder->street);
-            $result['street'] = $streetParts[0];
+            $streetParts = explode( ',', $geocoder->street );
+            $result['street'] = mb_convert_encoding( $streetParts[0], "ISO-8859-1" );
             $result['zip'] = $geocoder->zip;
-            $result['city'] = $geocoder->city;
-            $result['district'] = $streetParts[1];
-            $result['state'] = $geocoder->state;
+            $result['city'] = mb_convert_encoding( $geocoder->city, "ISO-8859-1" );
+            $result['district'] = trim( $streetParts[1] );
+            $result['state'] = mb_convert_encoding( $geocoder->state, "ISO-8859-1" );
             $result['lon'] = $geocoder->longitude;
             $result['lat'] = $geocoder->latitude;
         }
@@ -59,9 +59,9 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         $geocoder = GeoCoder::getActiveGeoCoder();
         $geocoder->setLonLat( $data['lon'], $data['lat'] );
         $geocoder->request();
-
+        
         $result['country'] = $geocoder->country;
-
+        
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         return $result;
     }

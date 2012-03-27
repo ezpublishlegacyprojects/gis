@@ -20,6 +20,10 @@
         <translation>PLZ</translation>
     </message>
     <message>
+        <source>District</source>
+        <translation>Stadtteil</translation>
+    </message>
+    <message>
         <source>City</source>
         <translation>Ort</translation>
     </message>
@@ -93,6 +97,18 @@
     <message>
         <source>Current location</source>
         <translation>Aktuelle Position</translation>
+    </message>
+    <message>
+        <source>Add Relation</source>
+        <translation>Verknüpfung hinzufügen</translation>
+    </message>
+    <message>
+        <source>Remove Relation</source>
+        <translation>Verknüpfung entfernen</translation>
+    </message>
+    <message>
+        <source>Take-over Adress</source>
+        <translation>Adresse übernehmen</translation>
     </message>
 </context>
 <context>
