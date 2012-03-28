@@ -69,35 +69,36 @@
     </div>
 {else}
 <fieldset>
-    <legend>{'Geographic location'|i18n( 'extension/xrowgis' )}</legend>
-    <br />
+<legend>{'Geographic location'|i18n( 'extension/xrowgis' )}</legend>
+<br />
     <label>{'Longitude'|i18n( 'extension/xrowgis' )}:</label>
-        <input id="xrowGIS-lon" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_longitude_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.longitude}{/if}" />
+        <input id="xrowGIS-lon" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_longitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.longitude}{/if}" />
     <label>{'Latitude'|i18n( 'extension/xrowgis' )}:</label>
-        <input id="xrowGIS-lat" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_latitude_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.latitude}{/if}" />
+        <input id="xrowGIS-lat" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_latitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.latitude}{/if}" />
 </fieldset>
 <br />
 <fieldset>
-    <legend>{'Address'|i18n( 'extension/xrowgis' )}</legend>
-    <br />
+<legend>{'Address'|i18n( 'extension/xrowgis' )}</legend>
+<br />
     <label>{'Street'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32"  type="text" name="ContentObjectAttribute_xrowgis_street_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.street}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-street-input" class="box" size="32"  type="text" name="ContentObjectAttribute_xrowgis_street_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.street}{/if}" />
     <label>{'ZIP'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_zip_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.zip}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-zip-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_zip_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.zip}{/if}" />
     <label>{'District'|i18n( 'extension/xrowgis' )}:</label>
-        <input  class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_district_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.district}{/if}" />
+        <input  class="box" size="32" id="xrowGIS-district-input" type="text" name="ContentObjectAttribute_xrowgis_district_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.district}{/if}" />
     <label>{'City'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_city_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.city}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-city-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_city_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.city}{/if}" />
     <label>{'State'|i18n( 'extension/xrowgis' )}:</label>
-        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_state_{$attribute.id}" size="12" value="{if $attribute.content.is_valid}{$attribute.content.state}{/if}" />
-   <label>{'Country'|i18n( 'extension/xrowgis' )}:</label>
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" id="xrowGIS-state-input" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_state_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.state}{/if}" />
+    <label>{'Country'|i18n( 'extension/xrowgis' )}:</label>
     {def $countries=fetch( 'content', 'country_list' )
          $class_content= $attribute.class_content
          $country = ''}
     {if is_set($attribute.content.country)}
         {set $country = $attribute.content.country}
     {/if}
-    <select onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
+    <select id="xrowGIS-country-input" onchange="jQuery('#editform').servemap( 'updateMap', {$attribute.id} );" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}">
+        <option value="">----</option>
     {def $alpha_2 = ''}
     {foreach $countries as $key => $current_country}
          {set $alpha_2 = $current_country.Alpha2}
@@ -120,18 +121,42 @@
 <br />
 <button class="button uploadImage" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}][object]" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}">{'Add Relation'|i18n( 'extension/xrowgis' )}</button>
 <input type="hidden" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}_url" value={concat( 'xrowgis/upload/', $attribute.contentobject_id, '/', $attribute.version, '/objects' )|ezurl()} />
-
-{if ezini_hasvariable("GISSettings","GeocoderURL","gis.ini")}
-<p>
-    <label>{'Use this link to find location based on an address'|i18n( 'extension/xrowgis' )}:</label>
-    <a href="{ezini("GISSettings","GeocoderURL","gis.ini")}" target="_blank">{'Lookup'|i18n( 'extension/xrowgis' )}</a>
-</p>
-{/if}
 </div>
-</div><!-- END AjaxUpdate -->
     <div class="element mapContainer" style="float: right;">
         <div id="mapContainer" style="width: 400px; height: 400px;"></div>
     </div>
+    <div class="element recomContainer" style="float: left;">
+        <div id="recomContainer" style="min-width: 200px; height: 150px; display:none;">
+        <fieldset>
+        <legend>{'Address Recommendation'|i18n( 'extension/xrowgis' )}</legend>
+            <table>
+                <tr>
+                    <td><label>{'Street'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-street"></td>
+                </tr>
+                <tr>
+                    <td><label>{'ZIP'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-zip"></td>
+                </tr>
+                <tr>
+                    <td><label>{'District'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-district"></td>
+                </tr>
+                <tr>
+                    <td><label>{'City'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-city"></td>
+                </tr>
+                <tr>
+                    <td><label>{'State'|i18n( 'extension/xrowgis' )}:</label></td>
+                    <td id="xrowGIS-state"></td>
+                </tr>
+            </table>
+            </fieldset>
+            <br />
+            <button onclick="jQuery().servemap( 'takeOverAdress', {literal}{{/literal}'attributeID':{$attribute.id}{literal}}{/literal});" class="button" type="button" name="takeOver">{'Take-over Adress'|i18n( 'extension/xrowgis' )}</button>
+        </div>
+    </div>
+</div><!-- END AjaxUpdate -->
 </div>
 {/if}{*END if there is an relation to an Object which contains valid GIS Data*}
 

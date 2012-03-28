@@ -188,6 +188,11 @@
                     drag : true
                 };
                 jQuery().servemap('createMap', options);
+                jQuery
+                .ez(
+                        'xrowGIS_page::getAlpha2', {'lon':result.content.lon, 'lat':result.content.lat},function(result) {
+                            jQuery('#xrowGIS-country-input').val(result.content.country);
+                        });//set the right country anyway based on lonlat
                 jQuery('#xrowGIS-lon').val(result.content.lon);
                 jQuery('#xrowGIS-lat').val(result.content.lat);
             });

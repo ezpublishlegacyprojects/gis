@@ -38,7 +38,7 @@ class xrowGIStype extends eZDataType
     */
     function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
-        if ( $http->hasPostVariable( $base . '_xrowgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) ) and $http->hasPostVariable( $base . '_xrowgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) ) )
+        if ( ( $http->hasPostVariable( $base . '_xrowgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) ) and $http->hasPostVariable( $base . '_xrowgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) ) ) || $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) )
         {
             $longitude = $http->postVariable( $base . '_xrowgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) );
             $latitude = $http->postVariable( $base . '_xrowgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) );
@@ -82,11 +82,12 @@ class xrowGIStype extends eZDataType
             }
             $ok = true;
             
-            if ( (empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty($latitude) && empty($longitude)) || (!empty( $street ) && !empty( $zip ) && !empty( $city ) && !empty( $state ) && !empty($latitude) && !empty($longitude))  )
+            if ( ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) || ! empty( $relatedObjectID ) || ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) )
             {
                 $ok = true;
             }
-            else{
+            else
+            {
                 $ok = false;
                 $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'GEO DATA MISSING' ) );
             }
@@ -185,6 +186,29 @@ class xrowGIStype extends eZDataType
     */
     function fetchObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
+        $longitude = $http->postVariable( $base . '_xrowgis_longitude_' . $contentObjectAttribute->attribute( 'id' ) );
+        $latitude = $http->postVariable( $base . '_xrowgis_latitude_' . $contentObjectAttribute->attribute( 'id' ) );
+        $street = $http->postVariable( $base . '_xrowgis_street_' . $contentObjectAttribute->attribute( 'id' ) );
+        $zip = $http->postVariable( $base . '_xrowgis_zip_' . $contentObjectAttribute->attribute( 'id' ) );
+        $district = $http->postVariable( $base . '_xrowgis_district_' . $contentObjectAttribute->attribute( 'id' ) );
+        $city = $http->postVariable( $base . '_xrowgis_city_' . $contentObjectAttribute->attribute( 'id' ) );
+        $state = $http->postVariable( $base . '_xrowgis_state_' . $contentObjectAttribute->attribute( 'id' ) );
+        $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
+        $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
+        
+        $gp = new xrowGISPosition( array( 
+            'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
+            'contentobject_attribute_version' => $contentObjectAttribute->attribute( 'version' ) , 
+            'latitude' => $latitude , 
+            'longitude' => $longitude , 
+            'street' => $street , 
+            'zip' => $zip , 
+            'district' => $district , 
+            'city' => $city , 
+            'state' => $state , 
+            'country' => $country 
+        ) );
+        $contentObjectAttribute->Content = $gp;
         return true;
     }
 

@@ -33,7 +33,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             $result['street'] = mb_convert_encoding( $streetParts[0], "ISO-8859-1" );
             $result['zip'] = $geocoder->zip;
             $result['city'] = mb_convert_encoding( $geocoder->city, "ISO-8859-1" );
-            $result['district'] = trim( $streetParts[1] );
+            $result['district'] = mb_convert_encoding( trim( $streetParts[1] ), "ISO-8859-1" );
             $result['state'] = mb_convert_encoding( $geocoder->state, "ISO-8859-1" );
             $result['lon'] = $geocoder->longitude;
             $result['lat'] = $geocoder->latitude;
