@@ -4,6 +4,8 @@
 #Choose Openlayers or Google
 #Interface=Google
 Interface=OpenLayers
+longitude=9.7375800
+latitude=52.3668800
 #GeocoderURL=http://www.maporama.com
 #GeocoderURL=http://brainoff.com/geocoder/
 #PublicURL=http://www.example.com:81

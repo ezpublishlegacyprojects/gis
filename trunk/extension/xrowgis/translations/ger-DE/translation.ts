@@ -110,6 +110,10 @@
         <source>Take-over Adress</source>
         <translation>Adresse übernehmen</translation>
     </message>
+    <message>
+        <source>Address proposal</source>
+        <translation>Adress Vorschlag</translation>
+    </message>
 </context>
 <context>
     <name>kernel/classes/datatypes</name>

@@ -83,30 +83,40 @@ There are no symbolic constants defined for this enumeration.
             $searchstring[] = $this->zip;
         elseif ( $this->city )
             $searchstring[] = $this->city;
-
+        
         $searchstring = implode( ' ', $searchstring );
         // ini values
         $gisini = eZINI::instance( "gis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
-
+        
         if ( $this->reverse )
         {
             $reverseUrl = $gisini->variable( "OpenLayers", "ReverseUrl" );
             $requestUrl = $reverseUrl . "?latlng=" . urlencode( $this->latitude ) . "," . urlencode( $this->longitude ) . "&sensor=false";
 
             $kml = new SimpleXMLElement( file_get_contents( $requestUrl ) );
-
+            
             if ( ! empty( $kml ) && $kml->status == 'OK' )
             {
                 foreach ( $kml->result->address_component as $item )
                 {
-                    if ( $item->type[0] == 'country' )
-                    {
-                        $this->country = sprintf("%s", $item->short_name);
-                        return true;
-                    }
-                
+                    $type = sprintf( "%s", $item->type );
+                    $retVal[$type] = array( 
+                        'short' => sprintf( "%s", $item->short_name ) , 
+                        'long' => sprintf( "%s", $item->long_name ) 
+                    );
                 }
+                
+                $this->street = $retVal['route']['long'] . ' ' . $retVal['street_number']['long'];
+                $this->district = $retVal['sublocality']['long'];
+                $this->zip = $retVal['postal_code']['long'];
+                $this->city = $retVal['locality']['long'];
+                $this->state = $retVal['administrative_area_level_2']['long'];
+                $this->country = $retVal['country']['short'];
+                $this->longitude = $this->longitude;
+                $this->latitude = $this->latitude;
+
+                return true;
             }
             else
                 return false;

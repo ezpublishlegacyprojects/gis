@@ -15,35 +15,69 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         $data = $_POST;
         
-        $attributeID = $data['attr_id'];
-        $street = $data['ContentObjectAttribute_xrowgis_street_' . $attributeID];
-        $zip = $data['ContentObjectAttribute_xrowgis_zip_' . $attributeID];
-        $city = $data['ContentObjectAttribute_xrowgis_city_' . $attributeID];
-        $state = $data['ContentObjectAttribute_xrowgis_state_' . $attributeID];
-        $country = $data['ContentObjectAttribute_xrowgis_country_' . $attributeID];
-        $longitude = $data['ContentObjectAttribute_xrowgis_longitude_' . $attributeID];
-        $latitute = $data['ContentObjectAttribute_xrowgis_latitude_' . $attributeID];
-        
         $geocoder = GeoCoder::getActiveGeoCoder();
-        $geocoder->setAddress( $street, $zip, $city, $state, $country );
         
-        if ( $geocoder->request() )
+        if ( $data['reverse'] )
         {
-            $streetParts = explode( ',', $geocoder->street );
-            $result['street'] = mb_convert_encoding( $streetParts[0], "ISO-8859-1" );
-            $result['zip'] = $geocoder->zip;
-            $result['city'] = mb_convert_encoding( $geocoder->city, "ISO-8859-1" );
-            $result['district'] = mb_convert_encoding( trim( $streetParts[1] ), "ISO-8859-1" );
-            $result['state'] = mb_convert_encoding( $geocoder->state, "ISO-8859-1" );
-            $result['lon'] = $geocoder->longitude;
-            $result['lat'] = $geocoder->latitude;
+            if ( empty( $data['lat'] ) || empty( $data['lon'] ) )
+            {
+                $lon = $data['data']['ContentObjectAttribute_xrowgis_longitude_' . $data['attr_id']];
+                $lat = $data['data']['ContentObjectAttribute_xrowgis_latitude_' . $data['attr_id']];
+                
+                $geocoder->setLonLat( $lon, $lat );
+            
+            }
+            else
+            {
+                $lon = $data['lon'];
+                $lat = $data['lat'];
+                
+                $geocoder->setLonLat( $lon, $lat );
+            }
         }
         else
         {
-            $result['lon'] = $longitude;
-            $result['lat'] = $latitute;
+            $attributeID = $data['attr_id'];
+            $street = $data['ContentObjectAttribute_xrowgis_street_' . $attributeID];
+            $zip = $data['ContentObjectAttribute_xrowgis_zip_' . $attributeID];
+            $city = $data['ContentObjectAttribute_xrowgis_city_' . $attributeID];
+            $state = $data['ContentObjectAttribute_xrowgis_state_' . $attributeID];
+            $country = $data['ContentObjectAttribute_xrowgis_country_' . $attributeID];
+            $longitude = $data['ContentObjectAttribute_xrowgis_longitude_' . $attributeID];
+            $latitute = $data['ContentObjectAttribute_xrowgis_latitude_' . $attributeID];
+            
+            $geocoder->setAddress( $street, $zip, $city, $state, $country );
+        
         }
-        $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
+        if ( $geocoder->request() )
+        {
+            if ( $data['reverse'] )
+            {
+                $result['street'] = $geocoder->street;
+                $result['zip'] = $geocoder->zip;
+                $result['city'] = ( $geocoder->city == 'Hanover' ) ? 'Hannover' : $geocoder->city;
+                $result['district'] = $geocoder->district;
+                $result['state'] = $geocoder->state;
+                $result['lon'] = $geocoder->longitude;
+                $result['lat'] = $geocoder->latitude;
+            }
+            else
+            {
+                $streetParts = explode( ',', $geocoder->street );
+                $result['street'] = mb_convert_encoding( $streetParts[0], "ISO-8859-1" );
+                $result['zip'] = $geocoder->zip;
+                $result['city'] = mb_convert_encoding( $geocoder->city, "ISO-8859-1" );
+                $result['district'] = mb_convert_encoding( trim( $streetParts[1] ), "ISO-8859-1" );
+                $result['state'] = mb_convert_encoding( $geocoder->state, "ISO-8859-1" );
+                $result['lon'] = $geocoder->longitude;
+                $result['lat'] = $geocoder->latitude;
+            }
+        }
+        else
+        {
+            $result['lon'] = ( empty( $longitude ) ) ? $lon : $longitude;
+            $result['lat'] = ( empty( $latitude ) ) ? $lat : $latitude;
+        }
         return $result;
     }
 
@@ -62,7 +96,15 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         $result['country'] = $geocoder->country;
         
+        return $result;
+    }
+
+    public static function getMapCenter()
+    {
+        $ini = eZINI::instance( 'gis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
+        $result['lon'] = $ini->variable( 'GISSettings', 'longitude' );
+        $result['lat'] = $ini->variable( 'GISSettings', 'latitude' );
         return $result;
     }
 

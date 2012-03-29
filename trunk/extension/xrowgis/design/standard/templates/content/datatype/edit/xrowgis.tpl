@@ -72,9 +72,9 @@
 <legend>{'Geographic location'|i18n( 'extension/xrowgis' )}</legend>
 <br />
     <label>{'Longitude'|i18n( 'extension/xrowgis' )}:</label>
-        <input id="xrowGIS-lon" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_longitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.longitude}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {literal}{{/literal}'attr_id':{$attribute.id}, 'reverse':true, 'zoom':14{literal}}{/literal} );" id="xrowGIS-lon" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_longitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.longitude}{/if}" />
     <label>{'Latitude'|i18n( 'extension/xrowgis' )}:</label>
-        <input id="xrowGIS-lat" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_latitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.latitude}{/if}" />
+        <input onchange="jQuery('#editform').servemap( 'updateMap', {literal}{{/literal}'attr_id':{$attribute.id}, 'reverse':true, 'zoom':14{literal}}{/literal} );" id="xrowGIS-lat" class="box" size="32" type="text" name="ContentObjectAttribute_xrowgis_latitude_{$attribute.id}" size="12" value="{if is_set($attribute.content)}{$attribute.content.latitude}{/if}" />
 </fieldset>
 <br />
 <fieldset>
@@ -119,7 +119,8 @@
        $country}
 </fieldset>
 <br />
-<button class="button uploadImage" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}][object]" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}">{'Add Relation'|i18n( 'extension/xrowgis' )}</button>
+<input class="button uploadImage" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}][object]" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}" value="{'Add Relation'|i18n( 'extension/xrowgis' )}" />
+<input onclick="jQuery().servemap( 'resetForm' );" class="button" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}]"  value="{'Reset Form'|i18n( 'extension/xrowgis' )}" />
 <input type="hidden" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}_url" value={concat( 'xrowgis/upload/', $attribute.contentobject_id, '/', $attribute.version, '/objects' )|ezurl()} />
 </div>
     <div class="element mapContainer" style="float: right;">
@@ -128,7 +129,7 @@
     <div class="element recomContainer" style="float: left;">
         <div id="recomContainer" style="min-width: 200px; height: 150px; display:none;">
         <fieldset>
-        <legend>{'Address Recommendation'|i18n( 'extension/xrowgis' )}</legend>
+        <legend>{'Address proposal'|i18n( 'extension/xrowgis' )}</legend>
             <table>
                 <tr>
                     <td><label>{'Street'|i18n( 'extension/xrowgis' )}:</label></td>
@@ -153,7 +154,7 @@
             </table>
             </fieldset>
             <br />
-            <button onclick="jQuery().servemap( 'takeOverAdress', {literal}{{/literal}'attributeID':{$attribute.id}{literal}}{/literal});" class="button" type="button" name="takeOver">{'Take-over Adress'|i18n( 'extension/xrowgis' )}</button>
+            <input onclick="jQuery().servemap( 'takeOverAdress', {literal}{{/literal}'attributeID':{$attribute.id}{literal}}{/literal});" class="button" type="button" name="takeOver" value="{'Take-over Adress'|i18n( 'extension/xrowgis' )}" />
         </div>
     </div>
 </div><!-- END AjaxUpdate -->
