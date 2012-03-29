@@ -149,8 +149,8 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         if ( $attribute->hasContent() )
         {
-            $result['lon'] = $attribute->content()->attribute( 'longitude' );
-            $result['lat'] = $attribute->content()->attribute( 'latitude' );
+            $result['lon'] = ( $attribute->content()->attribute( 'longitude' ) == 0 ) ? '' : $attribute->content()->attribute( 'longitude' );
+            $result['lat'] = ( $attribute->content()->attribute( 'latitude' ) == 0 ) ? '' : $attribute->content()->attribute( 'latitude' );
         }
         else
         {
@@ -163,8 +163,8 @@ class xrowGISServerfunctions extends ezjscServerFunctions
                     
                     $attribute = $relCoa;
                     
-                    $result['lon'] = $relCoa->content()->attribute( 'longitude' );
-                    $result['lat'] = $relCoa->content()->attribute( 'latitude' );
+                    $result['lon'] = ( $relCoa->content()->attribute( 'longitude' ) == 0 ) ? '' : $relCoa->content()->attribute( 'longitude' );
+                    $result['lat'] = ( $relCoa->content()->attribute( 'latitude' ) == 0 ) ? '' : $relCoa->content()->attribute( 'latitude' );
                 
                 }
             }

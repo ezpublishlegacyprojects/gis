@@ -140,6 +140,7 @@ class xrowGIStype extends eZDataType
             $GISCo = $contentObjectAttribute->Content;
             $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
             $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
+            
             $GISCo->store();
         }
     }
