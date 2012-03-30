@@ -15,10 +15,28 @@ class GeoCoder
     const ACCURACY_CITY = 'city';
     const ACCURACY_ZIP = 'zip';
 /**
- * Useage:
+ * Useage normal:
  * <code>
  * $coder = GeoCoder::getActiveGeoCoder();
  * $coder->setAddress( 'Am Lindener Berge 22', '30449', 'Hannover', 'NI', 'Germany' );
+ * if ( $coder->request() )
+ * {
+ *     //success
+ *     echo $coder->lat;
+ *     echo $coder->long;
+ * }
+ * else
+ * {
+ *     //error
+ * }
+ * </code>
+ * 
+ * @return GeoCoder
+ * 
+ * Useage reverse:
+ * <code>
+ * $coder = GeoCoder::getActiveGeoCoder();
+ * $coder->setLonLat( 9.8597, 52.4295 );
  * if ( $coder->request() )
  * {
  *     //success

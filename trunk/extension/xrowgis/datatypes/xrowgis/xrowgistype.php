@@ -49,7 +49,7 @@ class xrowGIStype extends eZDataType
             $state = $http->postVariable( $base . '_xrowgis_state_' . $contentObjectAttribute->attribute( 'id' ) );
             $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
             $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
-            
+            /*
             if ( empty( $longitude ) || empty( $latitude ) )
             {
                 $geocoder = GeoCoder::getActiveGeoCoder();
@@ -57,6 +57,7 @@ class xrowGIStype extends eZDataType
                 
                 if ( $geocoder->request() )
                 {
+                    
                     $gp = new xrowGISPosition( array( 
                         'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
                         'contentobject_attribute_version' => $contentObjectAttribute->attribute( 'version' ) , 
@@ -69,8 +70,10 @@ class xrowGIStype extends eZDataType
                         'state' => $state , 
                         'country' => $country 
                     ) );
+                    
                     $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
                     $contentObjectAttribute->Content = $gp;
+                    $contentObjectAttribute->store();
                     
                     if ( $http->hasPostVariable( 'PublishButton' ) )
                     {
@@ -80,6 +83,7 @@ class xrowGIStype extends eZDataType
                     return eZInputValidator::STATE_ACCEPTED;
                 }
             }
+            */
             $ok = true;
             
             if ( ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) || ! empty( $relatedObjectID ) || ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) )

@@ -107,6 +107,10 @@
         <translation>Verknüpfung entfernen</translation>
     </message>
     <message>
+        <source>Reset Form</source>
+        <translation>Formular zurücksetzen</translation>
+    </message>
+    <message>
         <source>Take-over Adress</source>
         <translation>Adresse übernehmen</translation>
     </message>
@@ -136,7 +140,12 @@
     <message>
         <location filename="xrowgistype.php" line="111"/>
         <source>Missing data.</source>
-        <translation>Daten fehlen.</translation>
+        <translation>Daten fehlen (Input konnte nicht ausgewertet werden).</translation>
+    </message>
+    <message>
+        <location filename="xrowgistype.php" line="92"/>
+        <source>MISSING GEO DATA</source>
+        <translation>Bitte füllen Sie alle benötigten Felder aus. Um speichern zu können, müssen entweder alle Felder (bis auf District) ausgefüllt sein oder aber gar keins.</translation>
     </message>
 </context>
 </TS>

@@ -87,9 +87,14 @@
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.addControl(new OpenLayers.Control.MousePosition());
         
-        if(options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0 )
+        if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
         {
-            jQuery().servemap('resetForm');
+        	jQuery.ajaxSetup({async : false});
+            jQuery().servemap('setMapCenter');
+            jQuery('#recomContainer').css('display', 'none');
+            jQuery('#xrowGIS-lon').val('');
+            jQuery('#xrowGIS-lat').val('');
+            jQuery('#xrowGIS-country-input').val('');
         }
     },
         updateMap : function(options) {
@@ -107,7 +112,7 @@
                             'xrowGIS_page::updateMap',
                             data,
                             function(result) {
-                                $('#mapContainer').remove().fadeOut('slow');
+                                jQuery('#mapContainer').remove().fadeOut('slow');
                                 jQuery('.mapContainer')
                                         .append(
                                                 '<div id="mapContainer" style="width: 400px; height: 400px;"></div>');
@@ -119,10 +124,10 @@
                                     drag : true
                                 };
                                 jQuery().servemap('createMap', options);
-                                
+
                                 jQuery('#xrowGIS-lon').val(result.content.lon);
                                 jQuery('#xrowGIS-lat').val(result.content.lat);
-                                
+
                                 jQuery
                                 .ez(
                                         'xrowGIS_page::getAlpha2', {'lon':options.lon, 'lat':options.lat},function(result) {
@@ -237,21 +242,6 @@
         }
     };
 
-    jQuery.fn.drawFeatures = function(options) {
-        var layer = options.layer;
-        var map = options.map;
-        var lonLat = options.lonLat;
-
-        layer.removeFeatures(layer.features);
-        var center = map.getViewPortPxFromLonLat(map.getCenter());
-
-        var features = [];
-        features.push(new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)));
-
-        layer.addFeatures(features);
-    };
-
     jQuery.fn.onCompleteMove = function(feature) {
         var newLonLat = new OpenLayers.LonLat(feature.geometry.x,
                 feature.geometry.y).transform(new OpenLayers.Projection(
@@ -269,6 +259,21 @@
         }
         
         jQuery().servemap( 'updateMap', data );
+    };
+
+    jQuery.fn.drawFeatures = function(options) {
+        var layer = options.layer;
+        var map = options.map;
+        var lonLat = options.lonLat;
+
+        layer.removeFeatures(layer.features);
+        var center = map.getViewPortPxFromLonLat(map.getCenter());
+
+        var features = [];
+        features.push(new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)));
+
+        layer.addFeatures(features);
     };
 
     jQuery.fn.servemap = function(method) {

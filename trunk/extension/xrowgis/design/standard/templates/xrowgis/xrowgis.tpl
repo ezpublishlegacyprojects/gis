@@ -58,7 +58,7 @@
     <input type="hidden" name="ContentObjectAttribute_xrowgis_city_{$attribute.id}" value="{$relAttribute.content.city}" />
     <input type="hidden" name="ContentObjectAttribute_xrowgis_state_{$attribute.id}" value="{$relAttribute.content.state}" />
     <input type="hidden" name="ContentObjectAttribute_xrowgis_country_{$attribute.id}" value="{$relAttribute.content.country}" />
-    <input type="hidden" name="ContentObjectAttribute_xrowgis_data_object_relation_id_{$attribute.id}" value="{$relAttribute.contentobject_id}" />
+    <input type="hidden" name="ContentObjectAttribute_xrowgis_data_object_relation_id_{$attribute.id}" value="{$relAttribute.contentobject_id}" id="xrowGIS-rel" />
     <br />
     <input onclick="jQuery().servemap( 'releaseRelation', {literal}{{/literal}'attributeID':{$attribute.id},'version':{$attribute.version}, 'relObjectID':{$relAttribute.contentobject_id}{literal}}{/literal});" class="button" name="ReleaseRelationButton" value="{'Remove Relation'|i18n( 'extension/xrowgis' )}" title="{'Removes the GISObject Relation'|i18n( 'extension/xrowgis' )}" type="button">
     </div>
@@ -122,6 +122,7 @@
 <input class="button uploadImage" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}][object]" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}" value="{'Add Relation'|i18n( 'extension/xrowgis' )}" />
 <input onclick="jQuery().servemap( 'resetForm' );" class="button" type="button" name="ContentObjectAttribute_xrowgis[{$attribute.id}]"  value="{'Reset Form'|i18n( 'extension/xrowgis' )}" />
 <input type="hidden" id="xrowgis_{$attribute.contentobject_id}_{$attribute.version}_objects_{$attribute.id}_url" value={concat( 'xrowgis/upload/', $attribute.contentobject_id, '/', $attribute.version, '/objects' )|ezurl()} />
+<input type="hidden" value="noRel" id="xrowGIS-rel" />
 </div>
     <div class="element mapContainer" style="float: right;">
         <div id="mapContainer" style="width: 400px; height: 400px;"></div>

@@ -40,11 +40,11 @@ class xrowGISPosition extends eZPersistentObject
                                                         'required' => true ),
                                          "latitude" => array( 'name' => "latitude",
                                                                  'datatype' => 'float',
-                                                                 'default' => '0',
+                                                                 'default' => '',
                                                                  'required' => true ),
                                          "longitude" => array( 'name' => "longitude",
                                                                    'datatype' => 'float',
-                                                                   'default' => '0',
+                                                                   'default' => '',
                                                                    'required' => true ),
                                          "street" => array( 'name' => "street",
                                                                  'datatype' => 'string',
@@ -82,7 +82,7 @@ class xrowGISPosition extends eZPersistentObject
         //todo
         return true;
     }
-    
+    //@TODO: Check if it is allready in use/ needed
     // works only with guass krüger
     public static function &fetchByDistance(  $fromx, $fromy, $distance=100000, $limit=null )
     {
