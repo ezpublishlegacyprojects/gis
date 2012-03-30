@@ -114,7 +114,7 @@ class GeoCoder
      */
     static function getActiveGeoCoder()
     {
-        $type = eZINI::instance( 'gis.ini' )->variable( 'GISSettings', 'Interface' )."GeoCoder";
+        $type = eZINI::instance( 'xrowgis.ini' )->variable( 'GISSettings', 'Interface' )."GeoCoder";
         return new $type;
         
     }

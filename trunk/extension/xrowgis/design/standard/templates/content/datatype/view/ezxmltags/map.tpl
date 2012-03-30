@@ -15,7 +15,7 @@
 	{def $node_id=2}
 {/if}
 {if $zoom|not}
-	{def $zoom=ezini("Yahoo","DefaultZoom","gis.ini")}
+	{def $zoom=ezini("Yahoo","DefaultZoom","xrowgis.ini")}
 {/if}
 {if $centerposition|not}
 	{def $centerposition='Hannnover Germany'}
@@ -23,7 +23,7 @@
 {if $classes|not}
 	{def $classes='gis,poi'}
 {/if}
-<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.7&appid={ezini("Yahoo","ApplicationID","gis.ini")}"></script>
+<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.7&appid={ezini("Yahoo","ApplicationID","xrowgis.ini")}"></script>
 {literal}
 <style type="text/css">
 #map{

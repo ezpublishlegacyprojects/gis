@@ -10,7 +10,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
 
     public static function updateMap()
     {
-        $ini = eZINI::instance( 'gis.ini' );
+        $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         
         $data = $_POST;
@@ -83,7 +83,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
 
     public static function getAlpha2()
     {
-        $ini = eZINI::instance( 'gis.ini' );
+        $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         
         $data = $_POST;
@@ -101,7 +101,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
 
     public static function getMapCenter()
     {
-        $ini = eZINI::instance( 'gis.ini' );
+        $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         $result['lon'] = $ini->variable( 'GISSettings', 'longitude' );
         $result['lat'] = $ini->variable( 'GISSettings', 'latitude' );
@@ -113,7 +113,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         $data = $_POST;
         $tpl = eZTemplate::factory();
         
-        $ini = eZINI::instance( 'gis.ini' );
+        $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         
         $attribute = eZContentObjectAttribute::fetch( (int) $data['attributeID'], (int) $data['version'] );
@@ -138,7 +138,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
 
     public static function releaseRelation()
     {
-        $ini = eZINI::instance( 'gis.ini' );
+        $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
         $data = $_POST;
         

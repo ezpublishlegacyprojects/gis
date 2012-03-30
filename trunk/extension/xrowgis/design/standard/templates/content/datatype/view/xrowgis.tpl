@@ -53,8 +53,8 @@
     </div>
 {* map attribute values or define default values for lat and long *}
 {if and(not($attribute.content.latitude),not($attribute.content.longitude))}
-    {def $latitude = ezini("GISSettings","Latitude","gis.ini")}
-    {def $longitude = ezini("GISSettings","Longitude","gis.ini")}
+    {def $latitude = ezini("GISSettings","Latitude","xrowgis.ini")}
+    {def $longitude = ezini("GISSettings","Longitude","xrowgis.ini")}
 {else}
     {def $latitude = $attribute.content.latitude}
     {def $longitude = $attribute.content.longitude}
@@ -65,10 +65,10 @@
 <script>
 {literal}
     var options = {
-        name:'{/literal}{ezini("GISSettings","Interface","gis.ini")}{literal}',
+        name:'{/literal}{ezini("GISSettings","Interface","xrowgis.ini")}{literal}',
         lat:'{/literal}{$latitude}{literal}',
         lon:'{/literal}{$longitude}{literal}',
-        zoom:'{/literal}{ezini(ezini("GISSettings","Interface","gis.ini"),"DefaultZoom","gis.ini")}{literal}',
+        zoom:'{/literal}{ezini(ezini("GISSettings","Interface","xrowgis.ini"),"DefaultZoom","xrowgis.ini")}{literal}',
         drag :0
         };
     

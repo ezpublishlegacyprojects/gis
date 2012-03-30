@@ -86,7 +86,7 @@ There are no symbolic constants defined for this enumeration.
         
         $searchstring = implode( ' ', $searchstring );
         // ini values
-        $gisini = eZINI::instance( "gis.ini" );
+        $gisini = eZINI::instance( "xrowgis.ini" );
         $key = $gisini->variable( "Google", "ApplicationID" );
         $url = $gisini->variable( "Google", "Url" );
         

@@ -169,10 +169,10 @@
 <script type="text/javascript">
 {literal}
     var options = {
-        name:'{/literal}{ezini("GISSettings","Interface","gis.ini")}{literal}',
+        name:'{/literal}{ezini("GISSettings","Interface","xrowgis.ini")}{literal}',
         lat:'{/literal}{$latitude}{literal}',
         lon: '{/literal}{$longitude}{literal}',
-        zoom:'{/literal}{ezini(ezini("GISSettings","Interface","gis.ini"),"DefaultZoom","gis.ini")}{literal}',
+        zoom:'{/literal}{ezini(ezini("GISSettings","Interface","xrowgis.ini"),"DefaultZoom","xrowgis.ini")}{literal}',
         drag : '{/literal}{$dragable}{literal}'
         };
     jQuery(document).ready(jQuery().servemap( 'createMap', options ));

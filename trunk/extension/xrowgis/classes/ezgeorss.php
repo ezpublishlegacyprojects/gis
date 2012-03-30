@@ -82,7 +82,7 @@ class eZGEORSS extends eZRSSExport
         $groups->setName( 'Groups' );
         $groups->setPrefix( 'ymaps' );
         $classes = eZContentClass::fetchList();
-        $gisini = & eZINI::instance( "gis.ini" );
+        $gisini = & eZINI::instance( "xrowgis.ini" );
         
         foreach ( $classes as $class )
         {

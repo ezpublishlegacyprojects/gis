@@ -86,7 +86,7 @@ There are no symbolic constants defined for this enumeration.
         
         $searchstring = implode( ' ', $searchstring );
         // ini values
-        $gisini = eZINI::instance( "gis.ini" );
+        $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
         
         if ( $this->reverse )
