@@ -111,7 +111,7 @@ There are no symbolic constants defined for this enumeration.
                 $this->district = $retVal['sublocality']['long'];
                 $this->zip = $retVal['postal_code']['long'];
                 $this->city = $retVal['locality']['long'];
-                $this->state = $retVal['administrative_area_level_2']['long'];
+                $this->state = $retVal['administrative_area_level_1']['long'];
                 $this->country = $retVal['country']['short'];
                 $this->longitude = $this->longitude;
                 $this->latitude = $this->latitude;

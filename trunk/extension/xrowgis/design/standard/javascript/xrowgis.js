@@ -1,5 +1,5 @@
-(function() {
-    jQuery.fn.serializeJSON = function() {
+(function () {
+    jQuery.fn.serializeJSON = function () {
         var json = {};
         jQuery.map(jQuery(this).serializeArray(), function(n, i) {
             json[n['name']] = n['value'];
@@ -8,11 +8,11 @@
     };
 })(jQuery);
 
-(function() {
+(function () {
     var methods = {
         createMap : function(options) {
-            var controls;
-            var map = new OpenLayers.Map({
+            var controls,
+                map = new OpenLayers.Map({
                 div : "mapContainer",
                 projection : new OpenLayers.Projection("EPSG:900913"),
                 displayProjection : new OpenLayers.Projection("EPSG:4326"),
@@ -26,8 +26,8 @@
                 // create Google layer
                 var layer = new OpenLayers.Layer.Google("Google Streets", {
                     numZoomLevels : 20
-                });
-                var gsat = new OpenLayers.Layer.Google("Google Satellite", {
+                }),
+                    gsat = new OpenLayers.Layer.Google("Google Satellite", {
                     type : google.maps.MapTypeId.SATELLITE,
                     numZoomLevels : 22
                 });
@@ -35,8 +35,8 @@
             default:
                 var layer = new OpenLayers.Layer.Google("Google Streets", {
                     numZoomLevels : 20
-                });
-                var gsat = new OpenLayers.Layer.Google("Google Satellite", {
+                }),
+                    gsat = new OpenLayers.Layer.Google("Google Satellite", {
                     type : google.maps.MapTypeId.SATELLITE,
                     numZoomLevels : 22
                 });
@@ -50,11 +50,11 @@
                 externalGraphic : "http://openlayers.org/api/img/marker.png",
                 cursor : 'pointer'
             })
-        });
+        }),
         // create OSM layer
-        var mapnik = new OpenLayers.Layer.OSM();
+            mapnik = new OpenLayers.Layer.OSM(),
         // create Vector layer
-        var markers = new OpenLayers.Layer.Vector("Markers", {
+        	markers = new OpenLayers.Layer.Vector("Markers", {
             displayInLayerSwitcher : false,
             styleMap : styledPoint
         });
@@ -123,6 +123,7 @@
                                     zoom : data.zoom,
                                     drag : true
                                 };
+
                                 jQuery().servemap('createMap', options);
 
                                 jQuery('#xrowGIS-lon').val(result.content.lon);
@@ -170,7 +171,7 @@
                                 }
                             });
         },
-        takeOverAdress : function() {
+        takeOverAdress : function () {
             jQuery('#recomContainer').css('display', 'none');
             jQuery('#xrowGIS-street-input').val(jQuery('#xrowGIS-street').text());
             jQuery('#xrowGIS-zip-input').val(jQuery('#xrowGIS-zip').text());
@@ -178,7 +179,7 @@
             jQuery('#xrowGIS-city-input').val(jQuery('#xrowGIS-city').text());
             jQuery('#xrowGIS-state-input').val(jQuery('#xrowGIS-state').text());
         },
-        resetForm : function() {
+        resetForm : function () {
             jQuery.ajaxSetup({async : false});
             jQuery().servemap('setMapCenter');
             
@@ -192,7 +193,7 @@
             jQuery('#xrowGIS-state-input').val('');
             jQuery('#xrowGIS-country-input').val('');
         },
-        setMapCenter : function() {
+        setMapCenter : function () {
             jQuery.ez('xrowGIS_page::getMapCenter', {}, function(result) {
                     var options = {
                         name : result.content.name,
@@ -246,7 +247,7 @@
         var newLonLat = new OpenLayers.LonLat(feature.geometry.x,
                 feature.geometry.y).transform(new OpenLayers.Projection(
                 "EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
-        
+
         jQuery('#xrowGIS-lon').val(newLonLat.lon);
         jQuery('#xrowGIS-lat').val(newLonLat.lat);
         
@@ -257,7 +258,7 @@
                 reverse : true,
                 drag : true
         }
-        
+
         jQuery().servemap( 'updateMap', data );
     };
 
@@ -294,7 +295,7 @@
 
 jQuery(document)
         .ready(
-                (function() {
+                (function () {
                     if (jQuery('input.uploadImage')) {
                         jQuery('input.uploadImage')
                                 .live(
