@@ -10,7 +10,7 @@
 
 (function () {
     var methods = {
-        createMap : function(options) {
+        createMap : function (options) {
             var controls,
                 map = new OpenLayers.Map({
                 div : "mapContainer",
