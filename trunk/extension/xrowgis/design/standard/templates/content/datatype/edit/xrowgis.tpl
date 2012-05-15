@@ -9,7 +9,6 @@
 <div class="element">
 {if and(is_set($attribute.data_int), is_set($relatedObject))}
 {set $dragable = false()}
-<!--    <p style="font-weight:bold;">{'Geographic location'|i18n( 'extension/xrowgis' )}</p>-->
 <br />
     <table>
 {if is_set($relatedObject)}
@@ -165,7 +164,6 @@
 {def $longitude = $attribute.content.longitude}
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
-<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
 <script type="text/javascript">
 {literal}
     var options = {

@@ -1,24 +1,10 @@
 <?php
 $Module = array( 
-    "name" => "xrowGIS" , 
-    "variable_params" => true , 
-    "function" => array( 
-        "script" => "map.php" , 
-        "params" => array() 
-    ) 
-);
-
-$ViewList = array();
-$ViewList["map"] = array( 
-    "script" => "map.php" , 
-    'params' => array( 
-        'NodeID' 
-    ) 
+    "name" => "xrowgis" 
 );
 $ViewList["georssserver"] = array( 
     "script" => "georssserver.php" , 
-    'params' => array( 
-        'RSSFeed' , 
+    'params' => array(
         'NodeID' 
     ) 
 );

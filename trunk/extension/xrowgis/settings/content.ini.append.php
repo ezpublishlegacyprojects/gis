@@ -7,19 +7,19 @@ AvailableDataTypes[]=xrowgis
 [CustomTagSettings]
 # You can use custom tags through the <custom> tag in XML fields.
 # Example: <custom name="map">Sub text</custom>
-AvailableCustomTags[]=map
-IsInline[map]=true
+#AvailableCustomTags[]=map
+#IsInline[map]=true
 
-[map]
+#[map]
 #AvailableClasses[]
-AllowEmpty=true
-CustomAttributes[]=node_id
-CustomAttributes[]=classes
-CustomAttributes[]=width
-CustomAttributes[]=height
-CustomAttributes[]=centerposition
-CustomAttributes[]=zoom
-CustomAttributes[]=icon
+#AllowEmpty=true
+#CustomAttributes[]=node_id
+#CustomAttributes[]=classes
+#CustomAttributes[]=width
+#CustomAttributes[]=height
+#CustomAttributes[]=centerposition
+#CustomAttributes[]=zoom
+#CustomAttributes[]=icon
 
 #[RelationGroupSettings]
 #DefaultGroup=articles

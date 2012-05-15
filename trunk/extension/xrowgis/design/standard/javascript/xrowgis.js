@@ -7,7 +7,7 @@
         return json;
     };
 })(jQuery);
-
+//@TODO : create the map object with an constructor 
 (function () {
     var methods = {
         createMap : function (options) {
@@ -32,18 +32,39 @@
                     numZoomLevels : 22
                 });
                 break;
-            default:
-                var layer = new OpenLayers.Layer.Google("Google Streets", {
-                    numZoomLevels : 20
-                }),
-                    gsat = new OpenLayers.Layer.Google("Google Satellite", {
+/*            case "MapGuide":
+//              create MapGuide layer
+//              map.maxExtent= new OpenLayers.Bounds(516000,5774000,590000,5838000);
+                map.maxResolution= 'auto';
+                var url = "localhost:8008/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
+                var params = {
+                    mapdefinition: 'Library://Samples/Hannover_Land/Maps/Hannover.MapDefinition'
+                };
+                var layer = new OpenLayers.Layer.MapGuide("MapGuide", url, params, {
+                    isBaseLayer: true,
+                    transitionEffect: "resize",
+                    buffer: 1,
+                    useOverlay: false,
+                    useAsyncOverlay: false,
+                    singleTile: true,
+                });
+                
+                var gsat = new OpenLayers.Layer.Google("Google Satellite", {
                     type : google.maps.MapTypeId.SATELLITE,
                     numZoomLevels : 22
                 });
                 break;
-            break;
+*/
+                default:
+                    var layer = new OpenLayers.Layer.Google("Google Streets", {
+                        numZoomLevels : 20
+                    }),
+                        gsat = new OpenLayers.Layer.Google("Google Satellite", {
+                        type : google.maps.MapTypeId.SATELLITE,
+                        numZoomLevels : 22
+                    });
+                break;
         }
-
         var styledPoint = new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
                 pointRadius : "13",
@@ -54,13 +75,11 @@
         // create OSM layer
             mapnik = new OpenLayers.Layer.OSM(),
         // create Vector layer
-        	markers = new OpenLayers.Layer.Vector("Markers", {
+            markers = new OpenLayers.Layer.Vector("Markers", {
             displayInLayerSwitcher : false,
             styleMap : styledPoint
         });
-
         map.addLayers([ layer, gsat, mapnik, markers ]);
-
         var lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
                 new OpenLayers.Projection(map.displayProjection), map
                         .getProjectionObject());
@@ -89,14 +108,43 @@
         
         if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
         {
-        	jQuery.ajaxSetup({async : false});
+            jQuery.ajaxSetup({async : false});
             jQuery().servemap('setMapCenter');
             jQuery('#recomContainer').css('display', 'none');
             jQuery('#xrowGIS-lon').val('');
             jQuery('#xrowGIS-lat').val('');
             jQuery('#xrowGIS-country-input').val('');
         }
-    },
+        },
+        createRSSMap:function () {
+            if(typeof options.url != "undefined")
+            {
+                if(typeof options.proxy != "undefined")
+                {
+                    OpenLayers.ProxyHost = options.proxy;
+                }
+                
+                 var map = new OpenLayers.Map({
+                     div : "mapContainer",
+                     units : "m",
+                     maxResolution : 'auto',
+                 });
+
+                  var layer = new OpenLayers.Layer.Google("Google Streets", {
+                      numZoomLevels : 20
+                  }),
+                      gsat = new OpenLayers.Layer.Google("Google Satellite", {
+                      type : google.maps.MapTypeId.SATELLITE,
+                      numZoomLevels : 22
+                  });
+
+                 map.addLayers([ layer, gsat ]);
+                 map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
+                 map.addControl(new OpenLayers.Control.LayerSwitcher());
+                 var geoRSS = new OpenLayers.Layer.GeoRSS( 'GeoRSS', options.url);
+                 map.addLayer(geoRSS);
+            }
+        },
         updateMap : function(options) {
             if(typeof options == "object"){
                 var data = options;

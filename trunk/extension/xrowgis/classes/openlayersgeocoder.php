@@ -5,7 +5,7 @@
 //
 // OpenLayersGeoCoder Methods
 //
-// Created on: <24-Jan-2010 Stephan Bogansky>
+// Created on: <Feb-2012 Stephan Bogansky>
 // Version: 0.0.1
 //
 // Copyright (C) 2012 xrow GmbH. All rights reserved.

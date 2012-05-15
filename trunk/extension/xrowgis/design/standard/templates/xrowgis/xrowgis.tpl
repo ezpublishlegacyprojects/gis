@@ -8,7 +8,6 @@
 <div class="element">
 {if is_set($GISRelation)}
 {set $dragable = false()}
-<!--    <p style="font-weight:bold;">{'Geographic location'|i18n( 'extension/xrowgis' )}</p>-->
 <br />
     <table>
         <tr>
@@ -163,4 +162,4 @@
 {/if}{*END if there is an relation to an Object which contains valid GIS Data*}
 
 <script type="javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
-<script type="javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+<!-- <script type="javascript" src="http://openlayers.org/api/OpenLayers.js"></script>  -->

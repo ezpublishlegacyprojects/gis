@@ -53,15 +53,14 @@
     </div>
 {* map attribute values or define default values for lat and long *}
 {if and(not($attribute.content.latitude),not($attribute.content.longitude))}
-    {def $latitude = ezini("GISSettings","Latitude","xrowgis.ini")}
-    {def $longitude = ezini("GISSettings","Longitude","xrowgis.ini")}
+    {def $latitude = ezini("GISSettings","latitude","xrowgis.ini")}
+    {def $longitude = ezini("GISSettings","longitude","xrowgis.ini")}
 {else}
     {def $latitude = $attribute.content.latitude}
     {def $longitude = $attribute.content.longitude}
 {/if}
     
 <script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
-<script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script>
 {literal}
     var options = {
@@ -69,7 +68,7 @@
         lat:'{/literal}{$latitude}{literal}',
         lon:'{/literal}{$longitude}{literal}',
         zoom:'{/literal}{ezini(ezini("GISSettings","Interface","xrowgis.ini"),"DefaultZoom","xrowgis.ini")}{literal}',
-        drag :0
+        drag :false
         };
     
     jQuery(document).ready(jQuery().servemap( 'createMap', options ));

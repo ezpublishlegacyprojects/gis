@@ -1,87 +1,26 @@
 <?php
 
-
 $Module = $Params["Module"];
 
-if ( !isset ( $Params['RSSFeed'] ) )
-    return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE );
-
-$feedName = $Params['RSSFeed'];
-$RSSExport = eZGEORSS::fetchByName( $feedName );
-
-// Get and check if RSS Feed exists
-if ( $RSSExport == null )
-    return $Module->setExitStatus( eZError::KERNEL_NOT_AVAILABLE, 'kernel' );
-
-$config = eZINI::instance( 'site.ini' );
-$cacheTime = intval( $config->variable( 'RSSSettings', 'CacheTime' ) );
-
-if($cacheTime <= 0 or true )
+if ( ! isset( $Params['NodeID'] ) )
 {
-    $xmlDoc = $RSSExport->fetchGEORSS2_0();
-    $rssContent = $xmlDoc->toString();
+    return $Module->handleError( eZError::KERNEL_NOT_FOUND, 'kernel' );
 }
-else
-{
-    $cacheDir = eZSys::cacheDirectory();
-    $cacheFile = $cacheDir . '/rss/' . md5( $feedName ) . '.xml';
 
-    // If cache directory does not exist, create it. Get permissions settings from site.ini
-    if ( !is_dir( $cacheDir.'/rss' ) )
-    {
-        $mode = $config->variable( 'FileSettings', 'TemporaryPermissions' );
-        if ( !is_dir( $cacheDir ) )
-        {
-            mkdir( $cacheDir );
-            chmod( $cacheDir, octdec( $mode ) );
-        }
-        mkdir( $cacheDir.'/rss' );
-        chmod( $cacheDir.'/rss', octdec( $mode ) );
-    }
+$xml = new xrowGEORSS($Params['NodeID']);
 
-    if ( !file_exists( $cacheFile ) or ( time() - filemtime( $cacheFile ) > $cacheTime ) )
-    {
-        $xmlDoc = $RSSExport->attribute( 'rss-xml' );
-
-        $fid = @fopen( $cacheFile, 'w' );
-
-        // If opening file for write access fails, write debug error
-        if ( $fid === false )
-        {
-            eZDebug::writeError( 'Failed to open cache file for RSS export: '.$cacheFile );
-        }
-        else
-        {
-            // write, flush, close and change file access mode
-            $mode = $config->variable( 'FileSettings', 'TemporaryPermissions' );
-            $rssContent = $xmlDoc->toString();
-            $length = fwrite( $fid, $rssContent );
-            fflush( $fid );
-            fclose( $fid );
-            chmod( $cacheFile, octdec( $mode ) );
-
-            if ( $length === false )
-            {
-                eZDebug::writeError( 'Failed to write to cache file for RSS export: '.$cacheFile );
-            }
-        }
-    }
-    else
-    {
-        $rssContent = file_get_contents( $cacheFile );
-    }
-}
+$xml = $xml->feed->generate('rss2');
 
 // Set header settings
+$lastModified = gmdate( 'D, d M Y H:i:s', time() ) . ' GMT';
 $httpCharset = eZTextCodec::httpCharset();
-header( 'Content-Type: text/xml; charset=' . $httpCharset );
-header( 'Content-Length: '.strlen($rssContent) );
-header( 'X-Powered-By: eZ publish' );
+header( 'Cache-Control: max-age=300, must-revalidate, public' );
+header( 'Last-Modified: ' . $lastModified );
+header( 'Content-Type: application/xml; charset=' . $httpCharset );
+header( 'Content-Length: ' . strlen( $xml ) );
 
 while ( @ob_end_clean() );
-
-echo $rssContent;
-
+echo $xml;
 eZExecution::cleanExit();
 
 ?>
