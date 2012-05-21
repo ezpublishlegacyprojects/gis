@@ -2,5 +2,5 @@
 
 [ModuleSettings]
 ExtensionRepositories[]=xrowgis
-
+ModuleList[]=xrowgis
 */ ?>
