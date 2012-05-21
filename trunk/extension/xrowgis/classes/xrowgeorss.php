@@ -18,9 +18,9 @@ class xrowGEORSS
         $this->feed = new ezcFeed();
         
         $this->feed->generator = eZSys::serverURL();
-        $link = '/xrowgis/georssserver/'.$this->nodeID;
+        $link = '/xrowgis/georssserver/' . $this->nodeID;
         $this->feed->id = self::transformURI( $link, true, 'full' );
-        $this->feed->title = $parent->attribute('name');
+        $this->feed->title = $parent->attribute( 'name' );
         $this->feed->link = eZSys::serverURL();
         $this->feed->description = 'Hannover.de GEORSS Feed Channel';
         $this->feed->language = eZLocale::currentLocaleCode();
@@ -29,7 +29,8 @@ class xrowGEORSS
         {
             $item = $this->feed->add( 'item' );
             $item->title = $node->getName();
-            $link = $node->attribute('url_alias');
+            $link = $node->attribute( 'url_alias' );
+            $item->link = self::transformURI( $link, true, 'full' );
             $item->id = self::transformURI( $link, true, 'full' );
             
             $dm = $node->dataMap();
@@ -98,43 +99,45 @@ class xrowGEORSS
         
         return $retVal;
     }
-    
-     function transformURI( $href, $ignoreIndexDir = false, $serverURL = null )
+
+    function transformURI( $href, $ignoreIndexDir = false, $serverURL = null )
     {
         if ( $serverURL === null )
         {
             $serverURL = ezu::$transformURIMode;
         }
-
+        
         if ( preg_match( "#^[a-zA-Z0-9]+:#", $href ) || substr( $href, 0, 2 ) == '//' )
             return false;
-
+        
         if ( strlen( $href ) == 0 )
             $href = '/';
-        else if ( $href[0] == '#' )
-        {
-            $href = htmlspecialchars( $href );
-            return true;
-        }
-        else if ( $href[0] != '/' )
-        {
-            $href = '/' . $href;
-        }
-
+        else 
+            if ( $href[0] == '#' )
+            {
+                $href = htmlspecialchars( $href );
+                return true;
+            }
+            else 
+                if ( $href[0] != '/' )
+                {
+                    $href = '/' . $href;
+                }
+        
         $sys = eZSys::instance();
-        $dir = !$ignoreIndexDir ? $sys->indexDir() : $sys->wwwDir();
-        $serverURL = $serverURL === 'full' ? $sys->serverURL() : '' ;
+        $dir = ! $ignoreIndexDir ? $sys->indexDir() : $sys->wwwDir();
+        $serverURL = $serverURL === 'full' ? $sys->serverURL() : '';
         $href = $serverURL . $dir . $href;
-        if ( !$ignoreIndexDir )
+        if ( ! $ignoreIndexDir )
         {
             $href = preg_replace( "#^(//)#", "/", $href );
             $href = preg_replace( "#(^.*)(/+)$#", "\$1", $href );
         }
         $href = str_replace( '&amp;amp;', '&amp;', htmlspecialchars( $href ) );
-
+        
         if ( $href == "" )
             $href = "/";
-
+        
         return $href;
     }
 

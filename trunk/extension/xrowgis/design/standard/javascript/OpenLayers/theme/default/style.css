@@ -28,6 +28,7 @@ div.olLayerDiv {
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 15px !important;
 }
+
 .olControlAttribution {
     font-size: smaller; 
     right: 3px; 
@@ -431,3 +432,12 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive {
     background-position: -26px -24px;
 }
+
+/*
+SOME MODIFICATIONS CONCERNING THE POPUPS OF THE MAP
+*/
+
+.olLayerGooglePoweredBy.olLayerGoogleV3.gmnoprint {
+    visibility:hidden;
+}
+
