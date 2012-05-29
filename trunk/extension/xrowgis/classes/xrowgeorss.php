@@ -4,6 +4,7 @@ class xrowGEORSS
 {
     public $nodeID;
     public $feed;
+    public $cache;
 
     function __construct( $nodeID )
     {
@@ -19,52 +20,41 @@ class xrowGEORSS
         
         $this->feed->generator = eZSys::serverURL();
         $link = '/xrowgis/georssserver/' . $this->nodeID;
-        $this->feed->id = self::transformURI( $link, true, 'full' );
+        $this->feed->id = self::transformURI( null, true, 'full' );
         $this->feed->title = $parent->attribute( 'name' );
         $this->feed->link = eZSys::serverURL();
-        $this->feed->description = 'Hannover.de GEORSS Feed Channel';
+        $this->feed->description = 'GEORSS Feed Channel';
         $this->feed->language = eZLocale::currentLocaleCode();
+        $list = eZContentClass::fetchAllClasses();
         
         foreach ( $treeNodes as $node )
         {
-            $item = $this->feed->add( 'item' );
-            $item->title = $node->getName();
-            $link = $node->attribute( 'url_alias' );
-            $item->link = self::transformURI( $link, true, 'full' );
-            $item->id = self::transformURI( $link, true, 'full' );
-            
             $dm = $node->dataMap();
-            
-            foreach ( $dm as $attribute )
+            if ( $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'has_content' ) && ( $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->latitude != 0 || $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->longitude != 0 ) )
             {
+                $item = $this->feed->add( 'item' );
+                $item->title = $node->getName();
+                $link = $node->attribute( 'url_alias' );
+                $item->link = self::transformURI( $link, true, 'full' );
+                $item->id = self::transformURI( $link, true, 'full' );
                 
-                if ( $attribute->attribute( 'data_type_string' ) == 'ezxmltext' || $attribute->attribute( 'data_type_string' ) == 'eztext' )
-                {
-                    if ( empty( $item->description ) )
-                    {
-                        if ( $attribute->attribute( 'data_type_string' ) == 'ezxmltext' )
-                        {
-                            $outputHandler = new eZXHTMLXMLOutput( $attribute->attribute( 'data_text' ), false, $attribute );
-                            $htmlContent = $outputHandler->outputText();
-                            $item->description = htmlspecialchars( trim( $htmlContent ) );
-                        }
-                        else
-                        {
-                            $item->description = htmlspecialchars( $attribute->attribute( 'content' ) );
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                if ( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_type_string' ) == eZXMLTextType::DATA_TYPE_STRING )
+                {eZDebug::accumulatorStart( __METHOD__, 'GeoRSS', __METHOD__ );
+                    $outputHandler = new xrowRSSOutputHandler( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_text' ), false );
+                    $htmlContent = $outputHandler->outputText();
+                    $item->description = htmlspecialchars( trim( $htmlContent ) );
+                    eZDebug::accumulatorStop( __METHOD__ );
                 }
-                if ( $attribute->attribute( 'data_type_string' ) == xrowGIStype::DATATYPE_STRING && $attribute->attribute( 'has_content' ) && ( $attribute->attribute( 'content' )->latitude != 0 || $attribute->attribute( 'content' )->longitude != 0 ) )
+                else
                 {
-                    ezcFeed::registerModule( 'GeoRss', 'ezcFeedGeoModule', 'georss' );
-                    $module = $item->addModule( 'GeoRss' );
-                    $module->lat = $attribute->attribute( 'content' )->latitude;
-                    $module->long = $attribute->attribute( 'content' )->longitude;
+                    $item->description = htmlspecialchars( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'content' ) );
                 }
+                ezcFeed::registerModule( 'GeoRss', 'ezcFeedGeoRssModule', 'georss' );
+                $module = $item->addModule( 'GeoRss' );
+                //$module->point = $attribute->attribute( 'content' )->latitude;
+                $module->lat = $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->latitude;
+                $module->long = $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->longitude;
+                
             }
         }
         return $this->feed;
@@ -72,10 +62,13 @@ class xrowGEORSS
 
     function fetchTreeNode()
     {
+        eZDebug::accumulatorStart( __METHOD__, 'GeoRSS', __METHOD__ );
+        self::getClasses();
         $params = array();
         $params['ClassFilterType'] = 'include';
-        $params['ClassFilterArray'] = self::getClasses();
-        
+        $params['ClassFilterArray'] = $this->cache['class_identifier'];
+        #@TODO add custom filter to only select items with gis content
+        eZDebug::accumulatorStop( __METHOD__ );
         return eZContentObjectTreeNode::subTreeByNodeID( $params, $this->nodeID );
     }
 
@@ -86,6 +79,7 @@ class xrowGEORSS
 
     function getClasses()
     {
+        
         $db = eZDB::instance();
         $sql = "SELECT DISTINCT I.contentclass_id, N.identifier FROM `ezcontentclass_attribute` AS I INNER JOIN `ezcontentclass` AS N On I.contentclass_id = N.id WHERE I.data_type_string ='" . xrowGIStype::DATATYPE_STRING . "'";
         
@@ -94,19 +88,26 @@ class xrowGEORSS
         
         foreach ( $results as $key => $result )
         {
-            $retVal[] = $results[$key]['identifier'];
+            $sql = "SELECT identifier FROM `ezcontentclass_attribute` WHERE (data_type_string = '" . eZXMLTextType::DATA_TYPE_STRING . "' OR data_type_string = '" . eZTextType::DATA_TYPE_STRING . "') AND contentclass_id = '" . $results[$key]['contentclass_id'] . "' ORDER BY data_type_string DESC";
+            $res = $db->arrayQuery( $sql );
+            $retVal['class_identifier'][] = $results[$key]['identifier'];
+            $retVal['cache'][$results[$key]['identifier']]['text'] = $res[0]['identifier'];
+            
+            $sql = "SELECT identifier FROM `ezcontentclass_attribute` WHERE data_type_string = '" . xrowGIStype::DATATYPE_STRING . "'  AND contentclass_id = '" . $results[$key]['contentclass_id'] . "'";
+            $res = $db->arrayQuery( $sql );
+            $retVal['cache'][$results[$key]['identifier']]['gis'] = $res[0]['identifier'];
+            
         }
         
-        return $retVal;
+        $this->cache = $retVal;
     }
 
     function transformURI( $href, $ignoreIndexDir = false, $serverURL = null )
     {
         if ( $serverURL === null )
         {
-            $serverURL = ezu::$transformURIMode;
+            $serverURL = eZURI::getTransformURIMode();
         }
-        
         if ( preg_match( "#^[a-zA-Z0-9]+:#", $href ) || substr( $href, 0, 2 ) == '//' )
             return false;
         

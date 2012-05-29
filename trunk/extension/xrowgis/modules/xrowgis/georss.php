@@ -20,6 +20,7 @@ header( 'Content-Type: application/xml; charset=' . $httpCharset );
 header( 'Content-Length: ' . strlen( $xml ) );
 
 while ( @ob_end_clean() );
+
 echo $xml;
 eZExecution::cleanExit();
 
