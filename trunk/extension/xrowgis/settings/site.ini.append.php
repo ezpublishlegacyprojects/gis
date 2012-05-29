@@ -7,10 +7,10 @@ TranslationExtensions[]=xrowgis
 ExtensionAutoloadPath[]=xrowgis
 
 [SiteAccessSettings]
-AnonymousAccessList[]=xrowgis/georssserver
+AnonymousAccessList[]=xrowgis/georss
 
 [RoleSettings]
-PolicyOmitList[]=xrowgis/georssserver
+PolicyOmitList[]=xrowgis/georss
 
 [RSSSettings]
 AvailableVersionList[]=GEORSS 2.0
