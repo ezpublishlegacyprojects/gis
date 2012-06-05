@@ -18,11 +18,11 @@
         	{
         		options.css = 'extension/xrowgis/design/standard/javascript/OpenLayers/theme/default/style.css';
         	}
-        	if(typeof(options.point) == 'undefined')
+        	if(typeof(options.point['image']) == 'undefined')
         	{
-        		options.point = 'extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png';
+        		options.point['image'] = 'extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png';
         	}
-            
+
         	map = new OpenLayers.Map({
                 div : options.div,
                 controls: [],
@@ -38,13 +38,17 @@
                 default:
                     osm = new OpenLayers.Layer.OSM()
                 break;
-        }
-
+            }
+            alert(print_r(options.point));
+            console.debug(options.point);
         styledPoint = new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
-                pointRadius : "13",
-                externalGraphic : options.point,
-                cursor : 'pointer'
+            	graphicWidth:options.point.width,
+            	graphicHeight:options.point.height,
+            	graphicXOffset:options.point.xoffset,
+            	graphicYOffset:options.point.yoffset,
+                externalGraphic:options.point.image,
+                cursor:'pointer'
             })
         }),
         // create Vector layer
@@ -92,31 +96,65 @@
             jQuery('#xrowGIS-country-input').val('');
         }
         },
-        createRSSMap:function () {
-            if(typeof options.url != "undefined")
+        createRSSMap:function (options) {
+        	var map, 
+        		osm,
+        		styledPoint;
+        	
+        	if(typeof options.url != "undefined")
             {
                 if(typeof options.proxy != "undefined")
                 {
                     OpenLayers.ProxyHost = options.proxy;
                 }
-                
-                 var map = new OpenLayers.Map({
-                     div : "mapContainer",
-//                     controls: [],
-//                     theme: null,
-                     units : "m",
-                     maxResolution : 'auto',
-                 });
 
-                 var osm = new OpenLayers.Layer.OSM();
+            map = new OpenLayers.Map({
+                div : "mapContainer",
+                units : "m",
+                maxResolution : 'auto',
+            });
 
-                 map.addLayers([ osm ]);
-                 map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
-//                 map.addControl(new OpenLayers.Control.LayerSwitcher());
-                 var geoRSS = new OpenLayers.Layer.GeoRSS( 'GeoRSS', options.url);
-                 map.addLayer(geoRSS);
-//                 map.addControl(new OpenLayers.Control.PanPanel());
-//                 map.addControl(new OpenLayers.Control.ZoomPanel());
+            osm = new OpenLayers.Layer.OSM()
+            map.addLayers([ osm ]);
+            map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            
+            var styledPoint=new OpenLayers.StyleMap({
+                "default" : new OpenLayers.Style({
+                    pointRadius : "13",
+                    externalGraphic : "http://openlayers.org/api/img/marker.png",
+                    cursor : 'pointer'
+                }),
+                "select" : new OpenLayers.Style({
+                    pointRadius : "13"
+                })
+            });
+            
+            markerLayer = new OpenLayers.Layer.GML('GeoRSS',
+                                          options.url, {
+                format: OpenLayers.Format.GeoRSS,
+                styleMap: styledPoint
+            });
+            map.addLayer(markerLayer);
+            
+            var popupControl = new OpenLayers.Control.SelectFeature(markerLayer, {
+              onSelect: function(feature) {
+                  var pos = feature.geometry;
+                  if (typeof popup != "undefined") {
+                      map.removePopup(popup);
+                  }
+                  popup = new OpenLayers.Popup("popup",
+                      new OpenLayers.LonLat(pos.x, pos.y),
+                      new OpenLayers.Size(200,200),
+                      "<h3>" + feature.attributes.title + "</h3>" +
+                      feature.attributes.description,
+                      true);
+//                  popup.
+                  map.addPopup(popup);
+              }
+            }); 
+            map.addControl(popupControl);
+            popupControl.activate();
             }
         },
         updateMap : function(options) {
@@ -399,3 +437,28 @@ jQuery(document)
                                         });
                     }
                 }));
+
+function print_r(arr,level) {
+	var dumped_text = "";
+	if(!level) level = 0;
+
+	//The padding given at the beginning of the line.
+	var level_padding = "";
+	for(var j=0;j<level+1;j++) level_padding += "    ";
+
+	if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+	    for(var item in arr) {
+	        var value = arr[item];
+
+	        if(typeof(value) == 'object') { //If it is an array,
+	            dumped_text += level_padding + "'" + item + "' ...\n";
+	            dumped_text += dump(value,level+1);
+	        } else {
+	            dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+	        }
+	    }
+	} else { //Stings/Chars/Numbers etc.
+	    dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+	}
+	return dumped_text;
+	}

@@ -188,7 +188,7 @@ div.olControlSaveFeaturesItemInactive {
 }   
 
 .olControlPanPanel {
-    top: 10px;
+    top: 15px;
     left: 5px;
 }  
 
@@ -431,13 +431,5 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive {
     background-position: -26px -24px;
-}
-
-/*
-SOME MODIFICATIONS CONCERNING THE POPUPS OF THE MAP
-*/
-
-.olLayerGooglePoweredBy.olLayerGoogleV3.gmnoprint {
-    visibility:hidden;
 }
 
