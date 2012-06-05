@@ -163,7 +163,7 @@
 {def $latitude = $attribute.content.latitude}
 {def $longitude = $attribute.content.longitude}
 
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>  -->
 <script type="text/javascript">
 {literal}
     var options = {

@@ -13,7 +13,9 @@
         createMap : function (options) {
             var controls,
                 map = new OpenLayers.Map({
+                controls: [],
                 div : "mapContainer",
+                theme: options.css,
                 projection : new OpenLayers.Projection("EPSG:900913"),
                 displayProjection : new OpenLayers.Projection("EPSG:4326"),
                 units : "m",
@@ -22,49 +24,11 @@
                         20037508, 20037508.34)
             });
             switch (options.name) {
-            case "Google":
-                // create Google layer
-                var layer = new OpenLayers.Layer.Google("Google Streets", {
-                    numZoomLevels : 20
-                }),
-                    gsat = new OpenLayers.Layer.Google("Google Satellite", {
-                    type : google.maps.MapTypeId.SATELLITE,
-                    numZoomLevels : 22
-                });
-                break;
-/*            case "MapGuide":
-//              create MapGuide layer
-//              map.maxExtent= new OpenLayers.Bounds(516000,5774000,590000,5838000);
-                map.maxResolution= 'auto';
-                var url = "localhost:8008/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous&";
-                var params = {
-                    mapdefinition: 'Library://Samples/Hannover_Land/Maps/Hannover.MapDefinition'
-                };
-                var layer = new OpenLayers.Layer.MapGuide("MapGuide", url, params, {
-                    isBaseLayer: true,
-                    transitionEffect: "resize",
-                    buffer: 1,
-                    useOverlay: false,
-                    useAsyncOverlay: false,
-                    singleTile: true,
-                });
-                
-                var gsat = new OpenLayers.Layer.Google("Google Satellite", {
-                    type : google.maps.MapTypeId.SATELLITE,
-                    numZoomLevels : 22
-                });
-                break;
-*/
                 default:
-                    var layer = new OpenLayers.Layer.Google("Google Streets", {
-                        numZoomLevels : 20
-                    }),
-                        gsat = new OpenLayers.Layer.Google("Google Satellite", {
-                        type : google.maps.MapTypeId.SATELLITE,
-                        numZoomLevels : 22
-                    });
+                	osm = new OpenLayers.Layer.OSM()
                 break;
         }
+
         var styledPoint = new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
                 pointRadius : "13",
@@ -73,13 +37,15 @@
             })
         }),
         // create OSM layer
-            mapnik = new OpenLayers.Layer.OSM(),
+//            mapnik = new OpenLayers.Layer.OSM(),
         // create Vector layer
             markers = new OpenLayers.Layer.Vector("Markers", {
             displayInLayerSwitcher : false,
             styleMap : styledPoint
         });
-        map.addLayers([ layer, gsat, mapnik, markers ]);
+        map.addLayers([ osm, markers ]);
+//        map.addLayers([ layer, gsat, mapnik, markers ]);
+        
         var lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
                 new OpenLayers.Projection(map.displayProjection), map
                         .getProjectionObject());
@@ -89,6 +55,7 @@
                 'onComplete' : this.onCompleteMove
             })
         }
+        
         map.addControl(controls['drag']);
 
         if (options.drag == true) {
@@ -103,8 +70,13 @@
         this.drawFeatures(params);
         
         map.setCenter(lonLat, options.zoom);
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
-        map.addControl(new OpenLayers.Control.MousePosition());
+        map.addControl(new OpenLayers.Control.ScaleLine());
+        map.addControl(new OpenLayers.Control.PanPanel());
+        map.addControl(new OpenLayers.Control.ZoomPanel());
+//        map.addControl(new OpenLayers.Control.Navigation());
+//        map.addControl(new OpenLayers.Control.LayerSwitcher());
+//        map.addControl(new OpenLayers.Control.MousePosition());
+//        map.render("mapContainer");
         
         if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
         {
@@ -126,23 +98,21 @@
                 
                  var map = new OpenLayers.Map({
                      div : "mapContainer",
+//                     controls: [],
+//                     theme: null,
                      units : "m",
                      maxResolution : 'auto',
                  });
+                 
+                  var osm = new OpenLayers.Layer.OSM();
 
-                  var layer = new OpenLayers.Layer.Google("Google Streets", {
-                      numZoomLevels : 20
-                  }),
-                      gsat = new OpenLayers.Layer.Google("Google Satellite", {
-                      type : google.maps.MapTypeId.SATELLITE,
-                      numZoomLevels : 22
-                  });
-
-                 map.addLayers([ layer, gsat ]);
+                 map.addLayers([ osm ]);
                  map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
-                 map.addControl(new OpenLayers.Control.LayerSwitcher());
+//                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                  var geoRSS = new OpenLayers.Layer.GeoRSS( 'GeoRSS', options.url);
                  map.addLayer(geoRSS);
+//                 map.addControl(new OpenLayers.Control.PanPanel());
+//                 map.addControl(new OpenLayers.Control.ZoomPanel());
             }
         },
         updateMap : function(options) {
@@ -290,7 +260,6 @@
             });
         }
     };
-
     jQuery.fn.onCompleteMove = function(feature) {
         var newLonLat = new OpenLayers.LonLat(feature.geometry.x,
                 feature.geometry.y).transform(new OpenLayers.Projection(
@@ -309,7 +278,7 @@
 
         jQuery().servemap( 'updateMap', data );
     };
-
+    
     jQuery.fn.drawFeatures = function(options) {
         var layer = options.layer;
         var map = options.map;

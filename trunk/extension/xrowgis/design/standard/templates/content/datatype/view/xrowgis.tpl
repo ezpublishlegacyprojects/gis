@@ -60,7 +60,7 @@
     {def $longitude = $attribute.content.longitude}
 {/if}
     
-<script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+<!-- <script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>  -->
 <script>
 {literal}
     var options = {
@@ -68,6 +68,7 @@
         lat:'{/literal}{$latitude}{literal}',
         lon:'{/literal}{$longitude}{literal}',
         zoom:'{/literal}{ezini(ezini("GISSettings","Interface","xrowgis.ini"),"DefaultZoom","xrowgis.ini")}{literal}',
+        css : '{/literal}{"stylesheets/openlayers-custom.css"|ezdesign}{literal}',
         drag :false
         };
     
