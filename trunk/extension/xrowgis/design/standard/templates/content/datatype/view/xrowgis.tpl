@@ -5,7 +5,6 @@
 <div>
 {if $attribute.has_content}
     <div style="float: left;">
-<!--    <p style="font-weight:bold;">{'Geographic location'|i18n( 'extension/xrowgis' )}</p>-->
 <br />
     <table>
 {if is_set($relatedObject)}
@@ -59,16 +58,16 @@
     {def $latitude = $attribute.content.latitude}
     {def $longitude = $attribute.content.longitude}
 {/if}
-    
-<!-- <script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>  -->
+
 <script>
 {literal}
     var options = {
+        div:'mapContainer',
         name:'{/literal}{ezini("GISSettings","Interface","xrowgis.ini")}{literal}',
         lat:'{/literal}{$latitude}{literal}',
         lon:'{/literal}{$longitude}{literal}',
         zoom:'{/literal}{ezini(ezini("GISSettings","Interface","xrowgis.ini"),"DefaultZoom","xrowgis.ini")}{literal}',
-        css : '{/literal}{"stylesheets/openlayers-custom.css"|ezdesign}{literal}',
+        css : '{/literal}{"extension/xrowgis/design/standard/stylesheets/openlayers-custom.css"|ezroot(no, full)}{literal}',
         drag :false
         };
     

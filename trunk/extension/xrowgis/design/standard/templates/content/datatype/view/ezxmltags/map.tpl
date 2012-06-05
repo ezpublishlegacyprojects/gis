@@ -5,7 +5,7 @@
 <div class="element mapContainer" style="float: right;">
     <div id="mapContainer" style="width: 400px; height: 400px;"></div>
 </div>
-<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.6&amp;sensor=false"></script> -->
+
 <script type="text/javascript">
 {literal}
     var options = {
@@ -15,29 +15,9 @@
         zoom:'{/literal}{ezini("GISSettings","zoom","xrowgis.ini")}{literal}',
         proxy:'{/literal}{ezini("GISSettings","proxy","xrowgis.ini")}{literal}',
         url:'{/literal}{$url}{literal}',
+        css : '{/literal}{"stylesheets/openlayers-custom.css"|ezdesign}{literal}',
         drag : false
         };
     jQuery(document).ready(jQuery().servemap( 'createRSSMap', options ));
 {/literal}
 </script>
-<!-- 
-<script type="text/javascript">
-{literal}
-    var options = {
-        name:'OpenLayers',
-        lat:'{/literal}{ezini("GISSettings","latitude","xrowgis.ini")}{literal}',
-        lon:'{/literal}{ezini("GISSettings","longitude","xrowgis.ini")}{literal}',
-        zoom:'{/literal}{ezini("GISSettings","zoom","xrowgis.ini")}{literal}',
-        proxy:'{/literal}{ezini("GISSettings","proxy","xrowgis.ini")}{literal}',
-        url:'{/literal}{$url}{literal}',
-        drag : false
-        };
-    jQuery(document).ready(
-            jQuery( '#div.mapContainer' ).map( "Backend", options );
-            BackendMap -> XROWMap
-            RSSMap -> XROWMap
-            PoiMap -> XROWMap
-     );
-{/literal}
-</script>
- -->

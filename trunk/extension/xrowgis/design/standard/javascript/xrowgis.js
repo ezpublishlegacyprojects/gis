@@ -11,42 +11,50 @@
 (function () {
     var methods = {
         createMap : function (options) {
-            var controls,
-                map = new OpenLayers.Map({
+            
+        	var controls, map, styledPoint, lonLat, params;
+        	
+        	if(typeof(options.css) == 'undefined')
+        	{
+        		options.css = 'extension/xrowgis/design/standard/javascript/OpenLayers/theme/default/style.css';
+        	}
+        	if(typeof(options.point) == 'undefined')
+        	{
+        		options.point = 'extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png';
+        	}
+            
+        	map = new OpenLayers.Map({
+                div : options.div,
                 controls: [],
-                div : "mapContainer",
-                theme: options.css,
+                theme : options.css,
                 projection : new OpenLayers.Projection("EPSG:900913"),
                 displayProjection : new OpenLayers.Projection("EPSG:4326"),
                 units : "m",
                 maxResolution : 156543.0339,
-                maxExtent : new OpenLayers.Bounds(-20037508, -20037508,
-                        20037508, 20037508.34)
+                maxExtent : new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34)
             });
+
             switch (options.name) {
                 default:
-                	osm = new OpenLayers.Layer.OSM()
+                    osm = new OpenLayers.Layer.OSM()
                 break;
         }
 
-        var styledPoint = new OpenLayers.StyleMap({
+        styledPoint = new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
                 pointRadius : "13",
-                externalGraphic : "http://openlayers.org/api/img/marker.png",
+                externalGraphic : options.point,
                 cursor : 'pointer'
             })
         }),
-        // create OSM layer
-//            mapnik = new OpenLayers.Layer.OSM(),
         // create Vector layer
             markers = new OpenLayers.Layer.Vector("Markers", {
             displayInLayerSwitcher : false,
             styleMap : styledPoint
         });
         map.addLayers([ osm, markers ]);
-//        map.addLayers([ layer, gsat, mapnik, markers ]);
         
-        var lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
+        lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
                 new OpenLayers.Projection(map.displayProjection), map
                         .getProjectionObject());
 
@@ -55,28 +63,24 @@
                 'onComplete' : this.onCompleteMove
             })
         }
-        
+
         map.addControl(controls['drag']);
 
         if (options.drag == true) {
             controls['drag'].activate();
         }
 
-        var params = {
+        params = {
             map : map,
             lonLat : lonLat,
             layer : markers
         }
         this.drawFeatures(params);
-        
+
         map.setCenter(lonLat, options.zoom);
-        map.addControl(new OpenLayers.Control.ScaleLine());
+        map.addControl(new OpenLayers.Control.Navigation());
         map.addControl(new OpenLayers.Control.PanPanel());
         map.addControl(new OpenLayers.Control.ZoomPanel());
-//        map.addControl(new OpenLayers.Control.Navigation());
-//        map.addControl(new OpenLayers.Control.LayerSwitcher());
-//        map.addControl(new OpenLayers.Control.MousePosition());
-//        map.render("mapContainer");
         
         if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
         {
@@ -103,8 +107,8 @@
                      units : "m",
                      maxResolution : 'auto',
                  });
-                 
-                  var osm = new OpenLayers.Layer.OSM();
+
+                 var osm = new OpenLayers.Layer.OSM();
 
                  map.addLayers([ osm ]);
                  map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
@@ -135,6 +139,7 @@
                                         .append(
                                                 '<div id="mapContainer" style="width: 400px; height: 400px;"></div>');
                                 var options = {
+                                	div : 'mapContainer',
                                     name : result.content.name,
                                     lat : result.content.lat,
                                     lon : result.content.lon,
@@ -214,6 +219,7 @@
         setMapCenter : function () {
             jQuery.ez('xrowGIS_page::getMapCenter', {}, function(result) {
                     var options = {
+                    	div : 'mapContainer',
                         name : result.content.name,
                         lat : result.content.lat,
                         lon : result.content.lon,
@@ -228,6 +234,7 @@
             jQuery.ez('xrowGIS_page::addRelation', data, function(result) {
                 if (result.content != null) {
                     var options = {
+                    	div : 'mapContainer',
                         name : result.content.name,
                         lat : result.content.lat,
                         lon : result.content.lon,
@@ -243,6 +250,7 @@
             jQuery.ez('xrowGIS_page::releaseRelation', data, function(result) {
                 jQuery('.ajaxupdate').html(result.content.template);
                 var options = {
+                	div : 'mapContainer',
                     name : result.content.name,
                     lat : result.content.lat,
                     lon : result.content.lon,
@@ -269,6 +277,7 @@
         jQuery('#xrowGIS-lat').val(newLonLat.lat);
         
         var data = {
+        		div : 'mapContainer',
                 lat : newLonLat.lat,
                 lon : newLonLat.lon,
                 zoom : 16,

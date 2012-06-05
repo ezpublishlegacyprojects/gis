@@ -167,6 +167,7 @@
 <script type="text/javascript">
 {literal}
     var options = {
+    	div:'mapContainer',
         name:'{/literal}{ezini("GISSettings","Interface","xrowgis.ini")}{literal}',
         lat:'{/literal}{$latitude}{literal}',
         lon: '{/literal}{$longitude}{literal}',
