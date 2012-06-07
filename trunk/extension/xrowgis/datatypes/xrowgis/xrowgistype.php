@@ -405,8 +405,7 @@ class xrowGIStype extends eZDataType
     */
     function objectAttributeContent( $contentObjectAttribute )
     {
-        $gp = xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
-        return $gp;
+    	return xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
     }
 
     /*!
