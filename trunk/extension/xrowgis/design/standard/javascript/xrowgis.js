@@ -7,166 +7,67 @@
         return json;
     };
 })(jQuery);
-//@TODO : create the map object with an constructor 
+
 (function () {
     var methods = {
-        createMap : function (options) {
-        	var controls, map, styledPoint, lonLat, params;
-
-        	if(typeof(options.css) == 'undefined')
-        	{
-        		options.css = 'extension/xrowgis/design/standard/javascript/OpenLayers/theme/default/style.css';
-        	}
-        	map = new OpenLayers.Map({
-                div : options.div,
-                controls: [],
-                theme : options.css,
-                projection : new OpenLayers.Projection("EPSG:900913"),
-                displayProjection : new OpenLayers.Projection("EPSG:4326"),
-                units : "m",
-                maxResolution : 156543.0339,
-                maxExtent : new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34)
-            });
-        	if(typeof(options.point) != 'undefined')
-        	{
-                styledPoint = new OpenLayers.StyleMap({
-                    "default" : new OpenLayers.Style({
-                    	graphicWidth:options.point.width,
-                    	graphicHeight:options.point.height,
-                    	graphicXOffset:options.point.xoffset,
-                    	graphicYOffset:options.point.yoffset,
-                        externalGraphic:options.point.image,
-                        cursor:'pointer'
-                    })
+    		createMap : function (options) {
+                var controls,
+                    map = new OpenLayers.Map({
+                    div : "mapContainer",
+                    displayProjection : new OpenLayers.Projection("EPSG:4326"),
+                    units : "m",
+                    maxResolution : 156543.0339,
+                    maxExtent : new OpenLayers.Bounds(-20037508, -20037508,
+                            20037508, 20037508.34)
                 });
-        	}else
-        	{
-        		styledPoint=new OpenLayers.StyleMap({
-                    "default" : new OpenLayers.Style({
-                        pointRadius : "13",
-                        externalGraphic : "'extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png'",
-                        cursor : 'pointer'
-                    }),
-                    "select" : new OpenLayers.Style({
-                        pointRadius : "13"
-                    })
-                });
-        	}
-            switch (options.name) {
-                default:
-                    osm = new OpenLayers.Layer.OSM()
-                break;
-            }
-//            alert(print_r(options.point));
-//            console.debug(options.point);
-
-        // create Vector layer
-            markers = new OpenLayers.Layer.Vector("Markers", {
-            displayInLayerSwitcher : false,
-            styleMap : styledPoint
-        });
-        map.addLayers([ osm, markers ]);
-
-        lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
-                new OpenLayers.Projection(map.displayProjection), map
-                        .getProjectionObject());
-
-        controls = {
-            drag : new OpenLayers.Control.DragFeature(markers, {
-                'onComplete' : this.onCompleteMove
-            })
-        }
-        map.addControl(controls['drag']);
-
-        if (options.drag == true) {
-            controls['drag'].activate();
-        }
-
-        params = {
-            map : map,
-            lonLat : lonLat,
-            layer : markers
-        }
-        this.drawFeatures(params);
-
-        map.setCenter(lonLat, options.zoom);
-        map.addControl(new OpenLayers.Control.Navigation());
-        map.addControl(new OpenLayers.Control.PanPanel());
-        map.addControl(new OpenLayers.Control.ZoomPanel());
-//BACKEND        
-        if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
-        {
-            jQuery.ajaxSetup({async : false});
-            jQuery().servemap('setMapCenter');
-            jQuery('#recomContainer').css('display', 'none');
-            jQuery('#xrowGIS-lon').val('');
-            jQuery('#xrowGIS-lat').val('');
-            jQuery('#xrowGIS-country-input').val('');
-        }
-        },
-//BACKEND
-        createRSSMap:function (options) {
-        	var map, 
-        		osm,
-        		styledPoint;
-        	
-        	if(typeof options.url != "undefined")
-            {
-                if(typeof options.proxy != "undefined")
-                {
-                    OpenLayers.ProxyHost = options.proxy;
-                }
-
-            map = new OpenLayers.Map({
-                div : options.div,
-                units : "m",
-                maxResolution : 'auto',
-            });
-
-            osm = new OpenLayers.Layer.OSM()
-            map.addLayers([ osm ]);
-            map.setCenter(new OpenLayers.LonLat(options.lon,options.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), options.zoom);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            
-            var styledPoint=new OpenLayers.StyleMap({
+            var styledPoint = new OpenLayers.StyleMap({
                 "default" : new OpenLayers.Style({
                     pointRadius : "13",
                     externalGraphic : "http://openlayers.org/api/img/marker.png",
                     cursor : 'pointer'
-                }),
-                "select" : new OpenLayers.Style({
-                    pointRadius : "13"
                 })
+            }),
+            // create OSM layer
+                osm = new OpenLayers.Layer.OSM(),
+            // create Vector layer
+                markers = new OpenLayers.Layer.Vector("Markers", {
+                displayInLayerSwitcher : false,
+                styleMap : styledPoint
             });
-            
-            markerLayer = new OpenLayers.Layer.GML('GeoRSS',
-                                          options.url, {
-                format: OpenLayers.Format.GeoRSS,
-                styleMap: styledPoint
-            });
-            map.addLayer(markerLayer);
-            
-            var popupControl = new OpenLayers.Control.SelectFeature(markerLayer, {
-              onSelect: function(feature) {
-                  var pos = feature.geometry;
-                  if (typeof popup != "undefined") {
-                      map.removePopup(popup);
-                  }
-                  popup = new OpenLayers.Popup("popup",
-                      new OpenLayers.LonLat(pos.x, pos.y),
-                      new OpenLayers.Size(200,200),
-                      "<h3>" + feature.attributes.title + "</h3>" +
-                      feature.attributes.description,
-                      true);
-//                  popup.
-                  map.addPopup(popup);
-              }
-            }); 
-            map.addControl(popupControl);
-            popupControl.activate();
+            map.addLayers([osm, markers]);
+            var lonLat = new OpenLayers.LonLat(options.lon, options.lat).transform(
+                    new OpenLayers.Projection(map.displayProjection), map
+                            .getProjectionObject());
+            controls = {
+                drag : new OpenLayers.Control.DragFeature(markers, {
+                    'onComplete' : this.onCompleteMove
+                })
             }
-        },
-//BACKEND
+            map.addControl(controls['drag']);
+
+            if (options.drag == true) {
+                controls['drag'].activate();
+            }
+            var params = {
+                map : map,
+                lonLat : lonLat,
+                layer : markers
+            }
+            this.drawFeatures(params);
+
+            map.setCenter(lonLat, options.zoom);
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+            if((options.lat == '' || options.lon == '' || options.lat == 0 || options.lon == 0) && jQuery('#xrowGIS-rel').val()=='noRel')
+            {
+                jQuery.ajaxSetup({async : false});
+                jQuery().servemap('setMapCenter');
+                jQuery('#recomContainer').css('display', 'none');
+                jQuery('#xrowGIS-lon').val('');
+                jQuery('#xrowGIS-lat').val('');
+                jQuery('#xrowGIS-country-input').val('');
+            }
+            },
         updateMap : function(options) {
             if(typeof options == "object"){
                 var data = options;
@@ -204,7 +105,7 @@
                                 .ez(
                                         'xrowGIS_page::getAlpha2', {'lon':options.lon, 'lat':options.lat},function(result) {
                                             jQuery('#xrowGIS-country-input').val(result.content.country);
-                                        });//set the right country anyway based on lonlat
+                                        });// set the right country anyway based on lonlat
                                 
                                 var show = false;
                                 if(result.content.zip != null || typeof(result.content.zip) != 'undefined')
@@ -242,7 +143,7 @@
                                 }
                             });
         },
-//BACKEND
+
         takeOverAdress : function () {
             jQuery('#recomContainer').css('display', 'none');
             jQuery('#xrowGIS-street-input').val(jQuery('#xrowGIS-street').text());
@@ -251,7 +152,7 @@
             jQuery('#xrowGIS-city-input').val(jQuery('#xrowGIS-city').text());
             jQuery('#xrowGIS-state-input').val(jQuery('#xrowGIS-state').text());
         },
-//BACKEND
+
         resetForm : function () {
             jQuery.ajaxSetup({async : false});
             jQuery().servemap('setMapCenter');
@@ -266,7 +167,7 @@
             jQuery('#xrowGIS-state-input').val('');
             jQuery('#xrowGIS-country-input').val('');
         },
-//BACKEND
+
         setMapCenter : function () {
             jQuery.ez('xrowGIS_page::getMapCenter', {}, function(result) {
                     var options = {
@@ -281,7 +182,7 @@
                     jQuery().servemap( 'updateMap', options );
             });
         },
-//BACKEND
+
         addRelation : function(data) {
             jQuery.ez('xrowGIS_page::addRelation', data, function(result) {
                 if (result.content != null) {
@@ -298,7 +199,7 @@
                 }
             });
         },
-//BACKEND
+
         releaseRelation : function(data) {
             jQuery.ez('xrowGIS_page::releaseRelation', data, function(result) {
                 jQuery('.ajaxupdate').html(result.content.template);
@@ -315,13 +216,12 @@
                 .ez(
                         'xrowGIS_page::getAlpha2', {'lon':result.content.lon, 'lat':result.content.lat},function(result) {
                             jQuery('#xrowGIS-country-input').val(result.content.country);
-                        });//set the right country anyway based on lonlat
+                        });// set the right country anyway based on lonlat
                 jQuery('#xrowGIS-lon').val(result.content.lon);
                 jQuery('#xrowGIS-lat').val(result.content.lat);
             });
         }
     };
-//BACKEND
     jQuery.fn.onCompleteMove = function(feature) {
         var newLonLat = new OpenLayers.LonLat(feature.geometry.x,
                 feature.geometry.y).transform(new OpenLayers.Projection(
@@ -341,7 +241,7 @@
 
         jQuery().servemap( 'updateMap', data );
     };
-//BACKEND    
+
     jQuery.fn.drawFeatures = function(options) {
         var layer = options.layer;
         var map = options.map;
@@ -453,28 +353,3 @@ jQuery(document)
                                         });
                     }
                 }));
-
-function print_r(arr,level) {
-	var dumped_text = "";
-	if(!level) level = 0;
-
-	//The padding given at the beginning of the line.
-	var level_padding = "";
-	for(var j=0;j<level+1;j++) level_padding += "    ";
-
-	if(typeof(arr) == 'object') { //Array/Hashes/Objects 
-	    for(var item in arr) {
-	        var value = arr[item];
-
-	        if(typeof(value) == 'object') { //If it is an array,
-	            dumped_text += level_padding + "'" + item + "' ...\n";
-	            dumped_text += dump(value,level+1);
-	        } else {
-	            dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-	        }
-	    }
-	} else { //Stings/Chars/Numbers etc.
-	    dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-	}
-	return dumped_text;
-	}
