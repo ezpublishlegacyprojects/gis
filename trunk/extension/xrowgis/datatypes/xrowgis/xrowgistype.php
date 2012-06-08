@@ -405,20 +405,7 @@ class xrowGIStype extends eZDataType
     */
     function objectAttributeContent( $contentObjectAttribute )
     {
-        $data = xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ), false );
-        if ( is_numeric( $contentObjectAttribute->attribute( 'data_int' ) ) )
-        {
-            $co = eZContentObject::fetch( $contentObjectAttribute->attribute( 'data_int' ) );
-            if ( eZContentObject instanceof $co )
-            {
-                $data['object'] = $co;
-            }
-        }
-        else
-        {
-        	$data['object'] = null;
-        }
-        return $data;
+    	return xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
     }
 
     /*!
