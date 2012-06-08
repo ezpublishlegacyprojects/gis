@@ -126,8 +126,11 @@ class xrowGISServerfunctions extends ezjscServerFunctions
                 $tpl->setVariable( 'GISRelation', true );
                 $tpl->setVariable( 'relAttribute', $relCoa );
                 
-                $result['lon'] = $relCoa->content()->attribute( 'longitude' );
-                $result['lat'] = $relCoa->content()->attribute( 'latitude' );
+                if ($relCoa->content())
+                {
+	                $result['lon'] = $relCoa->content()->attribute( 'longitude' );
+	                $result['lat'] = $relCoa->content()->attribute( 'latitude' );
+                }
                 
                 $result['template'] = $tpl->fetch( 'design:xrowgis/xrowgis.tpl' );
                 
