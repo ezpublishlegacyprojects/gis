@@ -3,6 +3,10 @@
 [ExtensionSettings]
 DesignExtensions[]=xrowgis
 
+
+[StylesheetSettings]
+FrontendCSSFileList[]=xrowgis_core.css
+
 [JavaScriptSettings]
 BackendJavaScriptList[]=OpenLayers/OpenLayers.js
 FrontendJavaScriptList[]=OpenLayers/OpenLayers.js

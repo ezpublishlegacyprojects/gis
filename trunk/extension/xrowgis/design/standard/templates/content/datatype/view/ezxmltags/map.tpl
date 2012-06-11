@@ -12,8 +12,8 @@
     {def $div = 'mapContainer'}
 {/if}
 <!-- map content: START -->
-<div class="element mapContainer" class="custom_map">
-    <div class="XROWMap" id="{$div}" style="width: 400px; height: 400px;"
+<div class="element">
+    <div class="XROWMap custom_map" id="{$div}"
     data-layer="{if is_set($layer)}{$layer}{else}OSM{/if}"
     data-maptype="{if is_set($maptype)}{$maptype}{/if}"
     data-div="{$div}"
