@@ -12,13 +12,17 @@ XROWMap.prototype.init = function(element) {
     this.params;
     this.markers
 
+    if (this.options.css == 'false' || this.options.image == 'false') {
+        OpenLayers.Request.DEFAULT_CONFIG.url = location.host;//change the url from window.location.href to location .host
+    }
     if (this.options.css == 'false') {
-        this.options.css = 'extension/xrowgis/design/standard/javascript/OpenLayers/theme/default/style.css';
+        this.options.css = "/extension/xrowgis/design/standard/javascript/OpenLayers/theme/default/style.css";
     }
     if (this.options.image == 'false') {
-        this.options.image = "extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png";
+        this.options.image = "/extension/xrowgis/design/standard/javascript/OpenLayers/img/marker.png";
         this.size = new OpenLayers.Size(21,25);
     }
+
     this.map = new OpenLayers.Map({
         controls : [],
         theme : this.options.css,
@@ -28,19 +32,13 @@ XROWMap.prototype.init = function(element) {
         maxExtent : new OpenLayers.Bounds(-20037508, -20037508, 20037508,
                 20037508.34)
     });
-    
+
     switch (this.options.layer) {
     default:
         this.layer = new OpenLayers.Layer.OSM()
         break;
     }
-/*
-    // create Vector layer
-    this.markers = new OpenLayers.Layer.Vector("Markers", {
-        displayInLayerSwitcher : false,
-        styleMap : this.styledPoint
-    });
-*/
+    
     this.markers = new OpenLayers.Layer.Markers( "Markers" );
     
     this.map.addLayers([ this.layer, this.markers ]);
@@ -48,27 +46,7 @@ XROWMap.prototype.init = function(element) {
     this.lonLat = new OpenLayers.LonLat(this.options.lon, this.options.lat).transform(
             new OpenLayers.Projection(this.map.displayProjection), this.map
                     .getProjectionObject());
-/*
-    this.controls = {
-        drag : new OpenLayers.Control.DragFeature(this.markers, {
-            'onComplete' : this.onCompleteMove
-        })
-    }
-    this.map.addControl(this.controls['drag']);
 
-    if (this.options.drag == true) {
-        this.controls['drag'].activate();
-    }
-
-
-    this.params = {
-        map : this.map,
-        lonLat : this.lonLat,
-        layer : this.markers
-    }
-    this.drawFeatures(this.params);
-    -(this.size.w/2)+(this.options.xoffset), -(this.size.h+((this.options.yoffset)))
-*/
 //add simple Marker
     this.size = new OpenLayers.Size(this.options.width,this.options.height);
     this.xoffset = (this.size.w/2)+(Number(this.options.xoffset));

@@ -1,8 +1,4 @@
-{def $proxy = ezini("GISSettings","proxy","xrowgis.ini")
-     $maptype = "RSSMap"
-     $point = hash('width', 24, 'height', 32, 'xoffset', 0, 'yoffset', 0, 'image', 'extension/hannover/design/hannover/images/openlayers-custom/marker.png')
-     $css="extension/hannover/design/hannover/stylesheets/openlayers-custom.css"
-}
+{def $proxy = ezini("GISSettings","proxy","xrowgis.ini")}
      
 {def $url_array = $url|explode('://')}
 {if $url_array.0|eq('eznode')}
@@ -11,6 +7,7 @@
 {if is_set($div)|not}
     {def $div = 'mapContainer'}
 {/if}
+
 <!-- map content: START -->
 <div class="element">
     <div class="XROWMap custom_map" id="{$div}"
