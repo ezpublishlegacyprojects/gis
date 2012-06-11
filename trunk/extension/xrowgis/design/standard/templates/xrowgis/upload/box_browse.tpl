@@ -3,7 +3,7 @@
             fetch('content', 'node', hash( 'node_id', ezini( 'NodeSettings', 'RootNode', 'content.ini' ) ) ),
             fetch('content', 'node', hash( 'node_id', ezini( 'NodeSettings', 'MediaRootNode', 'content.ini' ) ) ),
             fetch('content', 'node', hash( 'node_id', ezini( 'NodeSettings', 'UserRootNode', 'content.ini' ) ) ) )
-     $box_has_access = fetch( 'user', 'has_access_to', hash( 'module', 'gis',
+     $box_has_access = fetch( 'user', 'has_access_to', hash( 'module', 'xrowgis',
                                                              'function', 'browse' ) )}
 <div class="panel_" id="browse_box" style="display: block; position: relative;">
     <div style="background-color: #eee; text-align: center">
