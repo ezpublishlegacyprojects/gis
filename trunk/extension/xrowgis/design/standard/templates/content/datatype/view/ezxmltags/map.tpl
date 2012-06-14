@@ -4,6 +4,9 @@
 {if $url_array.0|eq('eznode')}
     {set $url = concat('xrowgis/georss/', $url_array.1)|ezurl('no', 'full')}
 {/if}
+{if $url}
+    {def $maptype = "RSSMap"}
+{/if}
 {if is_set($div)|not}
     {def $div = 'mapContainer'}
 {/if}
@@ -11,8 +14,8 @@
 <!-- map content: START -->
 <div class="element">
     <div class="XROWMap custom_map" id="{$div}"
-    data-layer="{if is_set($layer)}{$layer}{else}OSM{/if}"
-    data-maptype="{if is_set($maptype)}{$maptype}{/if}"
+    data-layer="{if is_set($layer)}{$layer}{else}osm{/if}"
+    data-maptype="{if is_set($maptype)}{$maptype}{else}XROWMap{/if}"
     data-div="{$div}"
     data-lat="{if is_set($lat)}{$lat}{else}{ezini("GISSettings","latitude","xrowgis.ini")}{/if}"
     data-lon="{if is_set($lon)}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
