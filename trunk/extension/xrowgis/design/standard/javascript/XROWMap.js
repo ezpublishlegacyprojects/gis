@@ -12,6 +12,12 @@ XROWMap.prototype.init = function(element) {
     this.params;
     this.markers
 
+
+    if( $(element).height() == 0 )
+    {
+        $(element).height($(element).width());
+    }
+
     if (this.options.css == 'false' || this.options.image == 'false') {
         OpenLayers.Request.DEFAULT_CONFIG.url = location.host;//change the url from window.location.href to location .host
     }
@@ -65,6 +71,7 @@ XROWMap.prototype.init = function(element) {
     if(this.options.render == 'true'){
         this.map.render(this.options.div);
     }
+
 }// end XROWMap init
 
 $(document).ready(function() {
