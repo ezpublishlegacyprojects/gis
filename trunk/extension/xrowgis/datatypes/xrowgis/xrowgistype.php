@@ -158,8 +158,6 @@ class xrowGIStype extends eZDataType
         if ( is_object( $gp ) )
         {
             $gp->store();
-        
-     //            return true;
         }
         
         $contentClassAttributeID = $contentObjectAttribute->ContentClassAttributeID;

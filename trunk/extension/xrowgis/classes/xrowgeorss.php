@@ -39,11 +39,10 @@ class xrowGEORSS
                 $item->id = self::transformURI( $link, true, 'full' );
                 
                 if ( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_type_string' ) == eZXMLTextType::DATA_TYPE_STRING )
-                {eZDebug::accumulatorStart( __METHOD__, 'GeoRSS', __METHOD__ );
+                {
                     $outputHandler = new xrowRSSOutputHandler( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_text' ), false );
                     $htmlContent = $outputHandler->outputText();
                     $item->description = htmlspecialchars( trim( $htmlContent ) );
-                    eZDebug::accumulatorStop( __METHOD__ );
                 }
                 else
                 {
@@ -62,13 +61,12 @@ class xrowGEORSS
 
     function fetchTreeNode()
     {
-        eZDebug::accumulatorStart( __METHOD__, 'GeoRSS', __METHOD__ );
         self::getClasses();
         $params = array();
         $params['ClassFilterType'] = 'include';
         $params['ClassFilterArray'] = $this->cache['class_identifier'];
         #@TODO add custom filter to only select items with gis content
-        eZDebug::accumulatorStop( __METHOD__ );
+        
         return eZContentObjectTreeNode::subTreeByNodeID( $params, $this->nodeID );
     }
 
@@ -79,7 +77,6 @@ class xrowGEORSS
 
     function getClasses()
     {
-        
         $db = eZDB::instance();
         $sql = "SELECT DISTINCT I.contentclass_id, N.identifier FROM `ezcontentclass_attribute` AS I INNER JOIN `ezcontentclass` AS N On I.contentclass_id = N.id WHERE I.data_type_string ='" . xrowGIStype::DATATYPE_STRING . "'";
         
@@ -96,9 +93,8 @@ class xrowGEORSS
             $sql = "SELECT identifier FROM `ezcontentclass_attribute` WHERE data_type_string = '" . xrowGIStype::DATATYPE_STRING . "'  AND contentclass_id = '" . $results[$key]['contentclass_id'] . "'";
             $res = $db->arrayQuery( $sql );
             $retVal['cache'][$results[$key]['identifier']]['gis'] = $res[0]['identifier'];
-            
         }
-        
+
         $this->cache = $retVal;
     }
 

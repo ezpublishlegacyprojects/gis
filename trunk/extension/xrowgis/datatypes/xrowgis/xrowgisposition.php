@@ -95,8 +95,7 @@ class xrowGISPosition extends eZPersistentObject
                     'default' => '' , 
                     'required' => false 
                 ) 
-            )
-             , 
+            ) , 
             "keys" => array( 
                 "contentobject_attribute_id" , 
                 "contentobject_attribute_version" 
@@ -116,10 +115,10 @@ class xrowGISPosition extends eZPersistentObject
         {
             return $this->relation;
         }
-    	$contentObjectAttribute = eZContentObjectAttribute::fetch( $this->contentobject_attribute_id, $this->contentobject_attribute_version );
+        $contentObjectAttribute = eZContentObjectAttribute::fetch( $this->contentobject_attribute_id, $this->contentobject_attribute_version );
         if ( is_numeric( $contentObjectAttribute->DataInt ) )
         {
-        	#fetching related object
+            #fetching related object
             $co = eZContentObject::fetch( $contentObjectAttribute->DataInt );
             if ( $co instanceof eZContentObject )
             {

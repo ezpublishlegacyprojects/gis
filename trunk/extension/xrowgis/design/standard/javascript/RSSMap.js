@@ -33,7 +33,7 @@ RSSMap.prototype.start = function(element) {
         this.markerLayer = new OpenLayers.Layer.GML('GeoRSS', this.options.url,
                 {
                     format : OpenLayers.Format.GeoRSS,
-                    styleMap : this.styledPoint,
+                    styleMap : this.styledPoint
                 });
 
         this.map.addLayer(this.markerLayer);
@@ -63,6 +63,6 @@ RSSMap.prototype.start = function(element) {
         this.map.addControl(this.popupControl);
         this.popupControl.activate();
     }
-    this.map.render(this.options.div);//if we have a url we are going to render the GML, otherwise Parent should be rendered
-
+    console.log(this.map);
+	this.map.render(element);//if we have a url we are going to render the GML, otherwise Parent should be rendered
 }
