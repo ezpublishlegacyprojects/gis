@@ -10,8 +10,20 @@ XROWMap.prototype.init = function(element) {
     this.styledPoint;
     this.lonLat;
     this.params;
-    this.markers
+    this.markers;
+    this.config;
 
+    jQuery.ez('xrowGIS_page::getConfig', {}, function(result){
+        
+        saveConfig(result.content);
+        });
+    
+function saveConfig(e)
+{
+    this.options=e;
+};
+    console.log(this);
+    
     if ($(element).height() == 0) {
         $(element).height($(element).width());
     }
@@ -39,32 +51,33 @@ XROWMap.prototype.init = function(element) {
                     units : "m",
                     panMethod : OpenLayers.Easing.Quad.easeInOut,
                     panDuration : 75,
-                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001,
-                            5813000),
-                    scales : [ 500, 1000, 2000, 4000, 10000, 15000, 20000 ]
                 });
     
     switch (this.options.layer) {
-    default:
-
+    case 'LHH+Region':
+        this.map.setOptions(
+                {
+                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
+                    scales : [ 500, 1000, 2000, 4000, 10000, 15000, 20000 ]
+                });
         this.layer = new OpenLayers.Layer.WMS("Hannover Stadt",
                 "http://admin.hannover.de/geoserver/Hannover/wms",
                     {
-                        layers : "Hannover:Museen",
+                        layers : "Hannover:Hannover Stadt",
                         format : "image/png",
                         tiled : true
                     },
                     {
-                        maxResolution : 6,
                         isBaseLayer : true,
                         buffer : 1
                     });
-
-        // this.layer = new OpenLayers.Layer.OSM('OSM_LAYER',
-        // "http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png");
+        break;
+    default:
+         this.layer = new OpenLayers.Layer.OSM('OSM_LAYER',
+         "http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png");
         break;
     }
-
+    
     this.markers = new OpenLayers.Layer.Markers("Markers");
 
     this.map.addLayers([ this.layer, this.markers ]);
@@ -85,50 +98,26 @@ XROWMap.prototype.init = function(element) {
     this.map.addControl(new OpenLayers.Control.Navigation());
     this.map.addControl(new OpenLayers.Control.PanPanel());
     this.map.addControl(new OpenLayers.Control.ZoomPanel());
+    
 /*
-    // support GetFeatureInfo
-    var map = this.map;
-    this.map.events.register('click', map, function(e) {
-        console.log(map);
-        var params_new =
-            {
-                REQUEST : "GetFeatureInfo",
-                EXCEPTIONS : "application/vnd.ogc.se_xml",
-                BBOX : map.getExtent().toBBOX(),
-                SERVICE : "WMS",
-                INFO_FORMAT : 'text/plain',
-                QUERY_LAYERS : map.layers[0].params.LAYERS,
-                FEATURE_COUNT : 50,
-                Layers : 'Hannover:Museen',
-                WIDTH : map.size.w,
-                HEIGHT : map.size.h,
-                format : 'image/png',
-                styles : map.layers[0].params.STYLES,
-                srs : map.layers[0].params.SRS
-            };
-
-        // handle the wms 1.3 vs wms 1.1 madness
-        if (map.layers[0].params.VERSION == "1.3.0") {
-            params_new.version = "1.3.0";
-            params_new.j = parseInt(e.xy.x);
-            params_new.i = parseInt(e.xy.y);
-        } else {
-            params_new.version = "1.1.1";
-            params_new.x = parseInt(e.xy.x);
-            params_new.y = parseInt(e.xy.y);
-        }
-
-        OpenLayers.loadURL(
-                "http://admin.hannover.de/geoserver/Hannover/wms",
-                params_new, this, setHTML, setHTML);
-        OpenLayers.Event.stop(e);
-    });
-
-    // sets the HTML provided into the nodelist element
-    function setHTML(response) {
-        console.log(response.responseText);
-    }
-*/
+ * // support GetFeatureInfo var map = this.map;
+ * this.map.events.register('click', map, function(e) { console.log(map); var
+ * params_new = { REQUEST : "GetFeatureInfo", EXCEPTIONS :
+ * "application/vnd.ogc.se_xml", BBOX : map.getExtent().toBBOX(), SERVICE :
+ * "WMS", INFO_FORMAT : 'text/plain', QUERY_LAYERS :
+ * map.layers[0].params.LAYERS, FEATURE_COUNT : 50, Layers : 'Hannover:Museen',
+ * WIDTH : map.size.w, HEIGHT : map.size.h, format : 'image/png', styles :
+ * map.layers[0].params.STYLES, srs : map.layers[0].params.SRS }; // handle the
+ * wms 1.3 vs wms 1.1 madness if (map.layers[0].params.VERSION == "1.3.0") {
+ * params_new.version = "1.3.0"; params_new.j = parseInt(e.xy.x); params_new.i =
+ * parseInt(e.xy.y); } else { params_new.version = "1.1.1"; params_new.x =
+ * parseInt(e.xy.x); params_new.y = parseInt(e.xy.y); }
+ * 
+ * OpenLayers.loadURL( "http://admin.hannover.de/geoserver/Hannover/wms",
+ * params_new, this, setHTML, setHTML); OpenLayers.Event.stop(e); }); // sets
+ * the HTML provided into the nodelist element function setHTML(response) {
+ * console.log(response.responseText); }
+ */
     // should we render the default Map?
     if (this.options.render == 'true') {
         this.map.render(element);
@@ -136,9 +125,7 @@ XROWMap.prototype.init = function(element) {
 }// end XROWMap init
 
 $(document).ready(function() {
-
     $('.XROWMap').each(function(index) {
-
         switch ($(this)[0].dataset.maptype) {
         case 'RSSMap':
             var map = new RSSMap();

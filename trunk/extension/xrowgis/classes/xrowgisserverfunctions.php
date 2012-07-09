@@ -126,10 +126,10 @@ class xrowGISServerfunctions extends ezjscServerFunctions
                 $tpl->setVariable( 'GISRelation', true );
                 $tpl->setVariable( 'relAttribute', $relCoa );
                 
-                if ($relCoa->content())
+                if ( $relCoa->content() )
                 {
-	                $result['lon'] = $relCoa->content()->attribute( 'longitude' );
-	                $result['lat'] = $relCoa->content()->attribute( 'latitude' );
+                    $result['lon'] = $relCoa->content()->attribute( 'longitude' );
+                    $result['lat'] = $relCoa->content()->attribute( 'latitude' );
                 }
                 
                 $result['template'] = $tpl->fetch( 'design:xrowgis/xrowgis.tpl' );
@@ -176,6 +176,13 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         $tpl->setVariable( 'attribute', $attribute );
         $result['template'] = $tpl->fetch( 'design:xrowgis/xrowgis.tpl' );
         
+        return $result;
+    }
+
+    public static function getConfig()
+    {
+        $ini = eZINI::instance( 'xrowgis.ini' );
+        $result['config'] = $ini->BlockValues;
         return $result;
     }
 

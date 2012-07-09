@@ -37,6 +37,7 @@ RSSMap.prototype.start = function(element) {
                 });
 
         this.map.addLayer(this.markerLayer);
+
         this.popupControl = new OpenLayers.Control.SelectFeature(
                 this.markerLayer,
                 {
@@ -63,6 +64,5 @@ RSSMap.prototype.start = function(element) {
         this.map.addControl(this.popupControl);
         this.popupControl.activate();
     }
-    console.log(this.map);
 	this.map.render(element);//if we have a url we are going to render the GML, otherwise Parent should be rendered
 }
