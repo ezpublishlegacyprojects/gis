@@ -44,7 +44,7 @@ RSSMap.prototype.start = function(element) {
                     onSelect : function(feature) {
                         this.pos = feature.geometry;
                         this.featureLonLat = new OpenLayers.LonLat(this.pos.x, this.pos.y);
-                        this.map.setCenter(this.featureLonLat, 14);//@TODO:get the zomm factor from the default ini
+                        this.map.setCenter(this.featureLonLat, 16);//@TODO:get the zomm factor from the default ini - comes from this.config
                         
                         if (typeof this.popup != "undefined") {
                             this.map.removePopup(this.popup);
