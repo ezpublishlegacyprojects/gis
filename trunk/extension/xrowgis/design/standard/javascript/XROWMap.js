@@ -12,9 +12,18 @@ XROWMap.prototype.init = function(element) {
     this.lonLat;
     this.params;
     this.markers;
+    this.zoom = this.config[this.options.view].Zoom;
     
     if ($(element).height() == 0) {
-        $(element).height($(element).width());
+        if(typeof(this.config[this.options.view].height)=='undefined')
+        {
+            $(element).height($(element).width());
+        }
+        else
+        {
+            $(element).height(this.config[this.options.view].height);
+        }
+        
     }
 
     if (this.options.css == 'false' || this.options.image == 'false') {
@@ -25,7 +34,7 @@ XROWMap.prototype.init = function(element) {
     }
     if (this.options.image == 'false') {
         this.options.image =  this.config.MapGenerals.icon.src;
-        this.size = new OpenLayers.Size(this.config.MapGenerals.width, this.config.MapGenerals.icon.height);
+        this.size = new OpenLayers.Size(this.config.MapGenerals.icon.width, this.config.MapGenerals.icon.height);
     }
     
     this.map = new OpenLayers.Map(
@@ -37,30 +46,28 @@ XROWMap.prototype.init = function(element) {
                     panMethod : OpenLayers.Easing.Quad.easeInOut,
                     panDuration : 75,
                 });
-    /*
-    if(typeof(this.config[this.options.layer].MapOptions)!='undefined')
-    {
 
-    }
-    */
     switch (this.options.layer) {
     case 'LHH+Region':// @TODO: make it generic
-        this.map.setOptions(
-                {
-                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
-                    scales : [ 5000, 1000, 2000, 4000, 10000, 15000, 20000 ]
-                });
         this.layer = new OpenLayers.Layer.WMS("Hannover Stadt",
                 "http://admin.hannover.de/geoserver/Hannover/wms",
                     {
                         layers : "Hannover:Hannover Stadt",
                         format : "image/png",
+                        transparent:true,
                         tiled : true
                     },
                     {
                         isBaseLayer : true,
-                        buffer : 1,
+                        buffer : 1
+
                     });
+        this.layer.addOptions(
+                {
+                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
+                    scales : [ 5000, 1000, 2000, 4000, 10000, 15000, 20000 ]
+                });
+        this.zoom = 1;
         break;
     default:
          this.layer = new OpenLayers.Layer.OSM('OSM_LAYER', "http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png");
@@ -84,7 +91,7 @@ XROWMap.prototype.init = function(element) {
     this.markers.addMarker(new OpenLayers.Marker(this.lonLat, this.icon));
     
     // add controls
-    this.map.setCenter(this.lonLat, this.config[this.options.view].Zoom);
+    this.map.setCenter(this.lonLat, this.zoom);
 
     if(typeof(this.config[this.options.view].Controls)!='undefined')
     {
