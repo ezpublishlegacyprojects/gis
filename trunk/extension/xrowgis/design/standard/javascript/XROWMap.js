@@ -49,6 +49,11 @@ XROWMap.prototype.init = function(element) {
 
     switch (this.options.layer) {
     case 'LHH+Region':// @TODO: make it generic
+        this.map.setOptions(
+                {
+                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
+                    scales : [100, 200 ,500, 1000, 3000, 6000, 10000 ]
+                });
         this.layer = new OpenLayers.Layer.WMS("Hannover Stadt",
                 "http://admin.hannover.de/geoserver/Hannover/wms",
                     {
@@ -62,11 +67,6 @@ XROWMap.prototype.init = function(element) {
                         buffer : 1
 
                     });
-        this.layer.addOptions(
-                {
-                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
-                    scales : [ 5000, 1000, 2000, 4000, 10000, 15000, 20000 ]
-                });
         this.zoom = 1;
         break;
     default:
