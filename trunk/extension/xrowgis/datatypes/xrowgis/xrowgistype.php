@@ -412,7 +412,7 @@ class xrowGIStype extends eZDataType
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
     	$gis_info = self::objectAttributeContent( $contentObjectAttribute );
-    	if( ( $gis_info->longitude = 0 OR is_null($gis_info->longitude) ) AND ( $gis_info->latitude = "0" OR is_null($gis_info->latitude) ) )
+    	if( is_null($gis_info) OR (( $gis_info->longitude == 0 OR is_null($gis_info->longitude) ) AND ( $gis_info->latitude == "0" OR is_null($gis_info->latitude) )) )
     	{
     		return false;
     	}
