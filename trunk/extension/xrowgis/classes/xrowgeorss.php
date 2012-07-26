@@ -5,6 +5,7 @@ class xrowGEORSS
     public $nodeID;
     public $feed;
     public $cache;
+    public $point;
 
     function __construct( $nodeID )
     {
@@ -17,6 +18,7 @@ class xrowGEORSS
         $treeNodes = self::fetchTreeNode();
         $parent = self::fetchParent();
         $this->feed = new ezcFeed();
+        $this->point = new gPoint();
         
         $this->feed->generator = eZSys::serverURL();
         $link = '/xrowgis/georssserver/' . $this->nodeID;
@@ -48,12 +50,15 @@ class xrowGEORSS
                 {
                     $item->description = htmlspecialchars( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'content' ) );
                 }
+                $this->point->setLongLat( $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->longitude, $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->latitude );
+                $this->point->convertLLtoTM();
+
                 ezcFeed::registerModule( 'GeoRss', 'ezcFeedGeoRssModule', 'georss' );
                 $module = $item->addModule( 'GeoRss' );
                 //$module->point = $attribute->attribute( 'content' )->latitude;
-                $module->lat = $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->latitude;
-                $module->long = $dm[$this->cache['cache'][$node->classIdentifier()]['gis']]->attribute( 'content' )->longitude;
-                
+                $module->lat = $this->point->utmNorthing;
+                $module->long = $this->point->utmEasting;
+            
             }
         }
         return $this->feed;
@@ -67,6 +72,7 @@ class xrowGEORSS
         $params['ClassFilterArray'] = $this->cache['class_identifier'];
         #@TODO add custom filter to only select items with gis content
         
+
         return eZContentObjectTreeNode::subTreeByNodeID( $params, $this->nodeID );
     }
 
@@ -94,7 +100,7 @@ class xrowGEORSS
             $res = $db->arrayQuery( $sql );
             $retVal['cache'][$results[$key]['identifier']]['gis'] = $res[0]['identifier'];
         }
-
+        
         $this->cache = $retVal;
     }
 

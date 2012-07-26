@@ -120,6 +120,7 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
                                                        this.gmlns,
                                                        this.featureName);
         var features = [];
+        
         for(var i=0; i<featureNodes.length; i++) {
             var feature = this.parseFeature(featureNodes[i]);
             if(feature) {
@@ -188,6 +189,7 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
             attributes = this.parseAttributes(node);
         }
         var feature = new OpenLayers.Feature.Vector(geometry, attributes);
+        
         feature.bounds = bounds;
         
         feature.gml = {
@@ -639,6 +641,7 @@ OpenLayers.Format.GML = OpenLayers.Class(OpenLayers.Format.XML, {
      * {String} A string representing the GML document.
      */
     write: function(features) {
+        
         if(!(OpenLayers.Util.isArray(features))) {
             features = [features];
         }

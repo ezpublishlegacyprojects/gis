@@ -154,7 +154,9 @@ OpenLayers.Layer.GML = OpenLayers.Class(OpenLayers.Layer.Vector, {
         }    
         
         var gml = this.format ? new this.format(options) : new OpenLayers.Format.GML(options);
+
         this.addFeatures(gml.read(doc));
+        
         this.events.triggerEvent("loadend");
     },
     

@@ -7,16 +7,16 @@ RSSMap.prototype.constructor = RSSMap;
 RSSMap.prototype.start = function(element) {
 	
 	this.init(element);//init parent Map
-    
+    this.parentMap = this.map;//we want to render the parent Map, if there is no return value from gml
     this.markerLayer;
     this.popupControl;
     this.popup;
     
-    if (this.options.url != "false" ) {
+    if (this.options.url != "false" ) {//if we have no url, render the default map
         if (this.options.proxy != "false") {
             OpenLayers.ProxyHost = this.options.proxy;
         }
-
+        
         this.styledPoint = new OpenLayers.StyleMap({
             "default" : new OpenLayers.Style({
                 graphicWidth : this.size.w,
@@ -30,6 +30,7 @@ RSSMap.prototype.start = function(element) {
         });
         
         this.markers.destroy();//remove parent Marker
+        //try { /* direkt objekt benutzen */ } catch (e) {}
         this.markerLayer = new OpenLayers.Layer.GML('GeoRSS', this.options.url,
                 {
                     format : OpenLayers.Format.GeoRSS,

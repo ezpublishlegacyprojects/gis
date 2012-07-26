@@ -4,122 +4,169 @@ XROWMap.prototype.start = function(element) {
     this.init(element);
 }
 XROWMap.prototype.init = function(element) {
+    var map, options={}, layersettings={}, tmp, featureLayerName = [], featureLayers=[], x=0;
+    this.map, this.layer, this.styledPoint, this.lonLat, this.markers, this.params={}, this.layerOptions={};
     this.options = element.dataset;
-    this.config = config;
-    this.map;
-    this.layer;
-    this.styledPoint;
-    this.lonLat;
-    this.params;
-    this.markers;
-    this.zoom = this.config[this.options.view].Zoom;
+    this.config = $('#'+this.options.config);
+    this.mapOptions=this.config.data('mapoptions');
+    this.projection = $(this.config).find('.baseLayer').data().projection;
+    Proj4js.defs["EPSG:25832"] = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs";//@TODO: Why the Hell is the def file not used?
+    this.zoom = this.mapOptions.mapview.zoom;
     
-    if ($(element).height() == 0) {
-        if(typeof(this.config[this.options.view].height)=='undefined')
+    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;//pink tiles avoiding
+    OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url from window.location.href to location .host
+    //OpenLayers.ProxyHost = "/cgi-bin/proxy.py?url=";
+    
+    //fix for elements which are not visibly at first, for e.g. like maps hidden in tabs
+    if(typeof(this.mapOptions.mapview.height)=='undefined')
+    {
+        if ($(element).height() == 0) 
         {
             $(element).height($(element).width());
         }
-        else
-        {
-            $(element).height(this.config[this.options.view].height);
-        }
-        
+    }
+    else
+    {
+        $(element).height(this.mapOptions.mapview.height);
     }
 
-    if (this.options.css == 'false' || this.options.image == 'false') {
-        OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url from window.location.href to location  .host
-    }
-    if (this.options.css == 'false') {
-        this.options.css = this.config.MapGenerals.css;
-    }
-    if (this.options.image == 'false') {
-        this.options.image =  this.config.MapGenerals.icon.src;
-        this.size = new OpenLayers.Size(this.config.MapGenerals.icon.width, this.config.MapGenerals.icon.height);
-    }
-    
+
+    //initalize map Object
     this.map = new OpenLayers.Map(
                 {
                     controls : [],
-                    theme : this.options.css,
-                    displayProjection : new OpenLayers.Projection(this.config.MapGenerals.projection),
-                    units : this.config.MapGenerals.units,
+                    theme : this.mapOptions.theme,
+                    projection: this.mapOptions.generals.projection,
+                    maxResolution: 'auto',
+                    units : this.mapOptions.generals.units,
                     panMethod : OpenLayers.Easing.Quad.easeInOut,
-                    panDuration : 75,
+                    panDuration : 75
                 });
-
-    switch (this.options.layer) {
-    case 'LHH+Region':// @TODO: make it generic
-        this.map.setOptions(
-                {
-                    maxExtent : new OpenLayers.Bounds(538000, 5794000, 562001, 5813000),
-                    scales : [100, 200 ,500, 1000, 3000, 6000, 10000 ]
-                });
-        this.layer = new OpenLayers.Layer.WMS("Hannover Stadt",
-                "http://admin.hannover.de/geoserver/Hannover/wms",
-                    {
-                        layers : "Hannover:Hannover Stadt",
-                        format : "image/png",
-                        transparent:true,
-                        tiled : true
-                    },
-                    {
-                        isBaseLayer : true,
-                        buffer : 1
-
-                    });
-        this.zoom = 1;
-        break;
-    default:
-         this.layer = new OpenLayers.Layer.OSM('OSM_LAYER', "http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png");
-        break;
+    //set additional MapOptions
+    if(typeof(this.mapOptions.mapoptions)!='undefined')
+    {
+        for(var i in this.mapOptions.mapoptions)
+        {
+            options[i] = eval(this.mapOptions.mapoptions[i]);
+        }
+        this.map.setOptions(options);
     }
+    //create Layers
+    map = this.map;//save the map over the following function
+    $(this.config).find('li').each(function(index, value)
+    {
+        eval("this.layer = new OpenLayers.Layer." + value.dataset.service + "('"+ value.dataset.layername +"', '"+ value.dataset.url +"', "+ value.dataset.layerparams +", "+ value.dataset.layeroptions +");");
 
-    this.markers = new OpenLayers.Layer.Markers("Markers");
+        if(typeof(value.dataset.layersettings)!='undefined')
+        {
+            tmp = $.parseJSON(value.dataset.layersettings);
+            for(var i in tmp)
+            {
+                layersettings[i] = eval(tmp[i]);
+            }
+            this.layer.addOptions(layersettings);
+        }
+        //save all special feature Layers to this.map for next steps
+        if(typeof(value.dataset.features) != 'undefined')
+        {
+            tmp = $.parseJSON(value.dataset.features);
+            
+            if(typeof(tmp.getFeatureInfo) != 'undefined' && tmp.getFeatureInfo == true)
+            {
+                map.events.register('click', map, function(e) {
+                    var params_new =
+                        {
+                            REQUEST : "GetFeatureInfo",
+                            EXCEPTIONS : "application/vnd.ogc.se_xml",
+                            BBOX : map.getExtent().toBBOX(),
+                            SERVICE : "WMS",
+                            INFO_FORMAT : 'text/plain',
+                            QUERY_LAYERS : value.dataset.layername,
+                            FEATURE_COUNT : 100,
+                            Layers : value.dataset.layername,
+                            WIDTH : map.size.w,
+                            HEIGHT : map.size.h,
+                            format : 'image/png',
+//                            styles : map.layers[0].params.STYLES,
+                            srs : map.layers[0].params.SRS
+                        };
+                        params_new.version = "1.1.1";
+                        params_new.x = parseInt(e.xy.x);
+                        params_new.y = parseInt(e.xy.y);
 
-    this.map.addLayers([ this.layer, this.markers ]);
+                    OpenLayers.loadURL(
+                            ""+value.dataset.url+"",
+                            params_new, this, setHTML, setHTML);
+                    OpenLayers.Event.stop(e);
+                });
 
-    this.lonLat = new OpenLayers.LonLat(this.options.lon, this.options.lat)
-            .transform(new OpenLayers.Projection(this.map.displayProjection),
-                    this.map.getProjectionObject());
+            }
+            featureLayers[x] = 
+            {
+                    'featureType' : tmp.featureType,
+                    'layer' : this.layer,
+            }
+            ++x;
+        }
+        map.addLayer(this.layer);
+    });
+    this.map.featureLayers = featureLayers;
+    this.map = map;//@TODO: Why do we have to do it this way?!
 
-    // add simple Marker
-    this.size = new OpenLayers.Size(this.options.width, this.options.height);
+    //defining Icon stuff for gml Layer and marker Layer
+    this.size = new OpenLayers.Size(this.mapOptions.icon.width, this.mapOptions.icon.height);
     this.xoffset = (this.size.w / 2) + (Number(this.options.xoffset));
     this.yoffset = (this.size.h) + (Number(this.options.yoffset));
     this.offset = new OpenLayers.Pixel(-this.xoffset, -this.yoffset);
-    this.icon = new OpenLayers.Icon(this.options.image, this.size, this.offset);
+    this.icon = new OpenLayers.Icon(this.mapOptions.icon.src, this.size, this.offset);
+
+    // add simple Marker and reproject the coords
+    this.markers = new OpenLayers.Layer.Markers("Marker Layer");
+    this.lonLat = new Proj4js.Point(this.options.lon, this.options.lat);
+    Proj4js.transform(new Proj4js.Proj(this.projection.projection), new Proj4js.Proj(this.projection.displayProjection), this.lonLat);
+    this.lonLat = new OpenLayers.LonLat(this.lonLat.x, this.lonLat.y);
+    this.map.addLayer(this.markers);
     this.markers.addMarker(new OpenLayers.Marker(this.lonLat, this.icon));
-    
+
     // add controls
     this.map.setCenter(this.lonLat, this.zoom);
-
-    if(typeof(this.config[this.options.view].Controls)!='undefined')
+//    this.map.zoomToMaxExtent();
+    
+    if(typeof(this.mapOptions.mapview.controls)!='undefined')
     {
-        for(var i in this.config[this.options.view].Controls)
-        {
-            this.map.addControl(new OpenLayers.Control[this.config[this.options.view].Controls[i]]());
-        }
-    }else
+        map = this.map;
+        $.each(this.mapOptions.mapview.controls, function(index, value)
+                {
+                    map.addControl(new OpenLayers.Control[value]());
+                });
+        this.map = map;
+    }else//default Controls
     {
         this.map.addControl(new OpenLayers.Control.Navigation());
         this.map.addControl(new OpenLayers.Control.PanPanel());
         this.map.addControl(new OpenLayers.Control.ZoomPanel());
     }
-    
-    // should we render the default Map?
+
+    //if (!this.map.getCenter()) this.map.zoomToMaxExtent();
+    //render the default Map
     if (this.options.render == 'true') {
         this.map.render(element);
     }
 }// end XROWMap init
-var config;
+
+//some Helper, should be later in for e.g. util.js
+//function toLL(obj){return obj.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));}
+//function fromLL(obj){return obj.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));}
+
+// sets the HTML provided into the nodelist element
+function setHTML(response){
+    alert( response.responseText);
+//    document.getElementById('nodelist').innerHTML = response.responseText;
+};
+
 $(document).ready(function() {
-    jQuery.ez('xrowGIS_page::getConfig', {}, function(result){
-        config = result.content.config;
-        $('.XROWMap').each(function(index) {
-            switch ($(this)[0].dataset.maptype) {
-            case 'RSSMap':
-                var map = new RSSMap();
-                break;
+    $('.XROWMap').each(function(index) {
+        switch ($(this)[0].dataset.maptype) {
             case 'POIMap':
                 var map = new POIMap();
                 break;
@@ -127,9 +174,6 @@ $(document).ready(function() {
                 var map = new XROWMap();
                 $(this)[0].dataset.render = true;// render the default Map
             }
-            map.start($(this)[0]);
-        });
-        });
-   
-
+        map.start($(this)[0]);
+    });
 });

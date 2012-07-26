@@ -179,11 +179,4 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         return $result;
     }
 
-    public static function getConfig()
-    {
-        $ini = eZINI::instance( 'xrowgis.ini' );
-        $result['config'] = $ini->BlockValues;
-        return $result;
-    }
-
 }
