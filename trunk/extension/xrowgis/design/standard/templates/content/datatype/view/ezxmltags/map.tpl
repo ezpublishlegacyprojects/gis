@@ -1,26 +1,110 @@
-{def $proxy = ezini("GISSettings","proxy","xrowgis.ini")}
 {def $url_array = $url|explode('://')}
 {if $url_array.0|eq('eznode')}
     {set $url = concat('xrowgis/georss/', $url_array.1)|ezurl('no', 'full')}
 {/if}
 {if $url}
-    {def $maptype = "RSSMap"}
+    {def $maptype = "POIMap"}
 {/if}
 <!-- map content: START -->
     <div class="XROWMap custom_map"
-    data-layer="{if is_set($layer)}{$layer}{else}osm{/if}"
-    data-maptype="{if is_set($maptype)}{$maptype}{else}XROWMap{/if}"
-    data-lat="{if is_set($lat)}{$lat}{else}{ezini("GISSettings","latitude","xrowgis.ini")}{/if}"
-    data-lon="{if is_set($lon)}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
-    data-zoom="{if is_set($zoom)}{$zoom}{else}{ezini("GISSettings","zoom","xrowgis.ini")}{/if}"
-    data-url="{if is_set($url)}{$url}{else}false{/if}"
-    data-proxy="{if is_set($proxy)}{$proxy}{else}false{/if}"
-    data-css="{if is_set($css)}{$css|ezroot(no, full)}{else}false{/if}"
-    data-drag="{if is_set($drag)}{$drag}{else}false{/if}"
-    data-width="{$point.width|wash()}"
-    data-height="{$point.height|wash()}"
-    data-xoffset="{$point.xoffset|wash()}"
-    data-yoffset="{$point.yoffset|wash()}"
-    data-image="{if is_set($point.image)}{$point.image|ezroot(no, full)}{else}false{/if}"
-    ></div>
+        data-map="{if is_set($map)}{$map}{else}{ezini("GISSettings","DefaultMap","xrowgis.ini")}{/if}"
+        data-maptype="{if is_set($maptype)}{$maptype}{else}{ezini("GISSettings","DefaultMapType","xrowgis.ini")}{/if}"
+        data-lat="{if and(is_set($lat), $lat|eq('0')|not())}{$lat}{else}{ezini("GISSettings","latitude","xrowgis.ini")}{/if}"
+        data-lon="{if and(is_set($lon), $lon|eq('0')|not())}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
+        data-xoffset="{$point.xoffset|wash()}"
+        data-yoffset="{$point.yoffset|wash()}" 
+        data-config="custom-map-config">
+    </div>
+{if $url}
+{literal}
+        <ul class="custom-map-config"
+                        style="display:none;"
+                        data-mapname="POIMap"
+                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "32", "width" : "24"}}'>
+                       {/literal}
+                       {switch match=$layer}
+                           {case match='OSM'}
+                           {literal}
+                               <li class="baseLayer" 
+                                    data-service="OSM"
+                                    data-url="http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png"
+                                    data-projection='{"displayProjection" : "EPSG:900913", "projection" : "EPSG:4326"}'
+                                    data-layerparams='{}'
+                                    data-layeroptions='{"isBaseLayer" : true}'
+                                    data-layerzoom="16"
+                                    data-default="active" 
+                                    data-layername="OSM" >OSM</li>
+                            {/literal}
+                            {/case}
+                            {case match='Hannover'}
+                                {literal}
+                                <li class="baseLayer"
+                                    data-service="WMS"
+                                    data-url="http://admin.hannover.de/geoserver/OL4JSFProxy/Hannover/wms"
+                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[100, 200 ,500, 1000, 3000, 6000, 10000 ]"}'
+                                    data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
+                                    data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled" : true}'
+                                    data-layeroptions='{"isBaseLayer" : true}'
+                                    data-layerzoom="1"
+                                    data-default="active" 
+                                    data-layername="Hannover" >Region Hannover</li>
+                                {/literal}
+                            {/case}
+                        {/switch}
+                        {literal}
+                        <li data-service="GML"
+                            data-url="{/literal}{$url}{literal}"
+                            data-projection='{}'
+                            data-layersettings='{}'
+                            data-layerparams='{"tiled" : true}'
+                            data-layeroptions='{"isBaseLayer" : false}'
+                            data-features='{"featureType" : "GeoRSS"}'
+                            data-layerzoom="1"
+                            data-default="active" 
+                            data-layername="GeoRSS" >GeoRSS</li>
+                    </ul>
+                    {/literal}
+            {else}
+                {include uri='design:parts/map.tpl' 
+                        layer=$layer
+                        maptype="XROWMap"
+                        config="stage-map-config"}
+                    {literal}
+                    <ul class="custom-map-config"
+                        style="display:none;"
+                        data-mapname="XROWMap"
+                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel"], "zoom":"14"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "32", "width" : "24"}}'>
+                       {/literal}
+                       {switch match=$layer}
+                           {case match='OSM'}
+                           {literal}
+                               <li class="baseLayer" 
+                                    data-service="OSM"
+                                    data-url="http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png"
+                                    data-projection='{"displayProjection" : "EPSG:900913", "projection" : "EPSG:4326"}'
+                                    data-layerparams='{}'
+                                    data-layeroptions='{"isBaseLayer" : true}'
+                                    data-layerzoom="16"
+                                    data-default="active" 
+                                    data-layername="OSM" >OSM</li>
+                            {/literal}
+                            {/case}
+                            {case match='Hannover'}
+                            {literal}
+                                <li class="baseLayer"
+                                    data-service="WMS"
+                                    data-url="http://admin.hannover.de/geoserver/OL4JSFProxy/Hannover/wms"
+                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[100, 200 ,500, 1000, 3000, 6000, 10000 ]"}'
+                                    data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
+                                    data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled" : true}'
+                                    data-layeroptions='{"isBaseLayer" : true}'
+                                    data-layerzoom="1"
+                                    data-default="active" 
+                                    data-layername="Hannover" >Region Hannover</li>
+                            {/literal}
+                            {/case}
+                        {/switch}
+                    </ul>
+                {/if}
+    </div>
 <!-- map content: END -->
