@@ -13,11 +13,10 @@
         data-lon="{if and(is_set($lon), $lon|eq('0')|not())}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
         data-xoffset="{$point.xoffset|wash()}"
         data-yoffset="{$point.yoffset|wash()}" 
-        data-config="custom-map-config">
+        data-config="{concat('custom-map-config-', currentdate())}">
     </div>
-{if $url}
-{literal}
-        <ul class="custom-map-config"
+        <ul class="{concat('custom-map-config-', currentdate())}"
+                        {literal}
                         style="display:none;"
                         data-mapname="POIMap"
                         data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "32", "width" : "24"}}'>
@@ -51,6 +50,7 @@
                                 {/literal}
                             {/case}
                         {/switch}
+{if $url}
                         {literal}
                         <li data-service="GML"
                             data-url="{/literal}{$url}{literal}"
@@ -64,47 +64,6 @@
                             data-layername="GeoRSS" >GeoRSS</li>
                     </ul>
                     {/literal}
-            {else}
-                {include uri='design:parts/map.tpl' 
-                        layer=$layer
-                        maptype="XROWMap"
-                        config="stage-map-config"}
-                    {literal}
-                    <ul class="custom-map-config"
-                        style="display:none;"
-                        data-mapname="XROWMap"
-                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel"], "zoom":"14"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "32", "width" : "24"}}'>
-                       {/literal}
-                       {switch match=$layer}
-                           {case match='OSM'}
-                           {literal}
-                               <li class="baseLayer" 
-                                    data-service="OSM"
-                                    data-url="http://admin.hannover.de/osm-tiles/${z}/${x}/${y}.png"
-                                    data-projection='{"displayProjection" : "EPSG:900913", "projection" : "EPSG:4326"}'
-                                    data-layerparams='{}'
-                                    data-layeroptions='{"isBaseLayer" : true}'
-                                    data-layerzoom="16"
-                                    data-default="active" 
-                                    data-layername="OSM" >OSM</li>
-                            {/literal}
-                            {/case}
-                            {case match='Hannover'}
-                            {literal}
-                                <li class="baseLayer"
-                                    data-service="WMS"
-                                    data-url="http://admin.hannover.de/geoserver/OL4JSFProxy/Hannover/wms"
-                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[100, 200 ,500, 1000, 3000, 6000, 10000 ]"}'
-                                    data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
-                                    data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled" : true}'
-                                    data-layeroptions='{"isBaseLayer" : true}'
-                                    data-layerzoom="1"
-                                    data-default="active" 
-                                    data-layername="Hannover" >Region Hannover</li>
-                            {/literal}
-                            {/case}
-                        {/switch}
-                    </ul>
                 {/if}
     </div>
 <!-- map content: END -->
