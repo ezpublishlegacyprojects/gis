@@ -37,16 +37,24 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         }
         else
         {
-            $attributeID = $data['attr_id'];
-            $street = $data['ContentObjectAttribute_xrowgis_street_' . $attributeID];
-            $zip = $data['ContentObjectAttribute_xrowgis_zip_' . $attributeID];
-            $city = $data['ContentObjectAttribute_xrowgis_city_' . $attributeID];
-            $state = $data['ContentObjectAttribute_xrowgis_state_' . $attributeID];
-            $country = $data['ContentObjectAttribute_xrowgis_country_' . $attributeID];
-            $longitude = $data['ContentObjectAttribute_xrowgis_longitude_' . $attributeID];
-            $latitute = $data['ContentObjectAttribute_xrowgis_latitude_' . $attributeID];
-            
-            $geocoder->setAddress( $street, $zip, $city, $state, $country );
+            if ( $data['mapsearch'] )
+            {
+                
+                $geocoder->setAddress( $data['input']);
+            }
+            else
+            {
+                $attributeID = $data['attr_id'];
+                $street = $data['ContentObjectAttribute_xrowgis_street_' . $attributeID];
+                $zip = $data['ContentObjectAttribute_xrowgis_zip_' . $attributeID];
+                $city = $data['ContentObjectAttribute_xrowgis_city_' . $attributeID];
+                $state = $data['ContentObjectAttribute_xrowgis_state_' . $attributeID];
+                $country = $data['ContentObjectAttribute_xrowgis_country_' . $attributeID];
+                $longitude = $data['ContentObjectAttribute_xrowgis_longitude_' . $attributeID];
+                $latitute = $data['ContentObjectAttribute_xrowgis_latitude_' . $attributeID];
+                
+                $geocoder->setAddress( $street, $zip, $city, $state, $country );
+            }
         
         }
         if ( $geocoder->request() )

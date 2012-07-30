@@ -70,6 +70,7 @@ There are no symbolic constants defined for this enumeration.
     
     function request()
     {
+        
         $searchstring = array();
         if ( $this->country )
             $searchstring[] = $this->country;
@@ -83,8 +84,9 @@ There are no symbolic constants defined for this enumeration.
             $searchstring[] = $this->zip;
         elseif ( $this->city )
             $searchstring[] = $this->city;
-        
+
         $searchstring = implode( ' ', $searchstring );
+        
         // ini values
         $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );

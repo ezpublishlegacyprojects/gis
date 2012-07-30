@@ -40,6 +40,11 @@ class xrowGEORSS
                 $item->link = self::transformURI( $link, true, 'full' );
                 $item->id = self::transformURI( $link, true, 'full' );
                 
+                if($node->classIdentifier() == 'article')
+                {
+                    $this->cache['cache'][$node->classIdentifier()]['text']='teaser_text';
+                }
+                
                 if ( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_type_string' ) == eZXMLTextType::DATA_TYPE_STRING )
                 {
                     $outputHandler = new xrowRSSOutputHandler( $dm[$this->cache['cache'][$node->classIdentifier()]['text']]->attribute( 'data_text' ), false );
@@ -100,7 +105,6 @@ class xrowGEORSS
             $res = $db->arrayQuery( $sql );
             $retVal['cache'][$results[$key]['identifier']]['gis'] = $res[0]['identifier'];
         }
-        
         $this->cache = $retVal;
     }
 

@@ -15,8 +15,6 @@ XROWMap.prototype.init = function(element) {
 
     OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url from window.location.href to location .host
     
-    
-    
     //fix for elements which are not visibly at first, for e.g. like maps hidden in tabs
     if(typeof(this.mapOptions.mapview.height)=='undefined')
     {
@@ -124,33 +122,54 @@ XROWMap.prototype.init = function(element) {
 //all this stuff underneath here comes to MapUtils.js...later.
 
 $(document).ready(function() {
+    var position = {};
     $('.XROWMap').each(function(index) {
         switch ($(this)[0].dataset.maptype) {
             case 'POIMap':
-                var map = new POIMap();
+                map = new POIMap();
                 break;
             default:
-                var map = new XROWMap();
+                map = new XROWMap();
                 $(this)[0].dataset.render = true;// render the default Map
             }
         map.start($(this)[0]);
-    });
-    $("button.current-position").click(function()
+    });//ende each
+    $("input.global-map-search").focus(function()
+            {
+                $(this).val('');
+            });
+    $("input.map-search").click(function()
+            {
+                jQuery.ez('xrowGIS_page::updateMap',{'input': $("input.global-map-search").val(), 'mapsearch' : true},
+                        function(result) {
+                            position  = {'coords' : {'longitude' : result.content.lon, 'latitude' : result.content.lat}};
+                            handle_geolocation_query(position);
+            });
+            });
+    $("input.current-position").click(function()
             {
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(getLL, error, {timeout:7000});
+                    initiate_geolocation();
                 }else {
                     error('not supported');
                 }
             });
-    $(".click-list li").click(function()
+    $(".click-list li :checkbox").click(function()
         {
-            if($(this)[0].layer.visibility===true && $(this)[0].layer.isBaseLayer ===false)
+            if($(this)[0].parentNode.layer.visibility===true && $(this)[0].parentNode.layer.isBaseLayer ===false)
             {
-                $(this)[0].layer.setVisibility(false);
+                $(this)[0].parentNode.layer.setVisibility(false);
             }else
             {
-                $(this)[0].layer.setVisibility(true);
+                $(this)[0].parentNode.layer.setVisibility(true);
             }
         });
+    $(".click-list input[type=checkbox]").each(
+            function() {
+                if($(this)[0].checked === true)
+                {
+                    $(this)[0].parentElement.layer.setVisibility(true);
+                }
+            }
+            );
 });

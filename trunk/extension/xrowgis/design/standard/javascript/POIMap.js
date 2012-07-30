@@ -47,7 +47,9 @@ POIMap.prototype.start = function(element) {
                                 this.popup = new OpenLayers.Popup.FramedCloud("popup",
                                         this.featureLonLat,
                                         new OpenLayers.Size(200, 200), 
-                                        "<h3>" + feature.attributes.title + "</h3>" + feature.attributes.description,
+                                        "<h2>" + feature.attributes.title + "</h2>" + 
+                                        "<p>" + feature.attributes.description + "</p>" +
+                                        "<br /><a href='" + feature.attributes.link + "' target='_blank'>Mehr</a>",
                                         null, 
                                         true);
                                 this.popup.calculateRelativePosition = function () {
@@ -75,8 +77,10 @@ POIMap.prototype.start = function(element) {
         var tmp, map;
         tmp = this.layerURL[x].shift();
         map = this.map;
-        tmp = this.layerURL[x];
+        tmp = this.layerURL[x];console.log(tmp);
+        //xhr.setRequestHeader("Authorization", "Basic asdfxy2j9z=");
         map.events.register('click', map, function(e) {
+            xy = e.xy;
             params_new =
                 {
                     REQUEST : "GetFeatureInfo",
@@ -90,11 +94,9 @@ POIMap.prototype.start = function(element) {
                     WIDTH : map.size.w,
                     HEIGHT : map.size.h,
                     format : 'image/png',
-//                    styles : map.layers[0].params.STYLES,
                     srs : map.layers[0].params.SRS
                 };
                 params_new.version = "1.1.1";
-                params_new.xy = e.xy;
                 params_new.x = parseInt(e.xy.x);
                 params_new.y = parseInt(e.xy.y);
             OpenLayers.loadURL(
@@ -126,15 +128,18 @@ function setHTML(response) {
             } else if (vals[0].indexOf('INFO') != -1 ) {
                 leg = vals[1];
             } else if (vals[0].indexOf('HREF') != -1 ) {
-                linkinfo = vals[1];
+                if(vals[1]!='')
+                {
+                    linkinfo = "<br /><a href='" + vals[1] + "' target='_blank'>Mehr</a>";
+                }
+                
             }
         }
-        popup_info = "<font size=2><b>" + cat +
-                     "</b><br />" + leg +
-                     "<br /><a href='" + linkinfo + "' target='_blank'>Mehr</a>" +
-                     "</font></font>";
+        popup_info = "<h2>" + cat +
+                     "</h2><p>" + leg + "</p>"
+                       + linkinfo;
         
-        this.featureLonLat = this.getLonLatFromPixel(params_new.xy);
+        this.featureLonLat = this.getLonLatFromPixel(window.xy);
         this.setCenter(this.featureLonLat, 16);
         if (typeof this.popup != "undefined" && this.popup != null) {
             this.removePopup(this.popup);
@@ -162,15 +167,28 @@ function popupDestroy(e) {
     OpenLayers.Util.safeStopPropagation(e);
 }
 
-function getLL(position)
-{
-    var currentPosition = [];
-    currentPosition['lon'] = position.coords.longitude;
-    currentPosition['lat'] = position.coords.latitude;
-    return currentPosition;
-}
+function initiate_geolocation() {
+    navigator.geolocation.getCurrentPosition(handle_geolocation_query);  
+}  
 
-function error(msg) {
-    
+
+//@TODO Make it more generic...
+function handle_geolocation_query(position){
+    if(typeof(window.currentPos)!= 'undefined')
+    {
+        window.currentPos.destroy();
     }
+    if(position.coords.longitude != 0 && position.coords.latitude != 0)
+    {
+        var lonLat = new Proj4js.Point(position.coords.longitude, position.coords.latitude);
+        Proj4js.transform(new Proj4js.Proj(window.map.projection.projection), new Proj4js.Proj(window.map.projection.displayProjection), lonLat);
+        currentPos = new OpenLayers.Layer.Markers("Current Position", {rendererOptions : {zIndexing : true}});
+        window.map.map.addLayer(currentPos );
+        currentPos.setZIndex( 1001 );
+        lonLat = new OpenLayers.LonLat(lonLat.x, lonLat.y);
+        currentPos.addMarker(new OpenLayers.Marker(lonLat, new OpenLayers.Icon("/extension/hannover/design/hannover/images/openlayers-custom/curpos.png", new OpenLayers.Size(24, 32))));
+        window.map.map.setCenter(lonLat, 5);
+    }
+
+} 
 
