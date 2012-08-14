@@ -84,18 +84,18 @@ class xrowGIStype extends eZDataType
                 }
             }
             */
-            $ok = true;
+
+            if ( 
+            ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) 
+            or 
+            ( !$contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or 
+            ( $street &&  $zip && $city && $state && $latitude && $longitude )
+            or 
+             $relatedObjectID 
             
-            if ( ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) && $contentObjectAttribute->validateIsRequired()!=true ) || ! empty( $relatedObjectID ) || ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) 
-            {
-                $ok = true;
-            }
-            else
-            {
-                $ok = false;
-                $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'GEO DATA MISSING' ) );
-            }
-            if ( $ok )
+            )
+            
+            )
             {
                 $gp = new xrowGISPosition( array( 
                     'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
@@ -120,11 +120,8 @@ class xrowGIStype extends eZDataType
                 
                 return eZInputValidator::STATE_ACCEPTED;
             }
-            else
-                return eZInputValidator::STATE_INVALID;
-        
         }
-        $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Missing data.' ) );
+        $contentObjectAttribute->setValidationError( ezpI18n::tr( 'kernel/classes/datatypes', 'Missing geographic information' ) );
         return eZInputValidator::STATE_INVALID;
     }
 
@@ -403,7 +400,7 @@ class xrowGIStype extends eZDataType
     */
     function objectAttributeContent( $contentObjectAttribute )
     {
-    	return xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
+        return xrowGISPosition::fetch( $contentObjectAttribute->attribute( "id" ), $contentObjectAttribute->attribute( "version" ) );
     }
 
     /*!
@@ -411,15 +408,15 @@ class xrowGIStype extends eZDataType
     */
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
-    	$gis_info = self::objectAttributeContent( $contentObjectAttribute );
-    	if( is_null($gis_info) OR (( $gis_info->longitude == 0 OR is_null($gis_info->longitude) ) AND ( $gis_info->latitude == "0" OR is_null($gis_info->latitude) )) )
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		return true;
-    	}
+        $gis_info = self::objectAttributeContent( $contentObjectAttribute );
+        if ( is_null( $gis_info ) or ( ( $gis_info->longitude == 0 or is_null( $gis_info->longitude ) ) and ( $gis_info->latitude == "0" or is_null( $gis_info->latitude ) ) ) )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     /*!
@@ -490,4 +487,3 @@ class xrowGIStype extends eZDataType
 }
 
 eZDataType::register( xrowgistype::DATATYPE_STRING, "xrowgistype" );
-?>

@@ -40,7 +40,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             if ( $data['mapsearch'] )
             {
                 
-                $geocoder->setAddress( $data['input']);
+                $geocoder->setAddress( $data['input'] );
             }
             else
             {
@@ -123,13 +123,15 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
+        $object = eZContentObject::fetchByNodeID( $data['node_id'] );
         
-        $attribute = eZContentObjectAttribute::fetch( (int) $data['attributeID'], (int) $data['version'] );
-        
-        foreach ( eZContentObject::fetchByNodeID( $data['node_id'] )->attribute( 'contentobject_attributes' ) as $key => $relCoa )
+        foreach ( $object->attribute( 'contentobject_attributes' ) as $key => $relCoa )
         {
             if ( $relCoa->attribute( 'data_type_string' ) === xrowGIStype::DATATYPE_STRING )
             {
+                $attribute = eZContentObjectAttribute::fetch( (int) $data['attributeID'], (int) $data['version'] );
+                $attribute->setAttribute( 'data_int', $object->ID );
+                $attribute->store();
                 $tpl->setVariable( 'attribute', $attribute );
                 $tpl->setVariable( 'GISRelation', true );
                 $tpl->setVariable( 'relAttribute', $relCoa );
@@ -155,7 +157,7 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         
         $attribute = eZContentObjectAttribute::fetch( (int) $data['attributeID'], (int) $data['version'] );
         $attribute->setAttribute( 'data_int', null );
-        
+        $attribute->store();
         $tpl = eZTemplate::factory();
         
         if ( $attribute->hasContent() )
