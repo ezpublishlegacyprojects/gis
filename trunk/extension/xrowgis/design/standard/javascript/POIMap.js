@@ -77,7 +77,8 @@ POIMap.prototype.start = function(element) {
         var tmp, map;
         tmp = this.layerURL[x].shift();
         map = this.map;
-        tmp = this.layerURL[x];console.log(tmp);
+        tmp = this.layerURL[x];
+        console.log(x);
         //xhr.setRequestHeader("Authorization", "Basic asdfxy2j9z=");
         map.events.register('click', map, function(e) {
             xy = e.xy;
@@ -123,14 +124,18 @@ function setHTML(response) {
             }
             if (vals[0].indexOf('Name') != -1 ) {
                 cat = vals[1];
+            } else if (vals[0].indexOf('NAME') != -1 ) {
+                cat = vals[1];
             } else if (vals[0].indexOf('SOURCE') != -1 ) {
                 src = vals[1];
             } else if (vals[0].indexOf('INFO') != -1 ) {
                 leg = vals[1];
+            } else if (vals[0].indexOf('info') != -1 ) {
+                leg = vals[1];
             } else if (vals[0].indexOf('HREF') != -1 ) {
                 if(vals[1]!='')
                 {
-                    linkinfo = "<br /><a href='" + vals[1] + "' target='_blank'>Mehr</a>";
+                    linkinfo = "<br /><a href='" + vals[1] + "' target='_blank'>mehr...</a>";
                 }
                 
             }

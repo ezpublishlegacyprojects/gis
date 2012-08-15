@@ -65,5 +65,4 @@
                     </ul>
                     {/literal}
                 {/if}
-    </div>
 <!-- map content: END -->

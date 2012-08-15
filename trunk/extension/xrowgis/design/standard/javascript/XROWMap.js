@@ -48,7 +48,7 @@ XROWMap.prototype.init = function(element) {
         this.map.setOptions(options);
     }
     //create Layers
-    map = this.map;//save the map over the following function
+    map = this.map;
     $(this.config).find('li').each(function(index, value)
     {
         eval("this.layer = new OpenLayers.Layer." + value.dataset.service + "('"+ value.dataset.layername +"', '"+ value.dataset.url +"', "+ value.dataset.layerparams +", "+ value.dataset.layeroptions +");");
