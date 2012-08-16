@@ -78,7 +78,7 @@ POIMap.prototype.start = function(element) {
         tmp = this.layerURL[x].shift();
         map = this.map;
         tmp = this.layerURL[x];
-        console.log(x);
+        
         //xhr.setRequestHeader("Authorization", "Basic asdfxy2j9z=");
         map.events.register('click', map, function(e) {
             xy = e.xy;

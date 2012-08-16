@@ -6,7 +6,7 @@ XROWMap.prototype.start = function(element) {
 XROWMap.prototype.init = function(element) {
     var map, options={}, layersettings={}, tmp, featureLayers=[], params_new, x=0;
     this.map, this.layer, this.styledPoint, this.lonLat, this.markers, this.params={}, this.layerOptions={};
-    this.options = element.dataset;
+    this.options = $.data(element);
     this.config = $('.'+this.options.config);
     this.mapOptions=this.config.data('mapoptions');
     this.projection = $(this.config).find('.baseLayer').data().projection;
@@ -15,7 +15,7 @@ XROWMap.prototype.init = function(element) {
 
     OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url from window.location.href to location .host
     
-    //fix for elements which are not visibly at first, for e.g. like maps hidden in tabs
+    //fix for elements which are not visibly at first, for e.g. maps which are hidden in tabs
     if(typeof(this.mapOptions.mapview.height)=='undefined')
     {
         if ($(element).height() == 0) 
@@ -27,7 +27,12 @@ XROWMap.prototype.init = function(element) {
     {
         $(element).height(this.mapOptions.mapview.height);
     }
-
+    console.log($(element).width());
+    if(typeof(this.mapOptions.mapview.width)!='undefined')
+    {
+        $(element).width(this.mapOptions.mapview.width);
+    }
+    console.log($(element).width());
     //initalize map Object
     this.map = new OpenLayers.Map(
                 {
@@ -51,28 +56,28 @@ XROWMap.prototype.init = function(element) {
     map = this.map;
     $(this.config).find('li').each(function(index, value)
     {
-        eval("this.layer = new OpenLayers.Layer." + value.dataset.service + "('"+ value.dataset.layername +"', '"+ value.dataset.url +"', "+ value.dataset.layerparams +", "+ value.dataset.layeroptions +");");
+        eval("this.layer = new OpenLayers.Layer." + $(this).data().service + "('"+ $(this).data().layername +"', '"+ $(this).data().url +"', " + stringify($(this).data().layerparams) + ", "+ stringify($(this).data().layeroptions) +");");
 
-        if(typeof(value.dataset.layersettings)!='undefined')
+        if(typeof($(this).data().layersettings)!='undefined')
         {
-            tmp = $.parseJSON(value.dataset.layersettings);
+            tmp = $(this).data().layersettings;
             for(var i in tmp)
             {
                 layersettings[i] = eval(tmp[i]);
             }
+            
             this.layer.addOptions(layersettings);
         }
         //save all special feature Layers to this.map for next steps
-        if(typeof(value.dataset.features) != 'undefined')
+        if(typeof($(this).data().features) != 'undefined')
         {   
-            tmp = $.parseJSON(value.dataset.features);
             featureLayers[x] = 
             {
-                    'featureType' : tmp.featureType,
-                    'layerName' : value.dataset.layername,
-                    'layer' : this.layer,
+                    'featureType' : $(this).data().featureType,
+                    'layerName' : $(this).data().layername,
+                    'layer' : this.layer
             }
-            ++x;
+            x++;
         }
         map.addLayer(this.layer);
     });
@@ -120,17 +125,16 @@ XROWMap.prototype.init = function(element) {
 }// end XROWMap init
 
 //all this stuff underneath here comes to MapUtils.js...later.
-
 $(document).ready(function() {
     var position = {};
     $('.XROWMap').each(function(index) {
-        switch ($(this)[0].dataset.maptype) {
+        switch ($(this).data().maptype) {
             case 'POIMap':
                 map = new POIMap();
                 break;
             default:
                 map = new XROWMap();
-                $(this)[0].dataset.render = true;// render the default Map
+                $.data($(this)[0], 'render', 'true');// render the default Map
             }
         map.start($(this)[0]);
     });//ende each
@@ -156,7 +160,7 @@ $(document).ready(function() {
             });
     $(".click-list li :checkbox").click(function()
         {
-            if($(this)[0].parentNode.layer.visibility===true && $(this)[0].parentNode.layer.isBaseLayer ===false)
+            if($(this)[0].parentNode.layer.visibility===true && $(this)[0].parentNode.layer.isBaseLayer =='false')
             {
                 $(this)[0].parentNode.layer.setVisibility(false);
             }else
@@ -173,3 +177,23 @@ $(document).ready(function() {
             }
             );
 });
+
+function stringify(jsonData) {
+    var strJsonData = '{';
+    var itemCount = 0;
+    for (var item in jsonData) {
+        if (itemCount > 0) {
+            strJsonData += ', ';
+        }
+    temp = jsonData[item];
+    if (typeof(temp) == 'object') {
+        s =  stringify(temp);   
+    } else {
+        s = '"' + temp + '"';
+    }   
+    strJsonData += '"' + item + '":' + s;
+        itemCount++;
+    }
+    strJsonData += '}';
+    return strJsonData;
+}
