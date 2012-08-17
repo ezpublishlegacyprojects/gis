@@ -27,12 +27,11 @@ XROWMap.prototype.init = function(element) {
     {
         $(element).height(this.mapOptions.mapview.height);
     }
-    console.log($(element).width());
+    
     if(typeof(this.mapOptions.mapview.width)!='undefined')
     {
         $(element).width(this.mapOptions.mapview.width);
     }
-    console.log($(element).width());
     //initalize map Object
     this.map = new OpenLayers.Map(
                 {
@@ -41,7 +40,10 @@ XROWMap.prototype.init = function(element) {
                     projection: this.mapOptions.generals.projection,
                     units : this.mapOptions.generals.units,
                     panMethod : OpenLayers.Easing.Quad.easeInOut,
-                    panDuration : 75
+                    panDuration : 75,
+                    eventListeners: {
+                        "zoomend": zoomEnd
+                    }
                 });
     //set additional MapOptions
     if(typeof(this.mapOptions.mapoptions)!='undefined')
@@ -73,11 +75,11 @@ XROWMap.prototype.init = function(element) {
         {   
             featureLayers[x] = 
             {
-                    'featureType' : $(this).data().featureType,
+                    'featureType' : $(this).data().features.featureType,
                     'layerName' : $(this).data().layername,
                     'layer' : this.layer
             }
-            x++;
+            ++x;
         }
         map.addLayer(this.layer);
     });
@@ -177,6 +179,11 @@ $(document).ready(function() {
             }
             );
 });
+
+function zoomEnd()
+{
+//    console.log(this);
+}
 
 function stringify(jsonData) {
     var strJsonData = '{';
