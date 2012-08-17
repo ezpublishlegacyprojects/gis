@@ -79,7 +79,6 @@ POIMap.prototype.start = function(element) {
         map = this.map;
         tmp = this.layerURL[x];
         
-        //xhr.setRequestHeader("Authorization", "Basic asdfxy2j9z=");
         map.events.register('click', map, function(e) {
             xy = e.xy;
             params_new =
@@ -116,7 +115,7 @@ function setHTML(response) {
     
     if (response.responseText.indexOf('no features were found') == -1) {
         lines = response.responseText.split('\n');
-        console.log(lines);
+
         for (lcv = 0; lcv < (lines.length); lcv++) {
             vals = lines[lcv].replace(/^\s*/,'').replace(/\s*$/,'').replace(/ = /,"=").replace(/'/g,'').split('=');
             if (vals[1] == "") {
@@ -124,18 +123,14 @@ function setHTML(response) {
             }
             if (vals[0].indexOf('Name') != -1 ) {
                 cat = vals[1];
-            } else if (vals[0].indexOf('NAME') != -1 ) {
-                cat = vals[1];
             } else if (vals[0].indexOf('SOURCE') != -1 ) {
                 src = vals[1];
             } else if (vals[0].indexOf('INFO') != -1 ) {
                 leg = vals[1];
-            } else if (vals[0].indexOf('info') != -1 ) {
-                leg = vals[1];
             } else if (vals[0].indexOf('HREF') != -1 ) {
                 if(vals[1]!='')
                 {
-                    linkinfo = "<br /><a href='" + vals[1] + "' target='_blank'>mehr...</a>";
+                    linkinfo = "<br /><a href='" + vals[1] + "' target='_blank'>Mehr</a>";
                 }
                 
             }

@@ -12,9 +12,9 @@ class xrowGISServerfunctions extends ezjscServerFunctions
     {
         $ini = eZINI::instance( 'xrowgis.ini' );
         $result['name'] = $ini->variable( 'GISSettings', 'Interface' );
-        
+
         $data = $_POST;
-        
+
         $geocoder = GeoCoder::getActiveGeoCoder();
         
         if ( $data['reverse'] )

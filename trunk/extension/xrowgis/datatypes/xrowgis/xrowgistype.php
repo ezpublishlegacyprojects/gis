@@ -84,18 +84,11 @@ class xrowGIStype extends eZDataType
                 }
             }
             */
+            
+            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID )
 
-            if ( 
-            ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) 
-            or 
-            ( !$contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or 
-            ( $street &&  $zip && $city && $state && $latitude && $longitude )
-            or 
-             $relatedObjectID 
+             )
             
-            )
-            
-            )
             {
                 $gp = new xrowGISPosition( array( 
                     'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
