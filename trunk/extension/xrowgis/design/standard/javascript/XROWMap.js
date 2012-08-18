@@ -182,7 +182,14 @@ $(document).ready(function() {
 
 function zoomEnd()
 {
-//    console.log(this);
+    $.each(this.layers, function(index, value)
+            {
+                if(value.isBaseLayer == "false")
+                {
+                    value.redraw();
+                }
+            });
+    
 }
 
 function stringify(jsonData) {
