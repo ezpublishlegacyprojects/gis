@@ -85,10 +85,7 @@ class xrowGIStype extends eZDataType
             }
             */
             
-            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID )
-
-             )
-            
+            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ))
             {
                 $gp = new xrowGISPosition( array( 
                     'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
@@ -134,7 +131,6 @@ class xrowGIStype extends eZDataType
             $GISCo = $contentObjectAttribute->Content;
             $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
             $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
-            
             $GISCo->store();
         }
     }
@@ -232,11 +228,11 @@ class xrowGIStype extends eZDataType
                         'state' => $data->attribute( 'state' ) , 
                         'country' => $data->attribute( 'country' ) 
                     ) );
-                    
                     $contentObjectAttribute->Content = $gp;
                 }
                 else
                 {
+                    $data->setAttribute( 'contentobject_attribute_id', $contentObjectAttribute->attribute( 'id' ) );
                     $data->setAttribute( 'contentobject_attribute_version', $contentObjectAttribute->attribute( 'version' ) );
                     $contentObjectAttribute->setContent( $data );
                 }
@@ -402,7 +398,7 @@ class xrowGIStype extends eZDataType
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
         $gis_info = self::objectAttributeContent( $contentObjectAttribute );
-        if ( is_null( $gis_info ) or ( ( $gis_info->longitude == 0 or is_null( $gis_info->longitude ) ) and ( $gis_info->latitude == "0" or is_null( $gis_info->latitude ) ) ) )
+        if ( is_null( $gis_info ) || ( ( $gis_info->longitude == 0 || is_null( $gis_info->longitude ) ) && ( $gis_info->latitude == "0" || is_null( $gis_info->latitude ) ) ) )
         {
             return false;
         }

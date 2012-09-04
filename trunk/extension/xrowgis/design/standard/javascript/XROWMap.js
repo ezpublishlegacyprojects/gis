@@ -184,7 +184,7 @@ function zoomEnd()
 {
     $.each(this.layers, function(index, value)
             {
-                if(value.isBaseLayer == "false")
+                if(value.isBaseLayer == "false" || value.isBaseLayer == false)
                 {
                     value.redraw();
                 }
@@ -193,8 +193,8 @@ function zoomEnd()
 }
 
 function stringify(jsonData) {
-    var strJsonData = '{';
-    var itemCount = 0;
+    var strJsonData = '{', itemCount = 0, temp;
+
     for (var item in jsonData) {
         if (itemCount > 0) {
             strJsonData += ', ';
