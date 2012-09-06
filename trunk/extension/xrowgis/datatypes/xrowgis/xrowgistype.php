@@ -184,7 +184,7 @@ class xrowGIStype extends eZDataType
         $state = $http->postVariable( $base . '_xrowgis_state_' . $contentObjectAttribute->attribute( 'id' ) );
         $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
         $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
-        
+
         $gp = new xrowGISPosition( array( 
             'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
             'contentobject_attribute_version' => $contentObjectAttribute->attribute( 'version' ) , 
@@ -232,6 +232,11 @@ class xrowGIStype extends eZDataType
                 }
                 else
                 {
+                    
+                    if($originalContentObjectAttribute->attribute('data_int'))
+                    {
+                        $contentObjectAttribute->setAttribute('data_int', $originalContentObjectAttribute->attribute('data_int'));
+                    }
                     $data->setAttribute( 'contentobject_attribute_id', $contentObjectAttribute->attribute( 'id' ) );
                     $data->setAttribute( 'contentobject_attribute_version', $contentObjectAttribute->attribute( 'version' ) );
                     $contentObjectAttribute->setContent( $data );

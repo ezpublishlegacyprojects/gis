@@ -72,6 +72,7 @@ POIMap.prototype.start = function(element) {
             }
         }
     }
+    //@TODO: process getFeatureInfo only for the clicked Layer 
     for(var x in this.layerURL)
     {
         var tmp, map;
@@ -175,7 +176,7 @@ function initiate_geolocation() {
 }  
 
 
-//@TODO Make it more generic...
+//@TODO Make it more generic...avoid hardcoded icon path 
 function handle_geolocation_query(position){
     if(typeof(window.currentPos)!= 'undefined')
     {
