@@ -1,5 +1,5 @@
 <?php
- 
+
 class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
 {
     /**
@@ -14,10 +14,12 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
      * @see ezfSolrDocumentFieldName::$FieldTypeMap
      * @var array
      */
-    public static $subattributesDefinition = array( 'longitude'                => 'float',
-                                                    'latitude'                => 'float',
-                                                    self::DEFAULT_SUBATTRIBUTE => 'string' );
- 
+    public static $subattributesDefinition = array( 
+        'longitude' => 'float' , 
+        'latitude' => 'float' , 
+        self::DEFAULT_SUBATTRIBUTE => 'string' 
+    );
+    
     /**
      * The name of the default subattribute. It will be used when
      * this field is requested with no subfield refinement.
@@ -26,7 +28,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
      * @var string
      */
     const DEFAULT_SUBATTRIBUTE = 'city';
- 
+
     /**
      * @see ezfSolrDocumentFieldBase::__construct()
      */
@@ -34,7 +36,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
     {
         parent::__construct( $attribute );
     }
- 
+
     /**
      * @see ezfSolrDocumentFieldBase::getData()
      */
@@ -44,36 +46,33 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
         //         Dummy content here, for testing purposes.
         $data = array();
         $contentClassAttribute = $this->ContentObjectAttribute->attribute( 'contentclass_attribute' );
-        $data[self::getFieldName( $contentClassAttribute, self::DEFAULT_SUBATTRIBUTE )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'city' );
-        $data[self::getFieldName( $contentClassAttribute, 'longitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'longitude' );
-        $data[self::getFieldName( $contentClassAttribute, 'latitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'latitude' );
+        if ( $this->ContentObjectAttribute->attribute( 'has_content' ) )
+        {
+            $data[self::getFieldName( $contentClassAttribute, self::DEFAULT_SUBATTRIBUTE )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'city' );
+            $data[self::getFieldName( $contentClassAttribute, 'longitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'longitude' );
+            $data[self::getFieldName( $contentClassAttribute, 'latitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'latitude' );
+        }
         return $data;
     }
- 
+
     /**
      * @see ezfSolrDocumentFieldBase::getFieldName()
      */
     public static function getFieldName( eZContentClassAttribute $classAttribute, $subAttribute = null )
     {
         // article/location/ longitude
-        if ( $subAttribute and
-             $subAttribute !== '' and
-             array_key_exists( $subAttribute, self::$subattributesDefinition ) and
-             $subAttribute != self::DEFAULT_SUBATTRIBUTE )
+        if ( $subAttribute and $subAttribute !== '' and array_key_exists( $subAttribute, self::$subattributesDefinition ) and $subAttribute != self::DEFAULT_SUBATTRIBUTE )
         {
             // A subattribute was passed
-            return parent::generateSubattributeFieldName( $classAttribute,
-                                                          $subAttribute,
-                                                          self::$subattributesDefinition[$subAttribute] );
+            return parent::generateSubattributeFieldName( $classAttribute, $subAttribute, self::$subattributesDefinition[$subAttribute] );
         }
         else
         {
             // return the default field name here.
-            return parent::generateAttributeFieldName( $classAttribute,
-                                                       self::$subattributesDefinition[self::DEFAULT_SUBATTRIBUTE] );
+            return parent::generateAttributeFieldName( $classAttribute, self::$subattributesDefinition[self::DEFAULT_SUBATTRIBUTE] );
         }
     }
- 
+
     /**
      * @see ezfSolrDocumentFieldBase::getFieldNameList()
      */
@@ -81,34 +80,32 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
     {
         // Generate the list of subfield names.
         $subfields = array();
- 
+        
         //   Handle first the default subattribute
         $subattributesDefinition = self::$subattributesDefinition;
-        if ( !in_array( $subattributesDefinition[self::DEFAULT_SUBATTRIBUTE], $exclusiveTypeFilter ) )
+        if ( ! in_array( $subattributesDefinition[self::DEFAULT_SUBATTRIBUTE], $exclusiveTypeFilter ) )
         {
             $subfields[] = parent::generateAttributeFieldName( $classAttribute, $subattributesDefinition[self::DEFAULT_SUBATTRIBUTE] );
         }
         unset( $subattributesDefinition[self::DEFAULT_SUBATTRIBUTE] );
- 
+        
         //   Then hanlde all other subattributes
         foreach ( $subattributesDefinition as $name => $type )
         {
-            if ( empty( $exclusiveTypeFilter ) or !in_array( $type, $exclusiveTypeFilter ) )
+            if ( empty( $exclusiveTypeFilter ) or ! in_array( $type, $exclusiveTypeFilter ) )
             {
                 $subfields[] = parent::generateSubattributeFieldName( $classAttribute, $name, $type );
             }
         }
         return $subfields;
     }
- 
+
     /**
      * @see ezfSolrDocumentFieldBase::getClassAttributeType()
      */
     public static function getClassAttributeType( eZContentClassAttribute $classAttribute, $subAttribute = null )
     {
-        if ( $subAttribute and
-             $subAttribute !== '' and
-             array_key_exists( $subAttribute, self::$subattributesDefinition ) )
+        if ( $subAttribute and $subAttribute !== '' and array_key_exists( $subAttribute, self::$subattributesDefinition ) )
         {
             // If a subattribute's type is being explicitly requested :
             return self::$subattributesDefinition[$subAttribute];
