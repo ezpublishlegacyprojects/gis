@@ -39,7 +39,10 @@ class attributeListOperator
                                                                      'default' => '' ),
 		                                              'limit' => array( 'type' => 'string',
 		                                                                     'required' => true,
-		                                                                     'default' => '' )
+		                                                                     'default' => '' ),
+        											  'source' => array( 'type' => 'string',
+	                                                                     'required' => true,
+	                                                                     'default' => '' ),
 		                                            ) );
 		    }
 
@@ -53,13 +56,16 @@ class attributeListOperator
     	$db = eZDB::instance();
     	$limit = $namedParameters['limit'];
     	$attribute = $namedParameters['attribute'];
+    	$source = $namedParameters['source'];
     	
     	$attribute_list = $db->arrayQuery(
-    		"SELECT $attribute, count($attribute) as 'count' FROM ezxgis_position, ezcontentobject, ezcontentobject_attribute
+    		"SELECT $attribute, count($attribute) as 'count' FROM ezxgis_position, ezcontentobject, ezcontentobject_attribute, ezcontentobject_tree
 			WHERE ezxgis_position.contentobject_attribute_id = ezcontentobject_attribute.id
 			AND ezcontentobject_attribute.contentobject_id = ezcontentobject.id
+			AND ezcontentobject_tree.contentobject_id = ezcontentobject.id
 			AND ezcontentobject.current_version = ezxgis_position.contentobject_attribute_version
 			AND $attribute != ''
+			AND ezcontentobject_tree.path_string LIKE '%/$source/%'
 			GROUP BY $attribute
 			ORDER BY count desc 
 			LIMIT $limit;"
