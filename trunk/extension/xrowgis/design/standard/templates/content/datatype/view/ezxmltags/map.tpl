@@ -38,7 +38,7 @@
                                 <li class="baseLayer"
                                     data-service="WMS"
                                     data-url="http://admin.hannover.de/geoserver/Hannover/wms"
-                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[3000, 6000, 10000, 20000, 40000, 60000]"}'
+                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[3000, 6000, 8000, 10000, 15000]"}'
                                     data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
                                     data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled": true}'
                                     data-layeroptions='{"isBaseLayer" : true, "attribution" : "Provided by Hannover.de"}'

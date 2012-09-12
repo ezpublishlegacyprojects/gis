@@ -10,7 +10,7 @@
 {if is_set($relatedObject)}
         <tr>
             <td><label>{'Related Object'|i18n( 'extension/xrowgis' )}:</label></td>
-            <td><a href="{$relatedObject.main_node.url_alias|ezurl( 'no', 'full')}">{$relatedObject.name}</a></td>
+            <td><a target="_blank" href="{$relatedObject.main_node.url_alias|ezurl( 'no', 'full')}">{$relatedObject.name}</a></td>
         </tr>
 {/if}
         <tr>
