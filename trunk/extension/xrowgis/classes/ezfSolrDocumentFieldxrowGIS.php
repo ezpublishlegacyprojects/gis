@@ -103,7 +103,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
     /**
      * @see ezfSolrDocumentFieldBase::getClassAttributeType()
      */
-    public static function getClassAttributeType( eZContentClassAttribute $classAttribute, $subAttribute = null )
+    static function getClassAttributeType( eZContentClassAttribute $classAttribute, $subAttribute = null, $context = 'search' )
     {
         if ( $subAttribute and $subAttribute !== '' and array_key_exists( $subAttribute, self::$subattributesDefinition ) )
         {
