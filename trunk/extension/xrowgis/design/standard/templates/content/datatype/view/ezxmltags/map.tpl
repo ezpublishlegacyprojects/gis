@@ -11,15 +11,13 @@
         data-maptype="{if is_set($maptype)}{$maptype}{else}{ezini("GISSettings","DefaultMapType","xrowgis.ini")}{/if}"
         data-lat="{if and(is_set($lat), $lat|eq('0')|not())}{$lat}{else}{ezini("GISSettings","latitude","xrowgis.ini")}{/if}"
         data-lon="{if and(is_set($lon), $lon|eq('0')|not())}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
-        data-xoffset="{$point.xoffset|wash()}"
-        data-yoffset="{$point.yoffset|wash()}" 
         data-config="{concat('custom-map-config-', currentdate())}">
     </div>
         <ul class="{concat('custom-map-config-', currentdate())}"
                         {literal}
                         style="display:none;"
                         data-mapname="POIMap"
-                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "64", "width" : "24", "xoffset" : -12, "yoffset" : -32}}'>
+                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"4"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "64", "width" : "24", "xoffset" : -12, "yoffset" : -32}}'>
                        {/literal}
                        {switch match=$layer}
                            {case match='OSM'}
@@ -40,7 +38,7 @@
                                 <li class="baseLayer"
                                     data-service="WMS"
                                     data-url="http://admin.hannover.de/geoserver/Hannover/wms"
-                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[100, 200 ,500, 1000, 3000, 6000, 10000 ]"}'
+                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[3000, 6000, 10000, 20000, 40000, 60000]"}'
                                     data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
                                     data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled": true}'
                                     data-layeroptions='{"isBaseLayer" : true, "attribution" : "Provided by Hannover.de"}'
@@ -50,7 +48,7 @@
                                 {/literal}
                             {/case}
                         {/switch}
-{if $url}
+                    {if $url}
                         {literal}
                         <li data-service="GML"
                             data-url="{/literal}{$url}{literal}"

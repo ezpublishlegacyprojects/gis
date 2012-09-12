@@ -13,7 +13,7 @@ POIMap.prototype.start = function(element) {
 
     if (this.options.url != "false" || typeof(this.map.featureLayers) != 'undefined') {//if we have no url, render the default map
         
-//        this.markers.destroy();//destroy Parent Marker
+        this.markers.destroy();//destroy Parent Marker
         
         for(var i in this.map.featureLayers)
         {
