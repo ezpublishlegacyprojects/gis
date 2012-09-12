@@ -10,12 +10,16 @@ XROWMap.prototype.init = function(element) {
     this.config = $('.'+this.options.config);
     this.mapOptions=this.config.data('mapoptions');
     this.projection = $(this.config).find('.baseLayer').data().projection;
-    Proj4js.defs["EPSG:25832"] = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs";//@TODO: Why the Hell is the def file not used?
+    Proj4js.defs["EPSG:25832"] = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs";
     this.zoom = this.mapOptions.mapview.zoom;
 
-    OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url from window.location.href to location .host
+    OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url
+                                                            // from
+                                                            // window.location.href
+                                                            // to location .host
     
-    //fix for elements which are not visibly at first, for e.g. maps which are hidden in tabs
+    // fix for elements which are not visibly at first, for e.g. maps which are
+    // hidden in tabs
     if(typeof(this.mapOptions.mapview.height)=='undefined')
     {
         if ($(element).height() == 0) 
@@ -32,7 +36,7 @@ XROWMap.prototype.init = function(element) {
     {
         $(element).width(this.mapOptions.mapview.width);
     }
-    //initalize map Object
+    // initalize map Object
     this.map = new OpenLayers.Map(
                 {
                     controls : [],
@@ -45,7 +49,7 @@ XROWMap.prototype.init = function(element) {
                         "zoomend": zoomEnd
                     }
                 });
-    //set additional MapOptions
+    // set additional MapOptions
     if(typeof(this.mapOptions.mapoptions)!='undefined')
     {
         for(var i in this.mapOptions.mapoptions)
@@ -54,7 +58,7 @@ XROWMap.prototype.init = function(element) {
         }
         this.map.setOptions(options);
     }
-    //create Layers
+    // create Layers
     map = this.map;
     $(this.config).find('li').each(function(index, value)
     {
@@ -70,7 +74,7 @@ XROWMap.prototype.init = function(element) {
             
             this.layer.addOptions(layersettings);
         }
-        //save all special feature Layers to this.map for next steps
+        // save all special feature Layers to this.map for next steps
         if(typeof($(this).data().features) != 'undefined')
         {   
             featureLayers[x] = 
@@ -85,14 +89,15 @@ XROWMap.prototype.init = function(element) {
     });
     
     this.map.featureLayers = featureLayers;
-    this.map = map;//@TODO: Why do we have to do it this way?!
+    this.map = map;// @TODO: Why do we have to do it this way?!
     
-    //defining Icon stuff for gml Layer and marker Layer
+    // defining Icon stuff for gml Layer and marker Layer
     this.size = new OpenLayers.Size(this.mapOptions.icon.width, this.mapOptions.icon.height);
-    this.xoffset = (this.size.w / 2) + (Number(this.options.xoffset));
-    this.yoffset = (this.size.h) + (Number(this.options.yoffset));
-    this.offset = new OpenLayers.Pixel(-this.xoffset, -this.yoffset);
+    this.xoffset = (Number(this.mapOptions.icon.xoffset));
+    this.yoffset = (Number(this.mapOptions.icon.yoffset));
+    this.offset = new OpenLayers.Pixel(this.xoffset, this.yoffset);
     this.icon = new OpenLayers.Icon(this.mapOptions.icon.src, this.size, this.offset);
+//    this.icon = new OpenLayers.Icon("http://www.openstreetmap.org/openlayers/img/marker.png",new OpenLayers.Size(15, 15));
 
     // add simple Marker and reproject the coords
     this.markers = new OpenLayers.Layer.Markers("Marker Layer");
@@ -101,10 +106,18 @@ XROWMap.prototype.init = function(element) {
     this.lonLat = new OpenLayers.LonLat(this.lonLat.x, this.lonLat.y);
     this.map.addLayer(this.markers);
     this.markers.addMarker(new OpenLayers.Marker(this.lonLat, this.icon));
+    
+    /*REFERENZVECTOR
+    var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+    var point = new OpenLayers.Geometry.Point(this.lonLat.lon, this.lonLat.lat);
+    vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
+    this.map.addLayer(vectors);
+    */
 
-    //set center
+
+    // set center
     this.map.setCenter(this.lonLat, this.zoom);
-    //this.map.zoomToMaxExtent();
+    // this.map.zoomToMaxExtent();
     // add controls
     if(typeof(this.mapOptions.mapview.controls)!='undefined')
     {
@@ -114,19 +127,19 @@ XROWMap.prototype.init = function(element) {
                     map.addControl(new OpenLayers.Control[value]());
                 });
         this.map = map;
-    }else//default Controls
+    }else// default Controls
     {
         this.map.addControl(new OpenLayers.Control.Navigation());
         this.map.addControl(new OpenLayers.Control.PanPanel());
         this.map.addControl(new OpenLayers.Control.ZoomPanel());
     }
-    //render the default Map
+    // render the default Map
     if (this.options.render == 'true') {
         this.map.render(element);
     }
 }// end XROWMap init
 
-//all this stuff underneath here comes to MapUtils.js...later.
+// all this stuff underneath here comes to MapUtils.js...later.
 $(document).ready(function() {
     var position = {};
     $('.XROWMap').each(function(index) {
@@ -139,11 +152,7 @@ $(document).ready(function() {
                 $.data($(this)[0], 'render', 'true');// render the default Map
             }
         map.start($(this)[0]);
-    });//ende each
-    $("input.global-map-search").focus(function()
-            {
-                $(this).val('');
-            });
+    });// ende each
     $("input.map-search").click(function()
             {
                 jQuery.ez('xrowGIS_page::updateMap',{'input': $("input.global-map-search").val(), 'mapsearch' : true},

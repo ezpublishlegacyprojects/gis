@@ -13,7 +13,7 @@ POIMap.prototype.start = function(element) {
 
     if (this.options.url != "false" || typeof(this.map.featureLayers) != 'undefined') {//if we have no url, render the default map
         
-        this.markers.destroy();//destroy Parent Marker
+//        this.markers.destroy();//destroy Parent Marker
         
         for(var i in this.map.featureLayers)
         {
@@ -49,9 +49,9 @@ POIMap.prototype.start = function(element) {
                                         new OpenLayers.Size(200, 200), 
                                         "<h2>" + feature.attributes.title + "</h2>" + 
                                         "<p>" + feature.attributes.description + "</p>" +
-                                        "<br /><a href='" + feature.attributes.link + "' target='_blank'>Mehr</a>",
+                                        "<br /><a href='" + feature.attributes.link + "' target='_blank'>mehr...</a>",
                                         null, 
-                                        true);
+                                        false);
                                 this.popup.calculateRelativePosition = function () {
                                     return 'br';
                                 }
@@ -153,7 +153,7 @@ function setHTML(response) {
                 new OpenLayers.Size(200, 200), 
                 popup_info,
                 null, 
-                true);
+                false);
         this.popup.calculateRelativePosition = function () {
             return 'br';
         }
@@ -187,11 +187,11 @@ function handle_geolocation_query(position){
         var lonLat = new Proj4js.Point(position.coords.longitude, position.coords.latitude);
         Proj4js.transform(new Proj4js.Proj(window.map.projection.projection), new Proj4js.Proj(window.map.projection.displayProjection), lonLat);
         currentPos = new OpenLayers.Layer.Markers("Current Position", {rendererOptions : {zIndexing : true}});
-        window.map.map.addLayer(currentPos );
+        window.map.map.addLayer(currentPos);
         currentPos.setZIndex( 1001 );
         lonLat = new OpenLayers.LonLat(lonLat.x, lonLat.y);
         currentPos.addMarker(new OpenLayers.Marker(lonLat, new OpenLayers.Icon("/extension/hannover/design/hannover/images/openlayers-custom/curpos.png", new OpenLayers.Size(24, 32))));
-        window.map.map.setCenter(lonLat, 5);
+        window.map.map.setCenter(lonLat, window.map.zoom);
     }
 
 } 

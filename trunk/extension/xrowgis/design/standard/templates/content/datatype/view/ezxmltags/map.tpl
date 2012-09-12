@@ -19,7 +19,7 @@
                         {literal}
                         style="display:none;"
                         data-mapname="POIMap"
-                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "32", "width" : "24"}}'>
+                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "64", "width" : "24"}}'>
                        {/literal}
                        {switch match=$layer}
                            {case match='OSM'}
