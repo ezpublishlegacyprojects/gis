@@ -1,5 +1,4 @@
 <?php
-
 class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
 {
     /**
@@ -15,8 +14,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
      * @var array
      */
     public static $subattributesDefinition = array( 
-        'longitude' => 'float' , 
-        'latitude' => 'float' , 
+    	'coordinates' => 'geopoint',
         self::DEFAULT_SUBATTRIBUTE => 'string' 
     );
     
@@ -49,8 +47,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
         if ( $this->ContentObjectAttribute->attribute( 'has_content' ) )
         {
             $data[self::getFieldName( $contentClassAttribute, self::DEFAULT_SUBATTRIBUTE )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'city' );
-            $data[self::getFieldName( $contentClassAttribute, 'longitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'longitude' );
-            $data[self::getFieldName( $contentClassAttribute, 'latitude' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'latitude' );
+            $data[self::getFieldName( $contentClassAttribute, 'coordinates' )] = $this->ContentObjectAttribute->attribute( 'content' )->attribute( 'latitude' ).','.$this->ContentObjectAttribute->attribute( 'content' )->attribute( 'longitude' );
         }
         return $data;
     }
