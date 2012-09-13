@@ -85,7 +85,7 @@ class xrowGIStype extends eZDataType
             }
             */
             
-            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ))
+            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ) )
             {
                 $gp = new xrowGISPosition( array( 
                     'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
@@ -101,10 +101,12 @@ class xrowGIStype extends eZDataType
                 ) );
                 $contentObjectAttribute->Content = $gp;
                 $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
+                $contentObjectAttribute->setAttribute( 'sort_key_int', $relatedObjectID );
                 $contentObjectAttribute->store();
                 
                 if ( $http->hasPostVariable( 'PublishButton' ) )
                 {
+                    die(print_R($contentObjectAttribute));
                     self::updateRelAttributes( $contentObjectAttribute );
                 }
                 
@@ -115,12 +117,36 @@ class xrowGIStype extends eZDataType
         return eZInputValidator::STATE_INVALID;
     }
 
+    function sortKey( $contentObjectAttribute )
+    {
+        return $contentObjectAttribute->attribute( 'data_int' );
+    }
+
+    function sortKeyType()
+    {
+        return 'int';
+    }
+
     private static function updateRelAttributes( $contentObjectAttribute )
     {
-        $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
-            'data_int' => $contentObjectAttribute->attribute( 'contentobject_id' ) , 
+        $id_array = array();
+        $content_class_ids = eZPersistentObject::fetchObjectList( eZContentClassAttribute::definition(), array( 
+            'id' 
+        ), array( 
             'data_type_string' => xrowgistype::DATATYPE_STRING 
-        ), null, null, true );
+        ), null, null, false, false, null, null, null );
+        
+        foreach ($content_class_ids as $item)
+        {
+            $id_array[] = $item['id'];
+        }
+        $content_class_ids = implode(',', $id_array);
+        
+        $custom_conds = " AND contentclassattribute_id IN ({$content_class_ids})";
+        
+        $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
+            'sort_key_int' => $contentObjectAttribute->attribute( 'contentobject_id' ) 
+        ), null, null, true, false, null ,null , $custom_conds );
         
         foreach ( $list as $item )
         {
@@ -184,7 +210,7 @@ class xrowGIStype extends eZDataType
         $state = $http->postVariable( $base . '_xrowgis_state_' . $contentObjectAttribute->attribute( 'id' ) );
         $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
         $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
-
+        
         $gp = new xrowGISPosition( array( 
             'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
             'contentobject_attribute_version' => $contentObjectAttribute->attribute( 'version' ) , 
@@ -233,9 +259,9 @@ class xrowGIStype extends eZDataType
                 else
                 {
                     
-                    if($originalContentObjectAttribute->attribute('data_int'))
+                    if ( $originalContentObjectAttribute->attribute( 'data_int' ) )
                     {
-                        $contentObjectAttribute->setAttribute('data_int', $originalContentObjectAttribute->attribute('data_int'));
+                        $contentObjectAttribute->setAttribute( 'data_int', $originalContentObjectAttribute->attribute( 'data_int' ) );
                     }
                     $data->setAttribute( 'contentobject_attribute_id', $contentObjectAttribute->attribute( 'id' ) );
                     $data->setAttribute( 'contentobject_attribute_version', $contentObjectAttribute->attribute( 'version' ) );
