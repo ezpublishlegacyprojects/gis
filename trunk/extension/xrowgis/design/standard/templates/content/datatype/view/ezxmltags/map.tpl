@@ -7,7 +7,6 @@
 {/if}
 <!-- map content: START -->
     <div class="XROWMap custom_map"
-        data-map="{if is_set($map)}{$map}{else}{ezini("GISSettings","DefaultMap","xrowgis.ini")}{/if}"
         data-maptype="{if is_set($maptype)}{$maptype}{else}{ezini("GISSettings","DefaultMapType","xrowgis.ini")}{/if}"
         data-lat="{if and(is_set($lat), $lat|eq('0')|not())}{$lat}{else}{ezini("GISSettings","latitude","xrowgis.ini")}{/if}"
         data-lon="{if and(is_set($lon), $lon|eq('0')|not())}{$lon}{else}{ezini("GISSettings","longitude","xrowgis.ini")}{/if}"
