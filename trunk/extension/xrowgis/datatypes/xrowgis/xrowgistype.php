@@ -106,7 +106,6 @@ class xrowGIStype extends eZDataType
                 
                 if ( $http->hasPostVariable( 'PublishButton' ) )
                 {
-                    die(print_R($contentObjectAttribute));
                     self::updateRelAttributes( $contentObjectAttribute );
                 }
                 
