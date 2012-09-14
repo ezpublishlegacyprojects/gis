@@ -49,41 +49,6 @@ class xrowGIStype extends eZDataType
             $state = $http->postVariable( $base . '_xrowgis_state_' . $contentObjectAttribute->attribute( 'id' ) );
             $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
             $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
-            /*
-            if ( empty( $longitude ) || empty( $latitude ) )
-            {
-                $geocoder = GeoCoder::getActiveGeoCoder();
-                $geocoder->setAddress( $street, $zip, $city, $state, $country );
-                
-                if ( $geocoder->request() )
-                {
-                    
-                    $gp = new xrowGISPosition( array( 
-                        'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
-                        'contentobject_attribute_version' => $contentObjectAttribute->attribute( 'version' ) , 
-                        'latitude' => $geocoder->latitude , 
-                        'longitude' => $geocoder->longitude , 
-                        'street' => $street , 
-                        'zip' => $zip , 
-                        'district' => $district , 
-                        'city' => $city , 
-                        'state' => $state , 
-                        'country' => $country 
-                    ) );
-                    
-                    $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
-                    $contentObjectAttribute->Content = $gp;
-                    $contentObjectAttribute->store();
-                    
-                    if ( $http->hasPostVariable( 'PublishButton' ) )
-                    {
-                        self::updateRelAttributes( $contentObjectAttribute );
-                    }
-                    
-                    return eZInputValidator::STATE_ACCEPTED;
-                }
-            }
-            */
             
             if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ) )
             {
@@ -135,28 +100,42 @@ class xrowGIStype extends eZDataType
             'data_type_string' => xrowgistype::DATATYPE_STRING 
         ), null, null, false, false, null, null, null );
         
-        foreach ($content_class_ids as $item)
+        foreach ( $content_class_ids as $item )
         {
             $id_array[] = $item['id'];
         }
-        $content_class_ids = implode(',', $id_array);
+        $content_class_ids = implode( ',', $id_array );
         
         $custom_conds = " AND contentclassattribute_id IN ({$content_class_ids})";
         
-        $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
-            'sort_key_int' => $contentObjectAttribute->attribute( 'contentobject_id' ) 
-        ), null, null, true, false, null ,null , $custom_conds );
-        
-        foreach ( $list as $item )
+        for ( $i = 0; $i < 4; $i ++ )
         {
-            $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
-                'contentobject_attribute_id' => $item->attribute( 'id' ) , 
-                'contentobject_attribute_version' => $item->attribute( 'version' ) 
-            ), true );
-            $GISCo = $contentObjectAttribute->Content;
-            $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
-            $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
-            $GISCo->store();
+            if ( $i == 0 )
+            {
+                $coID = $contentObjectAttribute->attribute( 'contentobject_id' );
+            }
+            else
+            {
+                $coID = $item->attribute( 'contentobject_id' );
+            }
+            
+            $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
+                'sort_key_int' => $coID 
+            ), null, null, true, false, null, null, $custom_conds );
+            
+            foreach ( $list as $item )
+            {
+                $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
+                    'contentobject_attribute_id' => $item->attribute( 'id' ) , 
+                    'contentobject_attribute_version' => $item->attribute( 'version' ) 
+                ), true );
+                
+                $GISCo = $contentObjectAttribute->Content;
+                $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
+                $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
+                $GISCo->store();
+            }
+        
         }
     }
 
