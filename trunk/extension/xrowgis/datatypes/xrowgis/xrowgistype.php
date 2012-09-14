@@ -100,9 +100,9 @@ class xrowGIStype extends eZDataType
             'data_type_string' => xrowgistype::DATATYPE_STRING 
         ), null, null, false, false, null, null, null );
         
-        foreach ( $content_class_ids as $item )
+        foreach ( $content_class_ids as $id )
         {
-            $id_array[] = $item['id'];
+            $id_array[] = $id['id'];
         }
         $content_class_ids = implode( ',', $id_array );
         
@@ -116,24 +116,31 @@ class xrowGIStype extends eZDataType
             }
             else
             {
-                $coID = $item->attribute( 'contentobject_id' );
+                if ( $item instanceof eZContentObjectAttribute )
+                {
+                    $coID = $item->attribute( 'contentobject_id' );
+                }
+            
             }
-            
-            $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
-                'sort_key_int' => $coID 
-            ), null, null, true, false, null, null, $custom_conds );
-            
-            foreach ( $list as $item )
+            if ( $coID != null )
             {
-                $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
-                    'contentobject_attribute_id' => $item->attribute( 'id' ) , 
-                    'contentobject_attribute_version' => $item->attribute( 'version' ) 
-                ), true );
+                $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
+                    'sort_key_int' => $coID 
+                ), null, null, true, false, null, null, $custom_conds );
                 
-                $GISCo = $contentObjectAttribute->Content;
-                $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
-                $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
-                $GISCo->store();
+                foreach ( $list as $item )
+                {
+                    $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
+                        'contentobject_attribute_id' => $item->attribute( 'id' ) , 
+                        'contentobject_attribute_version' => $item->attribute( 'version' ) 
+                    ), true );
+                    
+                    $GISCo = $contentObjectAttribute->Content;
+                    $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
+                    $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
+                    $GISCo->store();
+                    $coID = null;
+                }
             }
         
         }
