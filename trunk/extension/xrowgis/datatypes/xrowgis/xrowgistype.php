@@ -64,6 +64,7 @@ class xrowGIStype extends eZDataType
                     'state' => $state , 
                     'country' => $country 
                 ) );
+                
                 $contentObjectAttribute->Content = $gp;
                 $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
                 $contentObjectAttribute->setAttribute( 'sort_key_int', $relatedObjectID );
@@ -83,7 +84,7 @@ class xrowGIStype extends eZDataType
 
     function sortKey( $contentObjectAttribute )
     {
-        return $contentObjectAttribute->attribute( 'data_int' );
+        return $contentObjectAttribute->attribute( 'sort_key_int' );
     }
 
     function sortKeyType()
@@ -114,33 +115,23 @@ class xrowGIStype extends eZDataType
             {
                 $coID = $contentObjectAttribute->attribute( 'contentobject_id' );
             }
-            else
-            {
-                if ( $item instanceof eZContentObjectAttribute )
-                {
-                    $coID = $item->attribute( 'contentobject_id' );
-                }
+
+            $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
+                'sort_key_int' => $coID 
+            ), null, null, true, false, null, null, $custom_conds );
             
-            }
-            if ( $coID != null )
+            foreach ( $list as $item )
             {
-                $list = eZPersistentObject::fetchObjectList( eZContentObjectAttribute::definition(), null, array( 
-                    'sort_key_int' => $coID 
-                ), null, null, true, false, null, null, $custom_conds );
+                $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
+                    'contentobject_attribute_id' => $item->attribute( 'id' ) , 
+                    'contentobject_attribute_version' => $item->attribute( 'version' ) 
+                ), true );
                 
-                foreach ( $list as $item )
-                {
-                    $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
-                        'contentobject_attribute_id' => $item->attribute( 'id' ) , 
-                        'contentobject_attribute_version' => $item->attribute( 'version' ) 
-                    ), true );
-                    
-                    $GISCo = $contentObjectAttribute->Content;
-                    $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
-                    $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
-                    $GISCo->store();
-                    $coID = null;
-                }
+                $GISCo = $contentObjectAttribute->Content;
+                $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
+                $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
+                $GISCo->store();
+                $coID = $item->attribute( 'contentobject_id' );
             }
         
         }
@@ -247,6 +238,7 @@ class xrowGIStype extends eZDataType
                     if ( $originalContentObjectAttribute->attribute( 'data_int' ) )
                     {
                         $contentObjectAttribute->setAttribute( 'data_int', $originalContentObjectAttribute->attribute( 'data_int' ) );
+                        $contentObjectAttribute->setAttribute( 'sort_key_int', $originalContentObjectAttribute->attribute( 'data_int' ) );
                     }
                     $data->setAttribute( 'contentobject_attribute_id', $contentObjectAttribute->attribute( 'id' ) );
                     $data->setAttribute( 'contentobject_attribute_version', $contentObjectAttribute->attribute( 'version' ) );
