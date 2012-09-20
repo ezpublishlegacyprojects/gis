@@ -115,7 +115,6 @@ class xrowGIStype extends eZDataType
                         }
                     
                     }
-                
      #self::updateRelAttributes( $contentObjectAttribute );
                 }
                 
@@ -135,7 +134,7 @@ class xrowGIStype extends eZDataType
     {
         return 'int';
     }
-
+/*
     private static function updateRelAttributes( $contentObjectAttribute )
     {
         $id_array = array();
@@ -182,7 +181,7 @@ class xrowGIStype extends eZDataType
         
         }
     }
-
+*/
     /*!
      Stores relation to the ezcontentobject_link table
     */
