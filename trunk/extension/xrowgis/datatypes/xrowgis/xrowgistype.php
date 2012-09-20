@@ -65,13 +65,13 @@ class xrowGIStype extends eZDataType
                     'country' => $country 
                 ) );
                 
-                $contentObjectAttribute->Content = $gp;
-                $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
-                $contentObjectAttribute->setAttribute( 'sort_key_int', $relatedObjectID );
-                $contentObjectAttribute->store();
-                
                 if ( $http->hasPostVariable( 'PublishButton' ) )
                 {
+                    $contentObjectAttribute->Content = $gp;
+                    $contentObjectAttribute->setAttribute( 'data_int', $relatedObjectID );
+                    $contentObjectAttribute->setAttribute( 'sort_key_int', $relatedObjectID );
+                    $contentObjectAttribute->store();
+                
                     self::updateRelAttributes( $contentObjectAttribute );
                 }
                 
@@ -122,32 +122,17 @@ class xrowGIStype extends eZDataType
             $ids = array();
             foreach ( $list as $item )
             {
-                /*$GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
+                $GISCo = eZPersistentObject::fetchObject( xrowGISPosition::definition(), null, array( 
                     'contentobject_attribute_id' => $item->attribute( 'id' ) , 
                     'contentobject_attribute_version' => $item->attribute( 'version' ) 
                 ), true );
-                */
+                
                 $GISCo = $contentObjectAttribute->Content;
                 
                 $GISCo->setAttribute( 'contentobject_attribute_id', $item->attribute( 'id' ) );
                 $GISCo->setAttribute( 'contentobject_attribute_version', $item->attribute( 'version' ) );
                 $GISCo->store();
-                $db = eZDB::instance();
                 
-                $sql = "UPDATE ezxgis_position SET contentobject_attribute_id={$item->attribute( 'id' )}, 
-                								   contentobject_attribute_version={$item->attribute( 'version' )},
-                								   latitude={$GISCo->attribute('latitude')},
-                								   longitude={$GISCo->attribute('longitude')},
-                								   street={$GISCo->attribute('street')},
-                								   zip={$GISCo->attribute('zip')},
-                								   district={$GISCo->attribute('district')},
-                								   city={$GISCo->attribute('city')},
-                								   state={$GISCo->attribute('state')},
-                								   country={$GISCo->attribute('country')} WHERE contentobject_attribute_id={$item->attribute( 'id' )}";
-                
-                
-                $db->query( $sql );
-                $db->commit();
                 $coID = $item->attribute( 'contentobject_id' );
             }
         
