@@ -13,6 +13,7 @@ XROWMap.prototype.init = function(element) {
     Proj4js.defs["EPSG:25832"] = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs";
     this.zoom = this.mapOptions.mapview.zoom;
 
+    OpenLayers.ImgPath = "/extension/xrowgis/design/standard/javascript/OpenLayers/img/";
     OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url
                                                             // from
                                                             // window.location.href
