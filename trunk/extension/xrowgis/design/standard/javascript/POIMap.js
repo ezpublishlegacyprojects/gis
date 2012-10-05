@@ -37,9 +37,15 @@ POIMap.prototype.start = function(element) {
                         this.map.featureLayers[i].layer,
                         {
                             onSelect : function(feature) {
+                                var description = "";
                                 this.pos = feature.geometry;
                                 this.featureLonLat = new OpenLayers.LonLat(this.pos.x, this.pos.y);
                                 this.map.setCenter(this.featureLonLat, 16);
+                                
+                                if(feature.attributes.description != 'No Description')
+                                {
+                                    description = "<p>" + feature.attributes.description + "</p><br />";
+                                }
                                 
                                 if (typeof this.popup != "undefined" && this.popup != null) {
                                     this.map.removePopup(this.popup);
@@ -47,9 +53,9 @@ POIMap.prototype.start = function(element) {
                                 this.popup = new OpenLayers.Popup.FramedCloud("popup",
                                         this.featureLonLat,
                                         new OpenLayers.Size(200, 200), 
-                                        "<h2>" + feature.attributes.title + "</h2>" + 
-                                        "<p>" + feature.attributes.description + "</p>" +
-                                        "<br /><a href='" + feature.attributes.link + "' target='_blank'>mehr...</a>",
+                                        "<h2>" + feature.attributes.title + "</h2>" 
+                                            + description  +
+                                        "<a href='" + feature.attributes.link + "' target='_blank'>mehr...</a>",
                                         null, 
                                         false);
                                 this.popup.calculateRelativePosition = function () {
@@ -112,7 +118,7 @@ POIMap.prototype.start = function(element) {
 
 function setHTML(response) {
     var cat="", src="", leg="", linkinfo="", lines, vals, popup_info;
-    
+
     if (response.responseText.indexOf('no features were found') == -1) {
         lines = response.responseText.split('\n');
 
@@ -128,21 +134,9 @@ function setHTML(response) {
             } else if (vals[0].indexOf('SOURCE') != -1 ) {
                 src = vals[1];
             } else if (vals[0].indexOf('INFO') != -1 ) {
-                if(vals[1] != 'No Description')
-                {
-                    leg = vals[1];
-                }else
-                {
-                    leg = "";
-                }
+                leg = vals[1];
             } else if (vals[0].indexOf('info') != -1 ) {
-                if(vals[1] != 'No Description')
-                {
-                    leg = vals[1];
-                }else
-                {
-                    leg = "";
-                }
+                 leg = vals[1];
             } else if (vals[0].indexOf('HREF') != -1 ) {
                 if(vals[1]!='')
                 {
