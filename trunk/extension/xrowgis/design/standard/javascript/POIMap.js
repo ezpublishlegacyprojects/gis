@@ -128,9 +128,21 @@ function setHTML(response) {
             } else if (vals[0].indexOf('SOURCE') != -1 ) {
                 src = vals[1];
             } else if (vals[0].indexOf('INFO') != -1 ) {
-                leg = vals[1];
+                if(vals[1] != 'No Description')
+                {
+                    leg = vals[1];
+                }else
+                {
+                    leg = "";
+                }
             } else if (vals[0].indexOf('info') != -1 ) {
-                leg = vals[1];
+                if(vals[1] != 'No Description')
+                {
+                    leg = vals[1];
+                }else
+                {
+                    leg = "";
+                }
             } else if (vals[0].indexOf('HREF') != -1 ) {
                 if(vals[1]!='')
                 {
@@ -195,4 +207,3 @@ function handle_geolocation_query(position){
     }
 
 } 
-
