@@ -10,9 +10,19 @@ XROWMap.prototype.init = function(element) {
     this.config = $('.'+this.options.config);
     this.mapOptions=this.config.data('mapoptions');
     this.projection = $(this.config).find('.baseLayer').data().projection;
+    this.layerzoom = $(this.config).find('.baseLayer').data().layerzoom;
     Proj4js.defs["EPSG:25832"] = "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs";
-    this.zoom = this.mapOptions.mapview.zoom;
-
+    
+    if(typeof(this.layerzoom) == 'undefined')
+    {
+        this.zoom = this.mapOptions.mapview.zoom;
+    }
+    else
+    {
+        this.zoom = this.layerzoom;
+    }
+    
+    
     OpenLayers.ImgPath = "/extension/xrowgis/design/standard/javascript/OpenLayers/img/";
     OpenLayers.Request.DEFAULT_CONFIG.url = location.host;// change the url
                                                             // from

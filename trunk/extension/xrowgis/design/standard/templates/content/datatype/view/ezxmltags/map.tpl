@@ -16,7 +16,7 @@
                         {literal}
                         style="display:none;"
                         data-mapname="POIMap"
-                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"4"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "64", "width" : "24", "xoffset" : -12, "yoffset" : -32}}'>
+                        data-mapoptions='{"generals" : {"units" : "m", "projection" : "EPSG:25832"}, "mapview" : {"controls" : ["Navigation", "PanPanel", "ZoomPanel", "Attribution"], "zoom":"16"}, "theme" : "/extension/hannover/design/hannover/stylesheets/openlayers-custom.css" , "icon" : {"src" : "/extension/hannover/design/hannover/images/openlayers-custom/marker.png", "height" : "64", "width" : "24", "xoffset" : -12, "yoffset" : -32}}'>
                        {/literal}
                        {switch match=$layer}
                            {case match='OSM'}
@@ -37,11 +37,11 @@
                                 <li class="baseLayer"
                                     data-service="WMS"
                                     data-url="http://admin.hannover.de/geoserver/Hannover/wms"
-                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[3000, 6000, 8000, 10000, 15000]"}'
+                                    data-layersettings='{"maxExtent" : "new OpenLayers.Bounds(516000, 5774000, 590000, 5838000)", "scales" : "[4000, 6000, 8000, 10000, 15000]"}'
                                     data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
                                     data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled": true}'
                                     data-layeroptions='{"isBaseLayer" : true, "attribution" : "Provided by Hannover.de"}'
-                                    data-layerzoom="1"
+                                    data-layerzoom="1.5"
                                     data-default="active" 
                                     data-layername="Hannover" >Region Hannover</li>
                                 {/literal}
