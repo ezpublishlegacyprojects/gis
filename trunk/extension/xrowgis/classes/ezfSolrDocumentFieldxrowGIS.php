@@ -56,7 +56,7 @@ class ezfSolrDocumentFieldxrowGIS extends ezfSolrDocumentFieldBase
     /**
      * @see ezfSolrDocumentFieldBase::getFieldName()
      */
-    public static function getFieldName( eZContentClassAttribute $classAttribute, $subAttribute = null )
+    public static function getFieldName( eZContentClassAttribute $classAttribute, $subAttribute = null, $context = 'search' )
     {
         // article/location/ longitude
         if ( $subAttribute and $subAttribute !== '' and array_key_exists( $subAttribute, self::$subattributesDefinition ) and $subAttribute != self::DEFAULT_SUBATTRIBUTE )
