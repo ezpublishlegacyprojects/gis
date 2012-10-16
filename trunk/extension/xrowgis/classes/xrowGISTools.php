@@ -5,6 +5,10 @@ class xrowGISTools
 
     static function citiesBySubtree( eZContentObjectTreeNode $node, $params )
     {
+        if ( $node === null )
+        {
+            return array();
+        }
         $db = eZDB::instance();
         $list = $db->arrayQuery( "SELECT city, count(city) as 'count' FROM ezxgis_position, ezcontentobject, ezcontentobject_attribute, ezcontentobject_tree
             WHERE ezxgis_position.contentobject_attribute_id = ezcontentobject_attribute.id
