@@ -11,3 +11,5 @@ CREATE TABLE  `ezxgis_position` (
   `state` varchar(255) default NULL,
   `country` varchar(255) default NULL
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ADD PRIMARY KEY (`contentobject_attribute_id`, `contentobject_attribute_version`) ;

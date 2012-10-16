@@ -50,7 +50,7 @@ class xrowGIStype extends eZDataType
             $country = $http->postVariable( $base . '_xrowgis_country_' . $contentObjectAttribute->attribute( 'id' ) );
             $relatedObjectID = $http->hasPostVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) ? $http->postVariable( $base . '_xrowgis_data_object_relation_id_' . $contentObjectAttribute->attribute( 'id' ) ) : null;
             
-            if ( ( $contentObjectAttribute->validateIsRequired() and ( ! empty( $relatedObjectID ) or ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ) )
+            if ( ( $contentObjectAttribute->validateIsRequired() && ( ! empty( $relatedObjectID ) || ( ! empty( $street ) && ! empty( $zip ) && ! empty( $city ) && ! empty( $state ) && ! empty( $latitude ) && ! empty( $longitude ) ) ) ) or ( ! $contentObjectAttribute->validateIsRequired() and ( empty( $street ) && empty( $zip ) && empty( $city ) && empty( $state ) && empty( $latitude ) && empty( $longitude ) ) or ( $street && $zip && $city && $state && $latitude && $longitude ) or $relatedObjectID ) )
             {
                 $gp = new xrowGISPosition( array( 
                     'contentobject_attribute_id' => $contentObjectAttribute->attribute( 'id' ) , 
