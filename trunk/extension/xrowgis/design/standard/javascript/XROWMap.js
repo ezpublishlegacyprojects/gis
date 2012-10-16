@@ -102,6 +102,10 @@ XROWMap.prototype.init = function(element) {
     this.map.featureLayers = featureLayers;
     this.map = map;// @TODO: Why do we have to do it this way?!
     
+    //ie 8 hack -> Bug #3182
+    this.map.Z_INDEX_BASE.Control=980;
+    this.map.eventsDiv.style.zIndex = this.map.Z_INDEX_BASE.Control - 1;
+    
     // defining Icon stuff for gml Layer and marker Layer
     this.size = new OpenLayers.Size(this.mapOptions.icon.width, this.mapOptions.icon.height);
     this.xoffset = (Number(this.mapOptions.icon.xoffset));
