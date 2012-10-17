@@ -41,7 +41,7 @@
                                     data-projection='{"displayProjection" : "EPSG:25832", "projection" : "EPSG:4326"}'
                                     data-layerparams='{"layers" : "Hannover", "format" : "image/png", "tiled": true}'
                                     data-layeroptions='{"isBaseLayer" : true, "attribution" : "&copy; {/literal}{concat(currentdate()|datetime( 'custom', '%Y' ), ', ' , $attributionText)}{literal}"}'
-                                    data-layerzoom="1.5"
+                                    data-layerzoom="4"
                                     data-default="active" 
                                     data-layername="Hannover" >Region Hannover</li>
                                 {/literal}
