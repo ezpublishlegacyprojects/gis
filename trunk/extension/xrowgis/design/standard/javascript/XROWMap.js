@@ -4,7 +4,7 @@ XROWMap.prototype.start = function(element) {
     this.init(element);
 }
 XROWMap.prototype.init = function(element) {
-    var map, options={}, layersettings={}, tmp, featureLayers=[], params_new, x=0;
+    var map, options={}, controlOptions, layersettings={}, tmp, featureLayers=[], params_new, x=0;
     this.map, this.layer, this.styledPoint, this.lonLat, this.markers, this.params={}, this.layerOptions={};
     this.options = $.data(element);
     this.config = $('.'+this.options.config);
@@ -129,17 +129,28 @@ XROWMap.prototype.init = function(element) {
     this.map.addLayer(vectors);
     */
 
-
     // set center
     this.map.setCenter(this.lonLat, this.zoom);
-    // this.map.zoomToMaxExtent();
     // add controls
     if(typeof(this.mapOptions.mapview.controls)!='undefined')
     {
         map = this.map;
+        controlOptions = this.mapOptions.mapview.controlOptions;
         $.each(this.mapOptions.mapview.controls, function(index, value)
                 {
-                    map.addControl(new OpenLayers.Control[value]());
+                    if(typeof(controlOptions)=='undefined')
+                    {
+                        map.addControl(new OpenLayers.Control[value]());
+                    }else
+                    {
+                        if(typeof(controlOptions[value])!='undefined')
+                        {
+                            map.addControl(new OpenLayers.Control[value](controlOptions[value]));
+                        }else
+                        {
+                            map.addControl(new OpenLayers.Control[value]());
+                        }
+                    }
                 });
         this.map = map;
     }else// default Controls
