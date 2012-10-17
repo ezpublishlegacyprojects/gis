@@ -56,7 +56,6 @@
                             data-layerparams='{"tiled" : true}'
                             data-layeroptions='{"isBaseLayer" : false}'
                             data-features='{"featureType" : "GeoRSS"}'
-                            data-layerzoom="1"
                             data-default="active" 
                             data-layername="GeoRSS" >GeoRSS</li>
                     </ul>
