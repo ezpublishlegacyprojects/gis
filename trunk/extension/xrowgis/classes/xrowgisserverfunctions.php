@@ -70,10 +70,9 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             }
             else
             {
-                $streetParts = explode( ',', $geocoder->street );
                 $result['street'] = $geocoder->street;
                 $result['zip'] = $geocoder->zip;
-                $result['city'] = $geocoder->city;
+                $result['city'] = ( $geocoder->city == 'Hanover' ) ? 'Hannover' : $geocoder->city;
                 $result['district'] = $geocoder->district;
                 $result['state'] = $geocoder->state;
                 $result['lon'] = $geocoder->longitude;

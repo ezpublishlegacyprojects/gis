@@ -45,7 +45,7 @@ class xrowGISExtendedAttributeFilter
         {
             return array();
         }
-        $columns = ', ezcontentobject_attribute.id';
+        $columns = null;
         $tables = ', ezxgis_position, ezcontentobject_attribute';
         $db = eZDB::instance();
         $joins = " ezxgis_position.city = '" . $db->escapeString( $params['city'] ) . "' AND ezcontentobject_attribute.id = ezxgis_position.contentobject_attribute_id AND ezcontentobject_attribute.version = ezxgis_position.contentobject_attribute_version AND ";
