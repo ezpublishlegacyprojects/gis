@@ -31,7 +31,6 @@
 
 class OpenLayersGeoCoder extends GeoCoder
 {
-    public $accuracy; // Google accuracy
     public $street;
     public $zip;
     public $city;
@@ -39,9 +38,6 @@ class OpenLayersGeoCoder extends GeoCoder
     public $country;
     public $longitude; // Dezimalgrad der geographischen Länge
     public $latitude; // Dezimalgrad der geographischen Breite
-    private $phi; // Gogenma? der geographischen Länge
-    private $theta; // Gogenma? der geographischen Breite
-
     
     function OpenLayersGeoCoder()
     {
@@ -51,21 +47,6 @@ class OpenLayersGeoCoder extends GeoCoder
     /*!
       Uses the google API to update the GeoCoder Object with a given search request
       If no valid data is found returns false.
-
-CONSTANT GGeoAddressAccuracy
-
-There are no symbolic constants defined for this enumeration.
-
-0     Unknown location. (Since 2.59)
-1     Country level accuracy. (Since 2.59)
-2     Region (state, province, prefecture, etc.) level accuracy. (Since 2.59)
-3     Sub-region (county, municipality, etc.) level accuracy. (Since 2.59)
-4     Town (city, village) level accuracy. (Since 2.59)
-5     Post code (zip code) level accuracy. (Since 2.59)
-6     Street level accuracy. (Since 2.59)
-7     Intersection level accuracy. (Since 2.59)
-8     Address level accuracy. (Since 2.59)
-
 	*/
     
     function request()
@@ -84,18 +65,19 @@ There are no symbolic constants defined for this enumeration.
             $searchstring[] = $this->zip;
         elseif ( $this->city )
             $searchstring[] = $this->city;
-
+        
         $searchstring = implode( ' ', $searchstring );
         
         // ini values
         $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
+        $bounds = $gisini->variable( "GISSettings", "bounds" );
         
         if ( $this->reverse )
         {
             $reverseUrl = $gisini->variable( "OpenLayers", "ReverseUrl" );
             $requestUrl = $reverseUrl . "?latlng=" . urlencode( $this->latitude ) . "," . urlencode( $this->longitude ) . "&sensor=false";
-
+            
             $kml = new SimpleXMLElement( file_get_contents( $requestUrl ) );
             
             if ( ! empty( $kml ) && $kml->status == 'OK' )
@@ -108,7 +90,6 @@ There are no symbolic constants defined for this enumeration.
                         'long' => sprintf( "%s", $item->long_name ) 
                     );
                 }
-                
                 $this->street = $retVal['route']['long'] . ' ' . $retVal['street_number']['long'];
                 $this->district = $retVal['sublocality']['long'];
                 $this->zip = $retVal['postal_code']['long'];
@@ -117,126 +98,38 @@ There are no symbolic constants defined for this enumeration.
                 $this->country = $retVal['country']['short'];
                 $this->longitude = $this->longitude;
                 $this->latitude = $this->latitude;
-
+                
                 return true;
             }
             else
                 return false;
         }
-        $requestUrl = $url . "?q=" . urlencode( $searchstring ) . "&key=$key&output=xml&sensor=false";
+        $requestUrl = $url . "?address=" . urlencode( $searchstring ) . "&sensor=false&bounds=" . $bounds . "";
+        
         eZDebug::writeDebug( $requestUrl, 'Openlayers GeoCoder Request' );
         //request the google kml result
-        $kml = file_get_contents( $requestUrl );
+        $kml = new SimpleXMLElement( file_get_contents( $requestUrl ) );
         
-        if ( ! empty( $kml ) )
+        if ( ! empty( $kml ) && $kml->status == 'OK' )
         {
-            //eZDebug::writeDebug( $kml, 'Google GeoCoder Response');
-            $xmldom = new DOMDocument( '1.0', 'utf-8' );
-            $xmldom->loadXML( utf8_encode( $kml ) );
-            
-            //API Manual: http://www.google.com/apis/maps/documentation/reference.html#GGeoStatusCode
-            $dom_statuscode = $xmldom->getElementsByTagName( "code" );
-            if ( is_object( $dom_statuscode->item( 0 ) ) )
+            foreach ( $kml->result->address_component as $item )
             {
-                $dom_statuscode = $dom_statuscode->item( 0 )->nodeValue;
+                $type = sprintf( "%s", $item->type );
+                $retVal[$type] = array( 
+                    'short' => sprintf( "%s", $item->short_name ) , 
+                    'long' => sprintf( "%s", $item->long_name ) 
+                );
             }
-            else
-            {
-                return false;
-            }
-            if ( $dom_statuscode == "200" )
-            {
-                //API Manual: http://www.google.com/apis/maps/documentation/reference.html#GGeoAddressAccuracy
-                $dom_adressdetails = $xmldom->getElementsByTagName( "AddressDetails" );
-                $dom_accuracy = $dom_adressdetails->item( 0 )->attributes->getNamedItem( "Accuracy" )->nodeValue;
-                if ( in_array( $dom_accuracy, array( 
-                    8 , 
-                    7 , 
-                    6 , 
-                    5 
-                ) ) )
-                {
-                    $this->accuracy = GeoCoder::ACCURACY_STREET;
-                }
-                elseif ( in_array( $dom_accuracy, array( 
-                    4 
-                ) ) )
-                {
-                    $this->accuracy = GeoCoder::ACCURACY_CITY;
-                }
-                else
-                {
-                    return false;
-                }
-                if ( $xmldom->getElementsByTagName( "ThoroughfareName" ) )
-                {
-                    $dom_street = $xmldom->getElementsByTagName( "ThoroughfareName" );
-                    
-                    if ( is_object( $dom_street->item( 0 ) ) )
-                        $dom_street = $dom_street->item( 0 )->nodeValue;
-                    else
-                        $dom_street = "";
-                }
-                
-                if ( $xmldom->getElementsByTagName( "PostalCodeNumber" ) )
-                {
-                    $dom_zip = $xmldom->getElementsByTagName( "PostalCodeNumber" );
-                    
-                    if ( is_object( $dom_zip->item( 0 ) ) )
-                        $dom_zip = $dom_zip->item( 0 )->nodeValue;
-                    else
-                        $dom_zip = "";
-                }
-                
-                if ( $xmldom->getElementsByTagName( "LocalityName" ) )
-                {
-                    $dom_city = $xmldom->getElementsByTagName( "LocalityName" );
-                    
-                    if ( is_object( $dom_city->item( 0 ) ) )
-                        $dom_city = $dom_city->item( 0 )->nodeValue;
-                    else
-                        $dom_city = "";
-                }
-                
-                if ( $xmldom->getElementsByTagName( "AdministrativeAreaName" ) )
-                {
-                    $dom_state = $xmldom->getElementsByTagName( "AdministrativeAreaName" );
-                    
-                    if ( is_object( $dom_state->item( 0 ) ) )
-                        $dom_state = $dom_state->item( 0 )->nodeValue;
-                    else
-                        $dom_state = "";
-                }
-                if ( $xmldom->getElementsByTagName( "CountryNameCode" ) )
-                {
-                    $dom_country = $xmldom->getElementsByTagName( "CountryNameCode" );
-                    
-                    if ( is_object( $dom_country->item( 0 ) ) )
-                        $dom_country = $dom_country->item( 0 )->nodeValue;
-                    else
-                        $dom_country = "";
-                }
-                
-                $dom_point = $xmldom->getElementsByTagName( "coordinates" );
-                $dom_point = $dom_point->item( 0 )->nodeValue;
-                
-                $dom_point = explode( ",", $dom_point );
-                $dom_long = $dom_point[0];
-                $dom_lat = $dom_point[1];
-                
-                // Map values to object
-                $this->accuracy = $dom_accuracy;
-                $this->street = $dom_street;
-                $this->zip = $dom_zip;
-                $this->city = $dom_city;
-                $this->state = $dom_state;
-                $this->country = $dom_country;
-                $this->longitude = $dom_long;
-                $this->latitude = $dom_lat;
-                $this->phi = deg2rad( $dom_long );
-                $this->theta = deg2rad( $dom_lat );
-                return true;
-            }
+
+            $this->street = $retVal['route']['long'] . ' ' . $retVal['street_number']['long'];
+            $this->district = $retVal['sublocality']['long'];
+            $this->zip = $retVal['postal_code']['long'];
+            $this->city = $retVal['locality']['long'];
+            $this->state = $retVal['administrative_area_level_1']['long'];
+            $this->country = $retVal['country']['short'];
+            $this->longitude = sprintf( "%s", $kml->result->geometry->location->lng );
+            $this->latitude = sprintf( "%s", $kml->result->geometry->location->lat );
+            return true;
         }
         else
         {

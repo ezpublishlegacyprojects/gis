@@ -14,7 +14,6 @@ class xrowGISExtendedAttributeFilter
         
         if ( isset( $params ) && is_array( $params ) )
         {
-            $subFilters = $params['sub_filters'];
             foreach ( $params as $index => $subparams )
             {
                 $fnc = array_shift( $subparams );
@@ -36,6 +35,7 @@ class xrowGISExtendedAttributeFilter
         {
             unset( $return['group_by'] );
         }
+        
         return $return;
     }
 
@@ -45,11 +45,11 @@ class xrowGISExtendedAttributeFilter
         {
             return array();
         }
-        
-        $tables = ', ezxgis_position';
+        $columns = ', ezcontentobject_attribute.id';
+        $tables = ', ezxgis_position, ezcontentobject_attribute';
         $db = eZDB::instance();
-        $joins = " ezxgis_position.city = '" . $db->escapeString( $params['city'] ) . "' AND " . "ezcontentobject_attribute.contentobject_attribute_id = ezxgis_position.contentobject_attribute_id AND " . 'ezcontentobject_attribute.version = ezxgis_position.contentobject_attribute_version AND ';
-        
+        $joins = " ezxgis_position.city = '" . $db->escapeString( $params['city'] ) . "' AND ezcontentobject_attribute.id = ezxgis_position.contentobject_attribute_id AND ezcontentobject_attribute.version = ezxgis_position.contentobject_attribute_version AND ";
+        $joins .= " ezcontentobject_attribute.contentobject_id = ezcontentobject.id  AND ezcontentobject_attribute.version = ezcontentobject.current_version AND ";
         return array( 
             'tables' => $tables , 
             'joins' => $joins , 

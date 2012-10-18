@@ -39,7 +39,6 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         {
             if ( $data['mapsearch'] )
             {
-                
                 $geocoder->setAddress( $data['input'] );
             }
             else
@@ -72,11 +71,11 @@ class xrowGISServerfunctions extends ezjscServerFunctions
             else
             {
                 $streetParts = explode( ',', $geocoder->street );
-                $result['street'] = mb_convert_encoding( $streetParts[0], "ISO-8859-1" );
+                $result['street'] = $geocoder->street;
                 $result['zip'] = $geocoder->zip;
-                $result['city'] = mb_convert_encoding( $geocoder->city, "ISO-8859-1" );
-                $result['district'] = mb_convert_encoding( trim( $streetParts[1] ), "ISO-8859-1" );
-                $result['state'] = mb_convert_encoding( $geocoder->state, "ISO-8859-1" );
+                $result['city'] = $geocoder->city;
+                $result['district'] = $geocoder->district;
+                $result['state'] = $geocoder->state;
                 $result['lon'] = $geocoder->longitude;
                 $result['lat'] = $geocoder->latitude;
             }
