@@ -38,6 +38,7 @@ class OpenLayersGeoCoder extends GeoCoder
     public $country;
     public $longitude; // Dezimalgrad der geographischen Länge
     public $latitude; // Dezimalgrad der geographischen Breite
+
     
     function OpenLayersGeoCoder()
     {
@@ -53,25 +54,31 @@ class OpenLayersGeoCoder extends GeoCoder
     {
         
         $searchstring = array();
-        if ( $this->country )
-            $searchstring[] = $this->country;
-        if ( $this->state )
-            $searchstring[] = $this->state;
-        if ( $this->street )
-            $searchstring[] = $this->street;
-        if ( $this->zip and $this->city )
-            $searchstring[] = $this->zip . ' ' . $this->city;
-        elseif ( $this->zip )
-            $searchstring[] = $this->zip;
-        elseif ( $this->city )
-            $searchstring[] = $this->city;
-        
-        $searchstring = implode( ' ', $searchstring );
+        if ( $this->query_string )
+        {
+            $searchstring = $this->query_string;
+        }
+        else
+        {
+            if ( $this->country )
+                $searchstring[] = $this->country;
+            if ( $this->state )
+                $searchstring[] = $this->state;
+            if ( $this->street )
+                $searchstring[] = $this->street;
+            if ( $this->zip and $this->city )
+                $searchstring[] = $this->zip . ' ' . $this->city;
+            elseif ( $this->zip )
+                $searchstring[] = $this->zip;
+            elseif ( $this->city )
+                $searchstring[] = $this->city;
+            
+            $searchstring = implode( ' ', $searchstring );
+        }
         
         // ini values
         $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
-        $bounds = $gisini->variable( "GISSettings", "bounds" );
         
         if ( $this->reverse )
         {
@@ -104,6 +111,7 @@ class OpenLayersGeoCoder extends GeoCoder
             else
                 return false;
         }
+        $bounds = $gisini->variable( "GISSettings", "bounds" );
         $requestUrl = $url . "?address=" . urlencode( $searchstring ) . "&sensor=false&bounds=" . $bounds . "";
         
         eZDebug::writeDebug( $requestUrl, 'Openlayers GeoCoder Request' );
@@ -120,7 +128,7 @@ class OpenLayersGeoCoder extends GeoCoder
                     'long' => sprintf( "%s", $item->long_name ) 
                 );
             }
-
+            
             $this->street = $retVal['route']['long'] . ' ' . $retVal['street_number']['long'];
             $this->district = $retVal['sublocality']['long'];
             $this->zip = $retVal['postal_code']['long'];
