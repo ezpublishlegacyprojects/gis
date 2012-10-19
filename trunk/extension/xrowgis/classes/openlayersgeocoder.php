@@ -74,15 +74,25 @@ class OpenLayersGeoCoder extends GeoCoder
             
             $searchstring = implode( ' ', $searchstring );
         }
-        
+
         // ini values
         $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
         $search = $gisini->variable( "search", "needle" );
         $replace = $gisini->variable( "replace", "needle" );
-        
-        $searchstring = str_replace($search, $replace, $searchstring);
-        
+
+        $searchstring = str_replace($search, '#', $searchstring);
+        $searchstring = explode('#', $searchstring);
+
+        if(count($searchstring)==1)
+        {
+            $searchstring = $searchstring[0];
+        }
+        else
+        {
+            $searchstring = $searchstring[0].$replace[0];
+        }
+
         if ( $this->reverse )
         {
             $reverseUrl = $gisini->variable( "OpenLayers", "ReverseUrl" );
