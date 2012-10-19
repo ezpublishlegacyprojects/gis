@@ -52,7 +52,6 @@ class OpenLayersGeoCoder extends GeoCoder
     
     function request()
     {
-        
         $searchstring = array();
         if ( $this->query_string )
         {
@@ -79,6 +78,10 @@ class OpenLayersGeoCoder extends GeoCoder
         // ini values
         $gisini = eZINI::instance( "xrowgis.ini" );
         $url = $gisini->variable( "OpenLayers", "Url" );
+        $search = $gisini->variable( "search", "needle" );
+        $replace = $gisini->variable( "replace", "needle" );
+        
+        $searchstring = str_replace($search, $replace, $searchstring);
         
         if ( $this->reverse )
         {
