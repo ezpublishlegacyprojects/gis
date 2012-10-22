@@ -74,7 +74,7 @@ class GeoCoder
     {
         if ( $query_string != null and ! empty( $query_string ) )
         {
-            $this->query_string = trim( $query_string );
+            $this->query_string = $query_string;
         }
         else
         {

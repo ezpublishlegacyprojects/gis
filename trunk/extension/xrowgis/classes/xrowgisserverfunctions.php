@@ -39,7 +39,8 @@ class xrowGISServerfunctions extends ezjscServerFunctions
         {
             if ( $data['mapsearch'] )
             {
-                $geocoder->setAddress( $data['input'] );
+                
+                $geocoder->setAddress( $street, $zip, $city, $state, $country, false, $data['input'] );
             }
             else
             {
