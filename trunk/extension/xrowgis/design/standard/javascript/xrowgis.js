@@ -9,6 +9,7 @@
 })(jQuery);
 
 (function () {
+	OpenLayers.ImgPath = "/extension/xrowgis/design/standard/javascript/OpenLayers/img/";
     var methods = {
     		createMap : function (options) {
                 var controls,
