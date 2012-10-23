@@ -54,7 +54,7 @@ class attributeListOperator
                      &$currentNamespace, &$operatorValue, &$namedParameters )
     {
     	$db = eZDB::instance();
-    	$params = array( 'limit' => $namedParameters['limit'], 'offset' => $namedParameters['offset'], 'column' => 'city' );
+    	$params = array( 'limit' => $namedParameters['limit'], 'offset' => 0, 'column' => 'city' );
     	$node = eZContentObjectTreeNode::fetch($namedParameters['source']);
         $attribute_list= xrowGISTools::citiesBySubtree($node, $params);
 		$operatorValue = $attribute_list;
