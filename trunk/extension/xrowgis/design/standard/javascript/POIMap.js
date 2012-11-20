@@ -198,6 +198,7 @@ function handle_geolocation_query(position){
         lonLat = new OpenLayers.LonLat(lonLat.x, lonLat.y);
         currentPos.addMarker(new OpenLayers.Marker(lonLat, new OpenLayers.Icon("/extension/hannover/design/hannover/images/openlayers-custom/curpos.png", new OpenLayers.Size(24, 32))));
         window.map.map.setCenter(lonLat, window.map.zoom);
+        
     }
 
 } 
